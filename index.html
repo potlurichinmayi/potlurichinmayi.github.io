@@ -221,6 +221,15 @@
             padding: 10px;
             color: #888;
             border: 1px solid #444;
+            overflow: hidden;
+        }
+
+        .photo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            display: block;
         }
 
         .ribbon {
@@ -797,8 +806,8 @@
             <div class="gold-heart-charm">💛</div>
 
             <div class="photo-strip">
-                <div class="photo-placeholder" style="background-color:#4a3b32;">
-                    [ Photo ]
+                <div class="photo-placeholder">
+                    <img src="photo.jpeg" alt="Potluri Chinmayi">
                 </div>
                 <div class="photo-placeholder" style="height:80px; background:#2b3a42; font-size:0.65rem; color:#aaa;">
                     Woxsen University<br>B.Des Interior Design<br>2022 – 2026
