@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Musra Creates | Interior Design & Spatial Portfolio</title>
+    <title>Potluri Chinmayi | Interior Designer</title>
     <style>
-        /* Import Fonts */
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&family=Syne:wght@700;800&family=Instrument+Serif:ital@1&family=Inter:wght@400;500;600&display=swap');
 
         :root {
@@ -17,15 +16,8 @@
             --washi-tape: rgba(240, 220, 180, 0.7);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
 
         body {
             background-color: var(--burgundy);
@@ -34,14 +26,16 @@
             overflow-x: hidden;
         }
 
-        /* Fixed Aesthetic Navigation Pegs */
         .sticky-nav {
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 100;
             display: flex;
-            gap: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            max-width: 60vw;
         }
 
         .nav-tag {
@@ -63,7 +57,13 @@
             background: var(--soft-gold);
         }
 
-        /* --- SECTION 1: MEET THE DESIGNER --- */
+        .nav-tag.resume-tag {
+            background: var(--soft-gold);
+            border-style: solid;
+            color: var(--dark-charcoal);
+        }
+
+        /* --- HERO --- */
         .hero-section {
             background-color: var(--burgundy);
             position: relative;
@@ -75,7 +75,6 @@
             overflow: hidden;
         }
 
-        /* Simulated Lace Borders */
         .lace-edge {
             position: absolute;
             left: 0;
@@ -123,6 +122,27 @@
             max-width: 380px;
         }
 
+        .contact-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .contact-pill {
+            background: rgba(251, 246, 235, 0.12);
+            border: 1px solid rgba(251, 246, 235, 0.3);
+            color: var(--cream);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-family: 'Syne', sans-serif;
+            transition: background 0.2s;
+        }
+
+        .contact-pill:hover { background: rgba(251, 246, 235, 0.25); }
+
         .hero-right {
             position: relative;
             width: 45%;
@@ -160,10 +180,21 @@
         .brand-title {
             font-family: 'Instrument Serif', serif;
             font-style: italic;
-            font-size: 3.5rem;
+            font-size: 3.2rem;
             color: var(--burgundy);
             text-align: center;
             line-height: 1;
+        }
+
+        .brand-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--burgundy);
+            opacity: 0.65;
+            text-align: center;
+            margin-top: 10px;
         }
 
         .photo-strip {
@@ -211,13 +242,13 @@
             z-index: 4;
         }
 
-        /* --- SECTION 2: TOOLS & SKILLS (DIAMOND CHECK) --- */
+        /* --- SKILLS --- */
         .skills-section {
             background-color: var(--cream);
-            background-image: 
-                linear-gradient(135deg, #e3dac9 25%, transparent 25%), 
-                linear-gradient(225deg, #e3dac9 25%, transparent 25%), 
-                linear-gradient(45deg, #e3dac9 25%, transparent 25%), 
+            background-image:
+                linear-gradient(135deg, #e3dac9 25%, transparent 25%),
+                linear-gradient(225deg, #e3dac9 25%, transparent 25%),
+                linear-gradient(45deg, #e3dac9 25%, transparent 25%),
                 linear-gradient(315deg, #e3dac9 25%, var(--cream) 25%);
             background-position: 40px 0, 40px 0, 0 0, 0 0;
             background-size: 80px 80px;
@@ -246,7 +277,6 @@
             padding: 25px;
             border-radius: 8px;
             box-shadow: 4px 4px 12px rgba(0,0,0,0.15);
-            position: relative;
         }
 
         .skill-badge h3 {
@@ -269,11 +299,7 @@
             height: 500px;
         }
 
-        .folder-stack {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
+        .folder-stack { position: relative; width: 100%; height: 100%; }
 
         .folder {
             position: absolute;
@@ -306,11 +332,28 @@
 
         .folder-main h2 {
             font-family: 'Syne', sans-serif;
-            font-size: 4rem;
+            font-size: 3rem;
             line-height: 0.85;
             text-align: center;
             letter-spacing: -2px;
             width: 100%;
+            margin-bottom: 22px;
+        }
+
+        .tools-list {
+            list-style: none;
+            text-align: center;
+            font-size: 0.85rem;
+            line-height: 2.1;
+            opacity: 0.85;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .tools-list li::before {
+            content: "◆ ";
+            color: var(--soft-gold);
+            font-size: 0.6rem;
         }
 
         .green-bow {
@@ -321,7 +364,7 @@
             transform: rotate(15deg);
         }
 
-        /* --- SECTION 3: RECENT PROJECTS (THE NOTEBOOK) --- */
+        /* --- PORTFOLIO --- */
         .portfolio-section {
             background-color: var(--burgundy);
             padding: 120px 5%;
@@ -355,11 +398,7 @@
             border-right: 1px dashed #ccc;
         }
 
-        .notebook-page {
-            width: 50%;
-            padding: 20px;
-            position: relative;
-        }
+        .notebook-page { width: 50%; padding: 20px; position: relative; }
 
         .page-left {
             border-right: 1px solid #eee;
@@ -428,10 +467,7 @@
             margin: 10px auto;
         }
 
-        .page-right {
-            background-color: #fafafa;
-            padding-left: 40px;
-        }
+        .page-right { background-color: #fafafa; padding-left: 40px; }
 
         .denim-pocket {
             position: absolute;
@@ -477,7 +513,7 @@
         .ribbon-bow-red { position: absolute; top: 190px; left: 20px; font-size: 2.5rem; z-index: 4; }
         .button-accessory { position: absolute; bottom: 25px; left: 170px; font-size: 2rem; z-index: 4; }
 
-        /* --- SECTION 4: CASE STUDIES (BEFORE & AFTER / GRID) --- */
+        /* --- EXPERIENCE --- */
         .case-studies {
             background-color: var(--cream);
             padding: 100px 8%;
@@ -488,7 +524,6 @@
         .section-header-maximalist {
             text-align: center;
             margin-bottom: 80px;
-            position: relative;
         }
 
         .section-header-maximalist h2 {
@@ -514,7 +549,7 @@
 
         .case-booklet {
             background: #fff;
-            padding: 20px 20px 40px 20px;
+            padding: 30px 25px 35px;
             box-shadow: 6px 12px 30px rgba(0,0,0,0.1);
             position: relative;
             border: 1px solid #e2d9c8;
@@ -531,46 +566,41 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        .split-view {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            margin-bottom: 20px;
-        }
-
-        .pane {
-            width: 50%;
-            height: 180px;
-            background: #ddd;
-            display: flex;
-            align-items: flex-end;
-            padding: 10px;
+        .exp-date {
             font-family: 'Syne', sans-serif;
             font-size: 0.7rem;
-            font-weight: bold;
-            color: #fff;
             text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .booklet-meta h4 {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.4rem;
+            letter-spacing: 1.5px;
             color: var(--burgundy);
-            margin-bottom: 5px;
+            margin-bottom: 6px;
+            opacity: 0.75;
         }
 
-        .booklet-meta p {
+        .exp-role {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.25rem;
+            color: var(--burgundy);
+            margin-bottom: 2px;
+        }
+
+        .exp-company {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-size: 1.1rem;
+            color: #777;
+            margin-bottom: 14px;
+        }
+
+        .exp-desc {
             font-size: 0.85rem;
-            line-height: 1.4;
+            line-height: 1.65;
             color: #555;
         }
 
-        /* --- SECTION 5: SERVICES & PACKAGES (TAG LAYOUT) --- */
+        /* --- EDUCATION --- */
         .services-section {
             background-color: #1E160A;
-            background-image:
-                radial-gradient(circle, rgba(223, 186, 115, 0.14) 1.5px, transparent 1.5px);
+            background-image: radial-gradient(circle, rgba(223, 186, 115, 0.14) 1.5px, transparent 1.5px);
             background-size: 18px 18px;
             padding: 120px 10%;
             position: relative;
@@ -584,13 +614,13 @@
             margin-top: 50px;
         }
 
-        .service-tag-card {
+        .edu-card {
             background: var(--cream);
             color: var(--dark-charcoal);
-            width: 280px;
-            min-height: 400px;
+            width: 300px;
+            min-height: 220px;
             border-radius: 4px;
-            padding: 30px 20px;
+            padding: 40px 25px 28px;
             position: relative;
             box-shadow: 10px 10px 0px var(--burgundy);
             border: 2px solid var(--dark-charcoal);
@@ -599,8 +629,7 @@
             justify-content: space-between;
         }
 
-        /* Hanging tag hole punch */
-        .service-tag-card::before {
+        .edu-card::before {
             content: '';
             position: absolute;
             top: 15px;
@@ -613,38 +642,34 @@
             box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
         }
 
-        .service-tag-card h3 {
+        .edu-degree {
             font-family: 'Syne', sans-serif;
-            font-size: 1.8rem;
-            line-height: 1;
-            margin-top: 20px;
-            text-align: center;
+            font-size: 1.05rem;
+            line-height: 1.3;
             color: var(--burgundy);
+            margin-bottom: 8px;
         }
 
-        .service-tag-card ul {
-            list-style: none;
-            font-size: 0.85rem;
-            line-height: 1.6;
-            margin: 20px 0;
-            padding: 0 10px;
-        }
-
-        .service-tag-card ul li::before {
-            content: "✦ ";
-            color: var(--burgundy);
-        }
-
-        .price-badge {
+        .edu-school {
             font-family: 'Instrument Serif', serif;
             font-style: italic;
-            font-size: 2.2rem;
-            text-align: center;
-            border-top: 1px dashed #ccc;
-            padding-top: 15px;
+            font-size: 1.25rem;
+            color: var(--dark-charcoal);
+            margin-bottom: 12px;
         }
 
-        /* --- SECTION 6: CONTACT INQUIRY (DESK COMPOSITION) --- */
+        .edu-year {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #888;
+            border-top: 1px dashed #ccc;
+            padding-top: 12px;
+            margin-top: auto;
+        }
+
+        /* --- CONTACT --- */
         .contact-section {
             background-color: #7A1515;
             background-image:
@@ -680,17 +705,41 @@
             color: var(--burgundy);
         }
 
-        .desk-form-container p {
+        .desk-form-container > p {
             font-family: 'Instrument Serif', serif;
             font-style: italic;
             font-size: 1.8rem;
+            margin-bottom: 30px;
+        }
+
+        .contact-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
             margin-bottom: 40px;
         }
 
-        .form-group {
-            margin-bottom: 25px;
-            position: relative;
+        .contact-link {
+            background: var(--burgundy);
+            color: var(--cream);
+            text-decoration: none;
+            padding: 10px 20px;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            transition: opacity 0.2s;
         }
+
+        .contact-link:hover { opacity: 0.85; }
+
+        .contact-link.resume-dl {
+            background: var(--soft-gold);
+            color: var(--dark-charcoal);
+        }
+
+        .form-group { margin-bottom: 25px; }
 
         .form-group label {
             font-family: 'Syne', sans-serif;
@@ -742,7 +791,6 @@
             transform: rotate(45deg);
         }
 
-        /* --- RESPONSIVE MEDIA QUERIES --- */
         @media (max-width: 900px) {
             .hero-section, .skills-section, .notebook-container, .case-grid {
                 flex-direction: column;
@@ -752,15 +800,13 @@
                 width: 100%;
                 max-width: 100%;
             }
-            .hero-right, .skills-right {
-                height: 450px;
-                margin-top: 40px;
-            }
+            .hero-right, .skills-right { height: 450px; margin-top: 40px; }
             .notebook-container::after { display: none; }
             .page-left { border-right: none; border-bottom: 2px dashed #ccc; padding-bottom: 60px; }
             .hero-left h1 { font-size: 3.5rem; }
             .section-header-maximalist h2 { font-size: 3rem; }
             .desk-form-container { padding: 25px; }
+            .sticky-nav { max-width: 90vw; top: 10px; right: 10px; }
         }
     </style>
 </head>
@@ -769,28 +815,38 @@
     <nav class="sticky-nav">
         <a href="#about" class="nav-tag">About</a>
         <a href="#skills" class="nav-tag">Skills</a>
-        <a href="#notebook" class="nav-tag">Notebook</a>
-        <a href="#cases" class="nav-tag">Renders</a>
-        <a href="#services" class="nav-tag">Services</a>
-        <a href="#contact" class="nav-tag">Inquire</a>
+        <a href="#notebook" class="nav-tag">Portfolio</a>
+        <a href="#cases" class="nav-tag">Experience</a>
+        <a href="#services" class="nav-tag">Education</a>
+        <a href="#contact" class="nav-tag">Contact</a>
+        <a href="PotluriChinmayi_Resume.pdf" class="nav-tag resume-tag" download>Resume ↓</a>
     </nav>
 
+    <!-- ABOUT -->
     <section class="hero-section" id="about">
         <div class="lace-edge lace-top"></div>
         <div class="cherub-statue">🕊️</div>
-        
+
         <div class="hero-left">
             <h1>meet the designer</h1>
-            <p>I am a self-taught interior and spatial designer. For me, styling spaces is where I feel most connected. I love experimenting with historic architecture, textiles, rich color palettes, and everything in between.</p>
-            <p>I am passionate about creating, curating, and building tactile visual worlds. It makes me happy to transform ordinary rooms into functional spaces layered with rich personality.</p>
+            <p>I craft spaces that tell compelling stories by blending bold concepts with functional, user-centered solutions. I focus on projects that bridge tradition and innovation, creating meaningful, immersive environments.</p>
+            <p>Known for my leadership and dynamic presentation skills, I thrive in fast-paced, collaborative settings — turning visionary ideas into impactful designs.</p>
+            <div class="contact-pills">
+                <a href="mailto:potlurichinmayi@gmail.com" class="contact-pill">✉ potlurichinmayi@gmail.com</a>
+                <a href="tel:+919381217295" class="contact-pill">📞 +91 93812 17295</a>
+                <a href="https://linkedin.com/in/chinmayipotluri" target="_blank" class="contact-pill">in LinkedIn</a>
+            </div>
         </div>
 
         <div class="hero-right">
             <div class="ribbon">🎀</div>
-            
+
             <div class="scrapbook-frame">
                 <div class="frame-inner">
-                    <div class="brand-title">Musra<br>Creates</div>
+                    <div>
+                        <div class="brand-title">Potluri<br>Chinmayi</div>
+                        <div class="brand-subtitle">Interior Designer</div>
+                    </div>
                 </div>
             </div>
 
@@ -798,31 +854,32 @@
 
             <div class="photo-strip">
                 <div class="photo-placeholder" style="background-color:#4a3b32;">
-                    [ Concept Sketch: Victorian Revival ]
+                    [ Photo ]
                 </div>
-                <div class="photo-placeholder" style="height: 140px; background: #2b3a42;">
-                    [ Headshot Frame ]
+                <div class="photo-placeholder" style="height:80px; background:#2b3a42; font-size:0.65rem; color:#aaa;">
+                    Woxsen University<br>B.Des Interior Design<br>2022 – 2026
                 </div>
             </div>
         </div>
         <div class="lace-edge lace-bottom"></div>
     </section>
 
+    <!-- SKILLS -->
     <section class="skills-section" id="skills">
         <div class="skills-left">
             <div class="skill-badge" style="transform: rotate(-1deg);">
-                <h3>Spatial Layouts</h3>
-                <p>Focusing on structural space-planning, furniture layouts, zoning, architectural scale, and custom compositions.</p>
+                <h3>Spatial Design</h3>
+                <p>Space planning, furniture layouts, zoning, architectural scale, and custom compositions for residential, retail, and institutional environments.</p>
             </div>
-            
+
             <div class="skill-badge" style="transform: rotate(2deg);">
-                <h3>Material Curation</h3>
-                <p>Working closely with textile sourcing, mood-board rendering, color theory balance, and bespoke architectural fixtures.</p>
+                <h3>3D Visualisation</h3>
+                <p>Photorealistic renders, animated walkthroughs, atmospheric lighting design, and narrative-driven modelling that bring concepts to life.</p>
             </div>
 
             <div class="skill-badge" style="transform: rotate(-2deg);">
-                <h3>3D Visualization</h3>
-                <p>Creating animated digital walkthroughs, detailed atmospheric renders, lighting design, and narrative-driven modeling.</p>
+                <h3>Material & Styling</h3>
+                <p>Textile sourcing, mood-board curation, colour theory, bespoke fixture specification, and full on-site styling and installation management.</p>
             </div>
         </div>
 
@@ -831,27 +888,37 @@
                 <div class="folder folder-bg-manila"></div>
                 <div class="folder folder-main">
                     <div class="green-bow">🎀</div>
-                    <h2>tools&<br>skills</h2>
+                    <h2>tools &<br>software</h2>
+                    <ul class="tools-list">
+                        <li>AutoCAD</li>
+                        <li>SketchUp</li>
+                        <li>Enscape</li>
+                        <li>V-Ray</li>
+                        <li>Twinmotion</li>
+                        <li>Unity</li>
+                        <li>D5 Render</li>
+                    </ul>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- PORTFOLIO -->
     <section class="portfolio-section" id="notebook">
         <div class="notebook-container">
-            
+
             <div class="notebook-page page-left">
                 <h2>some of<br>my work</h2>
-                <div class="cursive-sub">Posters & Concepts</div>
+                <div class="cursive-sub">Renders & Concepts</div>
 
                 <div class="ribbon-bow-red">🎀</div>
 
                 <div class="collage-item card-orange">
-                    <p style="font-size: 1.5rem; line-height: 1.1;">Keep<br>going!</p>
+                    <p style="font-size:1.2rem; line-height:1.25;">Early<br>Childhood<br>Centre</p>
                 </div>
 
                 <div class="collage-item card-peachy">
-                    <span style="font-family: 'Syne', sans-serif; font-size: 0.8rem;">peachy</span>
+                    <span style="font-family:'Syne',sans-serif; font-size:0.75rem; display:block; margin-bottom:5px;">airport</span>
                     <div class="peach-circle"></div>
                 </div>
 
@@ -859,17 +926,17 @@
             </div>
 
             <div class="notebook-page page-right">
-                <div class="collage-item moodboard-photo" style="background-color: #3e4a3d;">
-                    <span>[ Salon Wall Layout Concept ]</span>
+                <div class="collage-item moodboard-photo" style="background-color:#3e4a3d;">
+                    <span>[ Hyd Airport —<br>Passenger Lounge<br>Redesign ]</span>
                 </div>
 
-                <div class="collage-item moodboard-photo-2" style="background-color: #493b3b;">
-                    <span>[ Botanical Velvet Swatch ]</span>
+                <div class="collage-item moodboard-photo-2" style="background-color:#493b3b;">
+                    <span>[ Quartzkraaft<br>Product Renders ]</span>
                 </div>
 
                 <div class="denim-pocket">
-                    <div style="color: #fff; padding: 15px; font-size: 0.75rem; font-family: monospace;">
-                        // Materials Pocket
+                    <div style="color:#fff; padding:15px; font-size:0.75rem; font-family:monospace;">
+                        // Materials Pocket<br>Luxury Retail<br>Spatial Concepts
                     </div>
                 </div>
             </div>
@@ -877,97 +944,141 @@
         </div>
     </section>
 
+    <!-- EXPERIENCE -->
     <section class="case-studies" id="cases">
         <div class="section-header-maximalist">
-            <h2>spatial stories</h2>
-            <p>Selected Before & After Breakdowns</p>
+            <h2>experience</h2>
+            <p>Where I've Designed & Built</p>
         </div>
 
         <div class="case-grid">
+
             <div class="case-booklet" style="transform: rotate(-1deg);">
                 <div class="washi-tape-accent"></div>
-                <div class="split-view">
-                    <div class="pane" style="background-color: #5c524d;">Before: Blank Box</div>
-                    <div class="pane" style="background-color: #8fa89b;">After: Velvet Lounge</div>
-                </div>
-                <div class="booklet-meta">
-                    <h4>The Velvet Parlour</h4>
-                    <p>Reimagining a sterile apartment living room into a maximalist 1920s-inspired receiving room using custom millwork and jewel-toned textile layers.</p>
-                </div>
+                <div class="exp-date">Nov 2025 – May 2026</div>
+                <div class="exp-role">Interior Designer</div>
+                <div class="exp-company">PractiSc Learning Innovations Pvt. Ltd.</div>
+                <p class="exp-desc">Commissioned to design a new Early Childhood Education Centre and renovate existing Anganwadi spaces under a government brief. Led the full design process — spatial planning, material sourcing, and contractor coordination across multiple sites. All sites handed over on schedule, meeting government specifications.</p>
+            </div>
+
+            <div class="case-booklet" style="transform: rotate(1deg);">
+                <div class="washi-tape-accent" style="background: rgba(200,220,190,0.7);"></div>
+                <div class="exp-date">May – Oct 2025</div>
+                <div class="exp-role">Interior Stylist</div>
+                <div class="exp-company">The Colosseum</div>
+                <p class="exp-desc">Handled full-cycle luxury interior styling for a retail client, working independently. Developed bespoke spatial concepts, sourced materials, and managed all on-site installation. All concepts approved without revisions; spaces delivered on time.</p>
+            </div>
+
+            <div class="case-booklet" style="transform: rotate(-0.5deg);">
+                <div class="washi-tape-accent" style="background: rgba(180,200,230,0.7);"></div>
+                <div class="exp-date">Feb – Mar 2025</div>
+                <div class="exp-role">3D Visualiser</div>
+                <div class="exp-company">Quartzkraaft</div>
+                <p class="exp-desc">Produced photorealistic renders for Quartzkraaft's full product line to support client presentations and accelerate purchase decisions.</p>
             </div>
 
             <div class="case-booklet" style="transform: rotate(1.5deg);">
-                <div class="washi-tape-accent" style="left: 40%; background: rgba(200, 220, 190, 0.7);"></div>
-                <div class="split-view">
-                    <div class="pane" style="background-color: #4a4a4a;">Before: Dark Kitchen</div>
-                    <div class="pane" style="background-color: #d1bfa7;">After: Sun-Drenched</div>
-                </div>
-                <div class="booklet-meta">
-                    <h4>Maison Daylight Kitchen</h4>
-                    <p>Structural opening of a north-facing galley kitchen. Incorporated raw brass fixtures, lime-wash paint finishes, and repurposed oak storage panels.</p>
-                </div>
+                <div class="washi-tape-accent" style="background: rgba(230,200,180,0.7);"></div>
+                <div class="exp-date">Jan – Feb 2025</div>
+                <div class="exp-role">Spatial Designer</div>
+                <div class="exp-company">GMR – Hyderabad Airport</div>
+                <p class="exp-desc">Selected to redesign passenger waiting areas at Hyderabad Airport. Researched passenger behaviour and developed layouts prioritising ease of movement and dwell comfort, aligned with the airport's brand identity.</p>
             </div>
+
+            <div class="case-booklet" style="transform: rotate(-1.5deg);">
+                <div class="washi-tape-accent" style="background: rgba(200,180,230,0.7);"></div>
+                <div class="exp-date">Aug – Nov 2024</div>
+                <div class="exp-role">Junior Designer</div>
+                <div class="exp-company">Deloitte</div>
+                <p class="exp-desc">Selected for a confidential project on the future of retail. Developed spatial concepts and master plans for immersive, user-centric retail environments, drawing on retail behaviour research and trend analysis.</p>
+            </div>
+
+            <div class="case-booklet" style="transform: rotate(0.5deg);">
+                <div class="washi-tape-accent" style="background: rgba(220,210,190,0.7);"></div>
+                <div class="exp-date">May – Jul 2024</div>
+                <div class="exp-role">Interior Design Intern</div>
+                <div class="exp-company">Olive House Interior Studio</div>
+                <p class="exp-desc">Gained hands-on experience in drafting, project coordination, and studio workflows, enhancing technical and communication skills.</p>
+            </div>
+
+            <div class="case-booklet" style="transform: rotate(-1deg);">
+                <div class="washi-tape-accent" style="background: rgba(255,220,200,0.7);"></div>
+                <div class="exp-date">May – Jul 2023</div>
+                <div class="exp-role">Social Media Head</div>
+                <div class="exp-company">Neevo.life</div>
+                <p class="exp-desc">Led brand's visual transformation — user-centric design across logos, packaging, and promotional materials, while curating minimalist content to enhance engagement and reflect brand sustainability values.</p>
+            </div>
+
         </div>
     </section>
 
+    <!-- EDUCATION -->
     <section class="services-section" id="services">
         <div class="lace-edge lace-top"></div>
         <div class="section-header-maximalist">
-            <h2 style="color: var(--cream);">work with me</h2>
-            <p style="color: var(--soft-gold);">Design Packages & Consultations</p>
+            <h2 style="color: var(--cream);">education</h2>
+            <p style="color: var(--soft-gold);">Academic Background</p>
         </div>
 
         <div class="services-container">
-            <div class="service-tag-card" style="transform: rotate(-2deg);">
+            <div class="edu-card" style="transform: rotate(-2deg);">
                 <div>
-                    <h3>Hourly Styling</h3>
-                    <ul>
-                        <li>Color Consultation</li>
-                        <li>Furniture Sourcing Assistance</li>
-                        <li>Art Gallery Wall Curation</li>
-                    </ul>
+                    <div class="edu-degree">Bachelor of Design (Hons)<br>Interior Design</div>
+                    <div class="edu-school">Woxsen University</div>
                 </div>
-                <div class="price-badge">$150 / hr</div>
+                <div class="edu-year">2022 – 2026</div>
             </div>
 
-            <div class="service-tag-card" style="transform: rotate(1deg); box-shadow: 10px 10px 0px var(--sage-green);">
+            <div class="edu-card" style="transform: rotate(1deg); box-shadow: 10px 10px 0px var(--sage-green);">
                 <div>
-                    <h3>Full Spatial Design</h3>
-                    <ul>
-                        <li>Full 3D Room Walkthroughs</li>
-                        <li>Material & Sample Swatch Box</li>
-                        <li>Contractor Management Sheets</li>
-                    </ul>
+                    <div class="edu-degree">Senior Secondary Education</div>
+                    <div class="edu-school">St. Andrews School, Bowenpally</div>
                 </div>
-                <div class="price-badge">$2,500+</div>
+                <div class="edu-year">2020 – 2022</div>
+            </div>
+
+            <div class="edu-card" style="transform: rotate(-1deg);">
+                <div>
+                    <div class="edu-degree">Secondary Education</div>
+                    <div class="edu-school">Delhi Public School, Secunderabad</div>
+                </div>
+                <div class="edu-year">2007 – 2020</div>
             </div>
         </div>
     </section>
 
+    <!-- CONTACT -->
     <section class="contact-section" id="contact">
         <div class="safety-pin">🧷</div>
-        
+
         <div class="desk-form-container">
-            <h2>start a project</h2>
+            <h2>get in touch</h2>
             <p>Leave a note on my desk...</p>
 
-            <form action="#" method="POST" onsubmit="event.preventDefault(); alert('Inquiry Saved to Scrapbook!');">
+            <div class="contact-links">
+                <a href="mailto:potlurichinmayi@gmail.com" class="contact-link">✉ potlurichinmayi@gmail.com</a>
+                <a href="tel:+919381217295" class="contact-link">📞 +91 93812 17295</a>
+                <a href="https://linkedin.com/in/chinmayipotluri" target="_blank" class="contact-link">in LinkedIn</a>
+                <a href="PotluriChinmayi_Resume.pdf" download class="contact-link resume-dl">↓ Download Resume</a>
+            </div>
+
+            <form action="#" method="POST" onsubmit="event.preventDefault(); alert('Message sent!');">
                 <div class="form-group">
                     <label for="name">Your Name</label>
                     <input type="text" id="name" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="scope">Project Scope</label>
-                    <input type="text" id="scope" placeholder="e.g., Living Room, Full Café Setup">
+                    <input type="text" id="scope" placeholder="e.g., Living Room, Office, Retail Space">
                 </div>
 
                 <div class="form-group">
-                    <label for="message">Tell me about your aesthetic vision</label>
+                    <label for="message">Tell me about your project</label>
                     <textarea id="message" rows="4" required></textarea>
                 </div>
 
-                <button type="submit" class="submit-btn">Pin to Board</button>
+                <button type="submit" class="submit-btn">Send Message</button>
             </form>
         </div>
     </section>
