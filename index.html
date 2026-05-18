@@ -367,151 +367,88 @@
         /* --- PORTFOLIO --- */
         .portfolio-section {
             background-color: var(--burgundy);
-            padding: 120px 5%;
-            display: flex;
-            justify-content: center;
+            padding: 100px 8%;
             position: relative;
         }
 
-        .notebook-container {
-            background-color: #fff;
-            width: 100%;
-            max-width: 1100px;
-            min-height: 750px;
-            box-shadow: 0px 15px 40px rgba(0,0,0,0.5);
-            display: flex;
-            position: relative;
-            color: #333;
-            padding: 40px;
+        .project-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 50px;
         }
 
-        .notebook-container::after {
-            content: '';
+        .project-card {
+            background: #fff;
+            color: var(--dark-charcoal);
+            padding: 35px 25px 30px;
+            position: relative;
+            box-shadow: 6px 10px 30px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-washi {
             position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 100%;
-            background: linear-gradient(to right, transparent, rgba(0,0,0,0.05), #ddd, rgba(0,0,0,0.05), transparent);
-            border-left: 1px dashed #ccc;
-            border-right: 1px dashed #ccc;
+            top: -14px;
+            left: 28%;
+            width: 90px;
+            height: 26px;
+            transform: rotate(-2deg);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .notebook-page { width: 50%; padding: 20px; position: relative; }
-
-        .page-left {
-            border-right: 1px solid #eee;
-            background-image: linear-gradient(#e8f4f8 1px, transparent 1px);
-            background-size: 100% 28px;
-        }
-
-        .page-left h2 {
+        .project-tag {
             font-family: 'Syne', sans-serif;
-            font-size: 3.5rem;
-            line-height: 0.9;
-            letter-spacing: -2px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             color: var(--burgundy);
             margin-bottom: 10px;
         }
 
-        .page-left .cursive-sub {
-            font-family: 'Instrument Serif', serif;
-            font-style: italic;
-            font-size: 3rem;
-            color: #444;
-            margin-bottom: 40px;
+        .project-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.45rem;
+            color: var(--dark-charcoal);
+            margin-bottom: 4px;
             line-height: 1;
         }
 
-        .collage-item {
-            position: absolute;
-            box-shadow: 3px 5px 15px rgba(0,0,0,0.2);
-            transition: transform 0.3s;
-        }
-
-        .collage-item:hover {
-            transform: scale(1.05) rotate(0deg) !important;
-            z-index: 10;
-        }
-
-        .card-orange {
-            background: #ff5e3a;
-            color: #fff;
-            padding: 20px;
-            width: 160px;
-            height: 220px;
-            bottom: 40px;
-            left: 20px;
-            transform: rotate(-8deg);
-            font-family: 'Playfair Display', serif;
+        .project-sub {
+            font-family: 'Instrument Serif', serif;
             font-style: italic;
+            font-size: 1rem;
+            color: #888;
+            margin-bottom: 14px;
         }
 
-        .card-peachy {
-            background: #ffb07c;
-            width: 150px;
-            height: 180px;
-            bottom: 80px;
-            right: 30px;
-            transform: rotate(5deg);
-            padding: 10px;
-            border: 4px solid #fff;
+        .project-desc {
+            font-size: 0.82rem;
+            line-height: 1.65;
+            color: #555;
+            margin-bottom: 22px;
+            flex: 1;
         }
 
-        .peach-circle {
-            width: 90px;
-            height: 90px;
-            background: #f37042;
-            border-radius: 50%;
-            margin: 10px auto;
+        .open-pdf-btn {
+            display: inline-block;
+            background: var(--burgundy);
+            color: var(--cream);
+            text-decoration: none;
+            padding: 9px 20px;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 3px 3px 0px var(--dark-charcoal);
+            transition: transform 0.2s, box-shadow 0.2s;
+            align-self: flex-start;
         }
 
-        .page-right { background-color: #fafafa; padding-left: 40px; }
-
-        .denim-pocket {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            width: 220px;
-            height: 220px;
-            background-color: #3b5998;
-            border: 2px dashed #ffeb3b;
-            border-radius: 0 0 20px 20px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
-            transform: rotate(4deg);
+        .open-pdf-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px var(--dark-charcoal);
         }
-
-        .moodboard-photo {
-            background: #222;
-            width: 180px;
-            height: 220px;
-            position: absolute;
-            top: 40px;
-            left: 40px;
-            transform: rotate(-5deg);
-            border: 5px solid white;
-            color: #fff;
-            padding: 10px;
-            font-size: 0.8rem;
-        }
-
-        .moodboard-photo-2 {
-            background: #111;
-            width: 160px;
-            height: 190px;
-            position: absolute;
-            top: 80px;
-            right: 20px;
-            transform: rotate(12deg);
-            border: 5px solid white;
-            color: #fff;
-            padding: 10px;
-            font-size: 0.8rem;
-        }
-
-        .ribbon-bow-red { position: absolute; top: 190px; left: 20px; font-size: 2.5rem; z-index: 4; }
-        .button-accessory { position: absolute; bottom: 25px; left: 170px; font-size: 2rem; z-index: 4; }
 
         /* --- EXPERIENCE --- */
         .case-studies {
@@ -905,40 +842,56 @@
 
     <!-- PORTFOLIO -->
     <section class="portfolio-section" id="notebook">
-        <div class="notebook-container">
+        <div class="section-header-maximalist" style="margin-bottom: 60px;">
+            <h2 style="color: var(--cream);">the work</h2>
+            <p style="color: var(--soft-gold);">Projects, Portfolios & Documentation</p>
+        </div>
 
-            <div class="notebook-page page-left">
-                <h2>some of<br>my work</h2>
-                <div class="cursive-sub">Renders & Concepts</div>
+        <div class="project-cards-grid">
 
-                <div class="ribbon-bow-red">🎀</div>
-
-                <div class="collage-item card-orange">
-                    <p style="font-size:1.2rem; line-height:1.25;">Early<br>Childhood<br>Centre</p>
-                </div>
-
-                <div class="collage-item card-peachy">
-                    <span style="font-family:'Syne',sans-serif; font-size:0.75rem; display:block; margin-bottom:5px;">airport</span>
-                    <div class="peach-circle"></div>
-                </div>
-
-                <div class="button-accessory">🔘</div>
+            <div class="project-card" style="transform: rotate(-1.5deg);">
+                <div class="project-washi" style="background: rgba(240,220,180,0.85);"></div>
+                <div class="project-tag">Luxury Residential Styling</div>
+                <h3 class="project-title">Styling Portfolio</h3>
+                <p class="project-sub">The Colosseum · 2025</p>
+                <p class="project-desc">Full-cycle luxury interior styling for high-end residential clients in Hyderabad — Jubilee Hills & Somajiguda. Furniture, wallpapers, artefacts, and complete on-site installation.</p>
+                <a href="Styling Portfolio (1).pdf" target="_blank" class="open-pdf-btn">View Portfolio ↗</a>
             </div>
 
-            <div class="notebook-page page-right">
-                <div class="collage-item moodboard-photo" style="background-color:#3e4a3d;">
-                    <span>[ Hyd Airport —<br>Passenger Lounge<br>Redesign ]</span>
-                </div>
+            <div class="project-card" style="transform: rotate(1deg);">
+                <div class="project-washi" style="background: rgba(180,210,240,0.85);"></div>
+                <div class="project-tag">Technical Documentation</div>
+                <h3 class="project-title">Technical Drawings</h3>
+                <p class="project-sub">2BHK Villa · Interior Design Sem V</p>
+                <p class="project-desc">Complete 9-sheet AutoCAD set: site plan, schematic, door & window schedule, kitchen details, wardrobe sections, wall elevation, bathroom, and MEP services.</p>
+                <a href="Technical Drawings.pdf" target="_blank" class="open-pdf-btn">View Drawings ↗</a>
+            </div>
 
-                <div class="collage-item moodboard-photo-2" style="background-color:#493b3b;">
-                    <span>[ Quartzkraaft<br>Product Renders ]</span>
-                </div>
+            <div class="project-card" style="transform: rotate(-0.5deg);">
+                <div class="project-washi" style="background: rgba(210,190,240,0.85);"></div>
+                <div class="project-tag">Conceptual Design</div>
+                <h3 class="project-title">Misc Projects</h3>
+                <p class="project-sub">Academic & Personal · 2023–2025</p>
+                <p class="project-desc">A retro 1970s café, podcast set design, art bedroom renders, Rajasthan travel mood boards (Jodhpur, Jaisalmer, Udaipur, Jaipur), and Grand Budapest Hotel concept boards.</p>
+                <a href="Misc Projects.pdf" target="_blank" class="open-pdf-btn">View Projects ↗</a>
+            </div>
 
-                <div class="denim-pocket">
-                    <div style="color:#fff; padding:15px; font-size:0.75rem; font-family:monospace;">
-                        // Materials Pocket<br>Luxury Retail<br>Spatial Concepts
-                    </div>
-                </div>
+            <div class="project-card" style="transform: rotate(2deg);">
+                <div class="project-washi" style="background: rgba(240,220,190,0.85);"></div>
+                <div class="project-tag">Full Portfolio</div>
+                <h3 class="project-title">Design Portfolio</h3>
+                <p class="project-sub">Comprehensive · 80 pages</p>
+                <p class="project-desc">A complete collection of design work spanning residential, commercial, hospitality, and academic projects across studios, institutions, and personal briefs.</p>
+                <a href="Portfolio.cp.pdf" target="_blank" class="open-pdf-btn">View Portfolio ↗</a>
+            </div>
+
+            <div class="project-card" style="transform: rotate(-1deg);">
+                <div class="project-washi" style="background: rgba(255,215,185,0.85);"></div>
+                <div class="project-tag">Thesis</div>
+                <h3 class="project-title">Thesis Project</h3>
+                <p class="project-sub">Woxsen University · B.Des Interior Design</p>
+                <p class="project-desc">Final undergraduate thesis — a rigorous research and design project completed as part of the Bachelor of Design (Hons) programme at Woxsen University, 2022–2026.</p>
+                <a href="mailto:potlurichinmayi@gmail.com?subject=Thesis Request" class="open-pdf-btn">Request Copy ↗</a>
             </div>
 
         </div>
