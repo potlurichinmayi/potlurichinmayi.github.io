@@ -769,11 +769,6 @@
         ============================================================ */
 
         /* --- Keyframes --- */
-        @keyframes gentleSway {
-            0%, 100% { transform: rotate(var(--sway, -10deg)) translateY(0); }
-            40%       { transform: rotate(calc(var(--sway, -10deg) + 5deg)) translateY(-6px); }
-            70%       { transform: rotate(calc(var(--sway, -10deg) - 3deg)) translateY(-3px); }
-        }
         @keyframes lacePulse {
             0%, 100% { opacity: 0.3; }
             50%       { opacity: 0.55; }
@@ -794,82 +789,94 @@
             from { opacity: 0; transform: rotate(5deg) translateX(-50px); }
             to   { opacity: 1; transform: rotate(5deg) translateX(0); }
         }
-        @keyframes emojiWriggle {
-            0%   { transform: rotate(var(--sway, 0deg)) scale(1); }
-            25%  { transform: rotate(calc(var(--sway, 0deg) + 10deg)) scale(1.15); }
-            50%  { transform: rotate(calc(var(--sway, 0deg) - 6deg)) scale(1.08); }
-            75%  { transform: rotate(calc(var(--sway, 0deg) + 4deg)) scale(1.12); }
-            100% { transform: rotate(var(--sway, 0deg)) scale(1); }
-        }
 
-        /* --- Card base (using --rot custom property) --- */
-        .skill-badge,
-        .case-booklet,
-        .project-card,
+        /* --- Card base — backing shadow + smooth lift transition --- */
+        .skill-badge {
+            transform: rotate(var(--rot, 0deg));
+            box-shadow: 0 3px 10px rgba(0,0,0,0.18), 5px 7px 0px #3d0a14;
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                        box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: transform;
+        }
+        .case-booklet {
+            transform: rotate(var(--rot, 0deg));
+            box-shadow: 0 4px 18px rgba(0,0,0,0.09), 6px 8px 0px #d4aab5;
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                        box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: transform;
+        }
+        .project-card {
+            transform: rotate(var(--rot, 0deg));
+            box-shadow: 0 5px 22px rgba(0,0,0,0.28), 6px 8px 0px #d4aab5;
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                        box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: transform;
+        }
         .edu-card {
             transform: rotate(var(--rot, 0deg));
-            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
-                        box-shadow 0.35s ease;
+            box-shadow: 10px 10px 0px var(--shadow-color, var(--burgundy));
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                        box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
             will-change: transform;
         }
 
-        /* --- Card hover --- */
+        /* --- Card hover — backing fans out, card lifts --- */
         .skill-badge:hover {
-            transform: rotate(calc(var(--rot, 0deg) * 0.3)) translateY(-6px) scale(1.02);
-            box-shadow: 8px 16px 32px rgba(0,0,0,0.28);
+            transform: rotate(calc(var(--rot, 0deg) * 0.3)) translateY(-7px) scale(1.02);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.22), 10px 13px 0px #3d0a14;
         }
         .case-booklet:hover {
             transform: rotate(calc(var(--rot, 0deg) * 0.3)) translateY(-9px) scale(1.015);
-            box-shadow: 10px 22px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 44px rgba(0,0,0,0.14), 12px 15px 0px #d4aab5;
             position: relative;
             z-index: 10;
         }
         .project-card:hover {
             transform: rotate(calc(var(--rot, 0deg) * 0.3)) translateY(-11px) scale(1.02);
-            box-shadow: 10px 24px 48px rgba(0,0,0,0.52);
+            box-shadow: 0 22px 50px rgba(0,0,0,0.36), 12px 15px 0px #d4aab5;
             position: relative;
             z-index: 10;
         }
         .edu-card:hover {
             transform: rotate(calc(var(--rot, 0deg) * 0.3)) translateY(-8px);
-            box-shadow: 16px 20px 0px var(--burgundy);
+            box-shadow: 16px 20px 0px var(--shadow-color, var(--burgundy));
         }
 
         /* --- Washi tape flutter on card hover --- */
         .washi-tape-accent {
-            transition: transform 0.35s ease;
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
         }
         .case-booklet:hover .washi-tape-accent {
-            transform: rotate(-1deg) scaleX(1.04);
+            transform: rotate(-1deg) scaleX(1.05);
         }
         .project-washi {
-            transition: transform 0.35s ease;
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
         }
         .project-card:hover .project-washi {
-            transform: rotate(-1deg) scaleX(1.05);
+            transform: rotate(-1deg) scaleX(1.06);
         }
 
         /* --- Scrapbook frame hover --- */
         .scrapbook-frame {
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-                        box-shadow 0.4s ease;
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+                        box-shadow 0.5s ease;
         }
         .scrapbook-frame:hover {
             transform: rotate(-1.5deg) translateX(-60px) translateY(-8px);
-            box-shadow: 10px 18px 35px rgba(0,0,0,0.45);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4), 6px 6px 0px rgba(0,0,0,0.15);
         }
 
         /* --- Photo strip hover --- */
         .photo-strip {
-            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
-                        box-shadow 0.35s ease;
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                        box-shadow 0.45s ease;
         }
         .photo-strip:hover {
             transform: rotate(3deg) translateY(-10px);
-            box-shadow: 14px 18px 32px rgba(0,0,0,0.55);
+            box-shadow: 0 22px 40px rgba(0,0,0,0.5);
         }
 
-        /* --- Folder fan hover --- */
+        /* --- Folder fan hover (kept as-is — user likes it) --- */
         .folder-bg-manila {
             transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
@@ -882,44 +889,22 @@
         }
         .folder-stack:hover .folder-main {
             transform: rotate(0deg) translateY(-14px);
-            box-shadow: 8px 20px 38px rgba(0,0,0,0.32);
+            box-shadow: 0 20px 45px rgba(0,0,0,0.32);
         }
 
         /* --- Contact pills enhanced hover --- */
         .contact-pill {
-            transition: background 0.2s ease, transform 0.25s ease, border-color 0.2s ease;
+            transition: background 0.25s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.25s ease;
         }
         .contact-pill:hover {
             transform: translateY(-2px);
             border-color: rgba(253, 238, 242, 0.65);
         }
 
-        /* --- Emoji ornaments ambient sway --- */
-        .ribbon {
-            --sway: -10deg;
-            display: inline-block;
-            transform-origin: center top;
-            animation: gentleSway 4s ease-in-out infinite;
-        }
-        .gold-heart-charm {
-            --sway: -15deg;
-            display: inline-block;
-            transform-origin: center center;
-            animation: gentleSway 5s ease-in-out -1.5s infinite;
-        }
-        .green-bow {
-            --sway: 15deg;
-            display: inline-block;
-            transform-origin: center top;
-            animation: gentleSway 3.5s ease-in-out -0.8s infinite;
-        }
-        .hero-right:hover .ribbon,
-        .hero-right:hover .gold-heart-charm {
-            animation: emojiWriggle 0.65s ease forwards;
-        }
-        .skills-right:hover .green-bow {
-            animation: emojiWriggle 0.65s ease forwards;
-        }
+        /* --- Emoji ornaments (static) --- */
+        .ribbon       { display: inline-block; }
+        .gold-heart-charm { display: inline-block; }
+        .green-bow    { display: inline-block; }
 
         /* --- Lace edges & cherub ambient --- */
         .lace-edge { animation: lacePulse 4s ease-in-out infinite; }
@@ -946,12 +931,10 @@
             animation: heroSlideLeft 1s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both;
         }
         .ribbon {
-            animation: heroFadeIn 0.4s ease 0.85s both,
-                       gentleSway 4s ease-in-out 1.3s infinite;
+            animation: heroFadeIn 0.4s ease 0.85s both;
         }
         .gold-heart-charm {
-            animation: heroFadeIn 0.4s ease 0.95s both,
-                       gentleSway 5s ease-in-out 1.4s -1.5s infinite;
+            animation: heroFadeIn 0.4s ease 0.95s both;
         }
 
         /* --- Active nav state --- */
@@ -1049,12 +1032,11 @@
 
         /* --- Reduced motion --- */
         @media (prefers-reduced-motion: reduce) {
-            .ribbon, .gold-heart-charm, .green-bow,
             .lace-edge, .lace-bottom, .cherub-statue {
                 animation: none !important;
             }
             .hero-left h1, .hero-left p:nth-child(2), .hero-left p:nth-child(3),
-            .contact-pills {
+            .contact-pills, .ribbon, .gold-heart-charm {
                 animation: none !important;
                 opacity: 1 !important;
                 transform: none !important;
@@ -1069,9 +1051,6 @@
                 opacity: 1 !important;
                 transform: rotate(5deg) !important;
             }
-            .ribbon  { transform: rotate(-10deg) !important; }
-            .gold-heart-charm { transform: rotate(-15deg) !important; }
-            .green-bow { transform: rotate(15deg) !important; }
             .reveal {
                 opacity: 1 !important;
                 transform: rotate(var(--rot, 0deg)) !important;
@@ -1323,7 +1302,7 @@
                 <div class="edu-year">2022 – 2026</div>
             </div>
 
-            <div class="edu-card reveal fade-up" style="--rot: 1deg; box-shadow: 10px 10px 0px var(--sage-green); --delay: 0.15s">
+            <div class="edu-card reveal fade-up" style="--rot: 1deg; --shadow-color: var(--sage-green); --delay: 0.15s">
                 <div>
                     <div class="edu-degree">Senior Secondary Education</div>
                     <div class="edu-school">St. Andrews School, Bowenpally</div>
