@@ -763,6 +763,327 @@
             .desk-form-container { padding: 25px; }
             .sticky-nav { max-width: 90vw; top: 10px; right: 10px; }
         }
+
+        /* ============================================================
+           ANIMATIONS & INTERACTIONS
+        ============================================================ */
+
+        /* --- Keyframes --- */
+        @keyframes gentleSway {
+            0%, 100% { transform: rotate(var(--sway, -10deg)) translateY(0); }
+            40%       { transform: rotate(calc(var(--sway, -10deg) + 5deg)) translateY(-6px); }
+            70%       { transform: rotate(calc(var(--sway, -10deg) - 3deg)) translateY(-3px); }
+        }
+        @keyframes lacePulse {
+            0%, 100% { opacity: 0.3; }
+            50%       { opacity: 0.55; }
+        }
+        @keyframes heroFadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes heroFadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        @keyframes heroSlideRight {
+            from { opacity: 0; transform: rotate(-3deg) translateX(10px); }
+            to   { opacity: 1; transform: rotate(-3deg) translateX(-70px); }
+        }
+        @keyframes heroSlideLeft {
+            from { opacity: 0; transform: rotate(5deg) translateX(-50px); }
+            to   { opacity: 1; transform: rotate(5deg) translateX(0); }
+        }
+        @keyframes emojiWriggle {
+            0%   { transform: rotate(var(--sway, 0deg)) scale(1); }
+            25%  { transform: rotate(calc(var(--sway, 0deg) + 10deg)) scale(1.15); }
+            50%  { transform: rotate(calc(var(--sway, 0deg) - 6deg)) scale(1.08); }
+            75%  { transform: rotate(calc(var(--sway, 0deg) + 4deg)) scale(1.12); }
+            100% { transform: rotate(var(--sway, 0deg)) scale(1); }
+        }
+
+        /* --- Card base (using --rot custom property) --- */
+        .skill-badge,
+        .case-booklet,
+        .project-card,
+        .edu-card {
+            transform: rotate(var(--rot, 0deg));
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        box-shadow 0.35s ease;
+            will-change: transform;
+        }
+
+        /* --- Card hover --- */
+        .skill-badge:hover {
+            transform: rotate(calc(var(--rot, 0deg) * 0.3)) translateY(-6px) scale(1.02);
+            box-shadow: 8px 16px 32px rgba(0,0,0,0.28);
+        }
+        .case-booklet:hover {
+            transform: rotate(calc(var(--rot, 0deg) * 0.3)) translateY(-9px) scale(1.015);
+            box-shadow: 10px 22px 40px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 10;
+        }
+        .project-card:hover {
+            transform: rotate(calc(var(--rot, 0deg) * 0.3)) translateY(-11px) scale(1.02);
+            box-shadow: 10px 24px 48px rgba(0,0,0,0.52);
+            position: relative;
+            z-index: 10;
+        }
+        .edu-card:hover {
+            transform: rotate(calc(var(--rot, 0deg) * 0.3)) translateY(-8px);
+            box-shadow: 16px 20px 0px var(--burgundy);
+        }
+
+        /* --- Washi tape flutter on card hover --- */
+        .washi-tape-accent {
+            transition: transform 0.35s ease;
+        }
+        .case-booklet:hover .washi-tape-accent {
+            transform: rotate(-1deg) scaleX(1.04);
+        }
+        .project-washi {
+            transition: transform 0.35s ease;
+        }
+        .project-card:hover .project-washi {
+            transform: rotate(-1deg) scaleX(1.05);
+        }
+
+        /* --- Scrapbook frame hover --- */
+        .scrapbook-frame {
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        box-shadow 0.4s ease;
+        }
+        .scrapbook-frame:hover {
+            transform: rotate(-1.5deg) translateX(-60px) translateY(-8px);
+            box-shadow: 10px 18px 35px rgba(0,0,0,0.45);
+        }
+
+        /* --- Photo strip hover --- */
+        .photo-strip {
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        box-shadow 0.35s ease;
+        }
+        .photo-strip:hover {
+            transform: rotate(3deg) translateY(-10px);
+            box-shadow: 14px 18px 32px rgba(0,0,0,0.55);
+        }
+
+        /* --- Folder fan hover --- */
+        .folder-bg-manila {
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .folder-main {
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        box-shadow 0.35s ease;
+        }
+        .folder-stack:hover .folder-bg-manila {
+            transform: rotate(-9deg) translateX(-18px);
+        }
+        .folder-stack:hover .folder-main {
+            transform: rotate(0deg) translateY(-14px);
+            box-shadow: 8px 20px 38px rgba(0,0,0,0.32);
+        }
+
+        /* --- Contact pills enhanced hover --- */
+        .contact-pill {
+            transition: background 0.2s ease, transform 0.25s ease, border-color 0.2s ease;
+        }
+        .contact-pill:hover {
+            transform: translateY(-2px);
+            border-color: rgba(253, 238, 242, 0.65);
+        }
+
+        /* --- Emoji ornaments ambient sway --- */
+        .ribbon {
+            --sway: -10deg;
+            display: inline-block;
+            transform-origin: center top;
+            animation: gentleSway 4s ease-in-out infinite;
+        }
+        .gold-heart-charm {
+            --sway: -15deg;
+            display: inline-block;
+            transform-origin: center center;
+            animation: gentleSway 5s ease-in-out -1.5s infinite;
+        }
+        .green-bow {
+            --sway: 15deg;
+            display: inline-block;
+            transform-origin: center top;
+            animation: gentleSway 3.5s ease-in-out -0.8s infinite;
+        }
+        .hero-right:hover .ribbon,
+        .hero-right:hover .gold-heart-charm {
+            animation: emojiWriggle 0.65s ease forwards;
+        }
+        .skills-right:hover .green-bow {
+            animation: emojiWriggle 0.65s ease forwards;
+        }
+
+        /* --- Lace edges & cherub ambient --- */
+        .lace-edge { animation: lacePulse 4s ease-in-out infinite; }
+        .lace-bottom { animation-delay: -2s; }
+        .cherub-statue { animation: lacePulse 6s ease-in-out infinite; }
+
+        /* --- Hero entrance sequence --- */
+        .hero-left h1 {
+            animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+        }
+        .hero-left p:nth-child(2) {
+            animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
+        }
+        .hero-left p:nth-child(3) {
+            animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
+        }
+        .contact-pills {
+            animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.68s both;
+        }
+        .scrapbook-frame {
+            animation: heroSlideRight 1s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
+        }
+        .photo-strip {
+            animation: heroSlideLeft 1s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both;
+        }
+        .ribbon {
+            animation: heroFadeIn 0.4s ease 0.85s both,
+                       gentleSway 4s ease-in-out 1.3s infinite;
+        }
+        .gold-heart-charm {
+            animation: heroFadeIn 0.4s ease 0.95s both,
+                       gentleSway 5s ease-in-out 1.4s -1.5s infinite;
+        }
+
+        /* --- Active nav state --- */
+        .nav-tag.is-active {
+            background: var(--burgundy);
+            color: var(--cream);
+            border-color: rgba(253, 238, 242, 0.6);
+            transform: translateY(-2px) rotate(1deg);
+            box-shadow: 3px 5px 14px rgba(0,0,0,0.45);
+        }
+
+        /* --- Scroll reveal system --- */
+        .reveal {
+            opacity: 0;
+            transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+            transition-delay: var(--delay, 0s);
+        }
+        .reveal.fade-up {
+            transform: rotate(var(--rot, 0deg)) translateY(42px);
+        }
+        .reveal.fade-in {
+            transform: none;
+            transition: opacity 0.7s ease;
+            transition-delay: var(--delay, 0s);
+        }
+        .reveal.slide-right {
+            transform: translateX(65px);
+        }
+        .reveal.is-visible {
+            opacity: 1;
+            transform: rotate(var(--rot, 0deg)) translateY(0) translateX(0);
+        }
+        .reveal.fade-in.is-visible {
+            transform: none;
+        }
+
+        /* --- Floating label form --- */
+        .field-wrap {
+            position: relative;
+            padding-top: 22px;
+        }
+        .field-wrap label {
+            position: absolute;
+            top: 30px;
+            left: 0;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--dark-charcoal);
+            transition: top 0.25s ease, font-size 0.25s ease, color 0.25s ease, letter-spacing 0.25s ease;
+            pointer-events: none;
+        }
+        .field-wrap input:focus + label,
+        .field-wrap input:not(:placeholder-shown) + label,
+        .field-wrap textarea:focus + label,
+        .field-wrap textarea:not(:placeholder-shown) + label {
+            top: 2px;
+            font-size: 0.62rem;
+            color: var(--burgundy);
+            letter-spacing: 1.8px;
+        }
+        .field-wrap::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--burgundy);
+            transition: width 0.3s ease, left 0.3s ease;
+        }
+        .field-wrap:focus-within::after {
+            width: 100%;
+            left: 0;
+        }
+        .form-group input,
+        .form-group textarea {
+            border-bottom: 1px solid rgba(26, 5, 16, 0.35);
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-bottom-color: transparent;
+        }
+
+        /* --- Submit button success state --- */
+        .submit-btn {
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+        }
+        .submit-btn.success {
+            background: #3a6640;
+            box-shadow: 4px 4px 0px var(--dark-charcoal);
+            transform: translate(-2px, -2px);
+        }
+
+        /* --- Reduced motion --- */
+        @media (prefers-reduced-motion: reduce) {
+            .ribbon, .gold-heart-charm, .green-bow,
+            .lace-edge, .lace-bottom, .cherub-statue {
+                animation: none !important;
+            }
+            .hero-left h1, .hero-left p:nth-child(2), .hero-left p:nth-child(3),
+            .contact-pills {
+                animation: none !important;
+                opacity: 1 !important;
+                transform: none !important;
+            }
+            .scrapbook-frame {
+                animation: none !important;
+                opacity: 1 !important;
+                transform: rotate(-3deg) translateX(-70px) !important;
+            }
+            .photo-strip {
+                animation: none !important;
+                opacity: 1 !important;
+                transform: rotate(5deg) !important;
+            }
+            .ribbon  { transform: rotate(-10deg) !important; }
+            .gold-heart-charm { transform: rotate(-15deg) !important; }
+            .green-bow { transform: rotate(15deg) !important; }
+            .reveal {
+                opacity: 1 !important;
+                transform: rotate(var(--rot, 0deg)) !important;
+                transition: none !important;
+            }
+            .reveal.fade-in { transform: none !important; }
+            .skill-badge, .case-booklet, .project-card, .edu-card,
+            .scrapbook-frame, .photo-strip, .folder-bg-manila, .folder-main,
+            .washi-tape-accent, .project-washi {
+                transition: none !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -824,24 +1145,24 @@
     <!-- SKILLS -->
     <section class="skills-section" id="skills">
         <div class="skills-left">
-            <div class="skill-badge" style="transform: rotate(-1deg);">
+            <div class="skill-badge reveal fade-up" style="--rot: -1deg; --delay: 0s">
                 <h3>Spatial Design</h3>
                 <p>Space planning, furniture layouts, zoning, architectural scale, and custom compositions for residential, retail, and institutional environments.</p>
             </div>
 
-            <div class="skill-badge" style="transform: rotate(2deg);">
+            <div class="skill-badge reveal fade-up" style="--rot: 2deg; --delay: 0.15s">
                 <h3>3D Visualisation</h3>
                 <p>Photorealistic renders, animated walkthroughs, atmospheric lighting design, and narrative-driven modelling that bring concepts to life.</p>
             </div>
 
-            <div class="skill-badge" style="transform: rotate(-2deg);">
+            <div class="skill-badge reveal fade-up" style="--rot: -2deg; --delay: 0.3s">
                 <h3>Material & Styling</h3>
                 <p>Textile sourcing, mood-board curation, colour theory, bespoke fixture specification, and full on-site styling and installation management.</p>
             </div>
         </div>
 
         <div class="skills-right">
-            <div class="folder-stack">
+            <div class="folder-stack reveal slide-right">
                 <div class="folder folder-bg-manila"></div>
                 <div class="folder folder-main">
                     <div class="green-bow">🎀</div>
@@ -862,14 +1183,14 @@
 
     <!-- EXPERIENCE -->
     <section class="case-studies" id="cases">
-        <div class="section-header-maximalist">
+        <div class="section-header-maximalist reveal fade-up">
             <h2 style="color: var(--cream);">experience</h2>
             <p style="color: var(--soft-gold);">Where I've Designed & Built</p>
         </div>
 
         <div class="case-grid">
 
-            <div class="case-booklet" style="transform: rotate(-1deg);">
+            <div class="case-booklet reveal fade-up" style="--rot: -1deg; --delay: 0s">
                 <div class="washi-tape-accent"></div>
                 <div class="exp-date">Nov 2025 – May 2026</div>
                 <div class="exp-role">Interior Designer</div>
@@ -877,7 +1198,7 @@
                 <p class="exp-desc">Commissioned to design a new Early Childhood Education Centre and renovate existing Anganwadi spaces under a government brief. Led the full design process — spatial planning, material sourcing, and contractor coordination across multiple sites. All sites handed over on schedule, meeting government specifications.</p>
             </div>
 
-            <div class="case-booklet" style="transform: rotate(1deg);">
+            <div class="case-booklet reveal fade-up" style="--rot: 1deg; --delay: 0.12s">
                 <div class="washi-tape-accent" style="background: rgba(196,140,158,0.7);"></div>
                 <div class="exp-date">May – Oct 2025</div>
                 <div class="exp-role">Interior Stylist</div>
@@ -885,7 +1206,7 @@
                 <p class="exp-desc">Handled full-cycle luxury interior styling for a retail client, working independently. Developed bespoke spatial concepts, sourced materials, and managed all on-site installation. All concepts approved without revisions; spaces delivered on time.</p>
             </div>
 
-            <div class="case-booklet" style="transform: rotate(-0.5deg);">
+            <div class="case-booklet reveal fade-up" style="--rot: -0.5deg; --delay: 0.24s">
                 <div class="washi-tape-accent" style="background: rgba(185,130,150,0.7);"></div>
                 <div class="exp-date">Feb – Mar 2025</div>
                 <div class="exp-role">3D Visualiser</div>
@@ -893,7 +1214,7 @@
                 <p class="exp-desc">Produced photorealistic renders for Quartzkraaft's full product line to support client presentations and accelerate purchase decisions.</p>
             </div>
 
-            <div class="case-booklet" style="transform: rotate(1.5deg);">
+            <div class="case-booklet reveal fade-up" style="--rot: 1.5deg; --delay: 0.36s">
                 <div class="washi-tape-accent" style="background: rgba(230,200,180,0.7);"></div>
                 <div class="exp-date">Jan – Feb 2025</div>
                 <div class="exp-role">Spatial Designer</div>
@@ -901,7 +1222,7 @@
                 <p class="exp-desc">Selected to redesign passenger waiting areas at Hyderabad Airport. Researched passenger behaviour and developed layouts prioritising ease of movement and dwell comfort, aligned with the airport's brand identity.</p>
             </div>
 
-            <div class="case-booklet" style="transform: rotate(-1.5deg);">
+            <div class="case-booklet reveal fade-up" style="--rot: -1.5deg; --delay: 0.48s">
                 <div class="washi-tape-accent" style="background: rgba(200,145,165,0.7);"></div>
                 <div class="exp-date">Aug – Nov 2024</div>
                 <div class="exp-role">Junior Designer</div>
@@ -909,7 +1230,7 @@
                 <p class="exp-desc">Selected for a confidential project on the future of retail. Developed spatial concepts and master plans for immersive, user-centric retail environments, drawing on retail behaviour research and trend analysis.</p>
             </div>
 
-            <div class="case-booklet" style="transform: rotate(0.5deg);">
+            <div class="case-booklet reveal fade-up" style="--rot: 0.5deg; --delay: 0.6s">
                 <div class="washi-tape-accent" style="background: rgba(210,150,168,0.7);"></div>
                 <div class="exp-date">May – Jul 2024</div>
                 <div class="exp-role">Interior Design Intern</div>
@@ -917,7 +1238,7 @@
                 <p class="exp-desc">Gained hands-on experience in drafting, project coordination, and studio workflows, enhancing technical and communication skills.</p>
             </div>
 
-            <div class="case-booklet" style="transform: rotate(-1deg);">
+            <div class="case-booklet reveal fade-up" style="--rot: -1deg; --delay: 0.72s">
                 <div class="washi-tape-accent" style="background: rgba(218,148,168,0.7);"></div>
                 <div class="exp-date">May – Jul 2023</div>
                 <div class="exp-role">Social Media Head</div>
@@ -930,14 +1251,14 @@
 
     <!-- PORTFOLIO -->
     <section class="portfolio-section" id="notebook">
-        <div class="section-header-maximalist" style="margin-bottom: 60px;">
+        <div class="section-header-maximalist reveal fade-up" style="margin-bottom: 60px;">
             <h2>the work</h2>
             <p>Projects, Portfolios & Documentation</p>
         </div>
 
         <div class="project-cards-grid">
 
-            <div class="project-card" style="transform: rotate(-1.5deg);">
+            <div class="project-card reveal fade-up" style="--rot: -1.5deg; --delay: 0s">
                 <div class="project-washi" style="background: rgba(210,148,168,0.85);"></div>
                 <div class="project-tag">Luxury Residential Styling</div>
                 <h3 class="project-title">Styling Portfolio</h3>
@@ -946,7 +1267,7 @@
                 <a href="Styling Portfolio (1).pdf" target="_blank" class="open-pdf-btn">View Portfolio ↗</a>
             </div>
 
-            <div class="project-card" style="transform: rotate(1deg);">
+            <div class="project-card reveal fade-up" style="--rot: 1deg; --delay: 0.1s">
                 <div class="project-washi" style="background: rgba(190,135,158,0.85);"></div>
                 <div class="project-tag">Technical Documentation</div>
                 <h3 class="project-title">Technical Drawings</h3>
@@ -955,7 +1276,7 @@
                 <a href="Technical Drawings.pdf" target="_blank" class="open-pdf-btn">View Drawings ↗</a>
             </div>
 
-            <div class="project-card" style="transform: rotate(-0.5deg);">
+            <div class="project-card reveal fade-up" style="--rot: -0.5deg; --delay: 0.2s">
                 <div class="project-washi" style="background: rgba(205,145,168,0.85);"></div>
                 <div class="project-tag">Conceptual Design</div>
                 <h3 class="project-title">Misc Projects</h3>
@@ -964,7 +1285,7 @@
                 <a href="Misc Projects.pdf" target="_blank" class="open-pdf-btn">View Projects ↗</a>
             </div>
 
-            <div class="project-card" style="transform: rotate(2deg);">
+            <div class="project-card reveal fade-up" style="--rot: 2deg; --delay: 0.3s">
                 <div class="project-washi" style="background: rgba(212,148,170,0.85);"></div>
                 <div class="project-tag">Full Portfolio</div>
                 <h3 class="project-title">Design Portfolio</h3>
@@ -973,7 +1294,7 @@
                 <a href="Portfolio.cp.pdf" target="_blank" class="open-pdf-btn">View Portfolio ↗</a>
             </div>
 
-            <div class="project-card" style="transform: rotate(-1deg);">
+            <div class="project-card reveal fade-up" style="--rot: -1deg; --delay: 0.4s">
                 <div class="project-washi" style="background: rgba(218,148,170,0.85);"></div>
                 <div class="project-tag">Thesis</div>
                 <h3 class="project-title">Thesis Project</h3>
@@ -988,13 +1309,13 @@
     <!-- EDUCATION -->
     <section class="services-section" id="services">
         <div class="lace-edge lace-top"></div>
-        <div class="section-header-maximalist">
+        <div class="section-header-maximalist reveal fade-in">
             <h2 style="color: var(--cream);">education</h2>
             <p style="color: var(--soft-gold);">Academic Background</p>
         </div>
 
         <div class="services-container">
-            <div class="edu-card" style="transform: rotate(-2deg);">
+            <div class="edu-card reveal fade-up" style="--rot: -2deg; --delay: 0s">
                 <div>
                     <div class="edu-degree">Bachelor of Design (Hons)<br>Interior Design</div>
                     <div class="edu-school">Woxsen University</div>
@@ -1002,7 +1323,7 @@
                 <div class="edu-year">2022 – 2026</div>
             </div>
 
-            <div class="edu-card" style="transform: rotate(1deg); box-shadow: 10px 10px 0px var(--sage-green);">
+            <div class="edu-card reveal fade-up" style="--rot: 1deg; box-shadow: 10px 10px 0px var(--sage-green); --delay: 0.15s">
                 <div>
                     <div class="edu-degree">Senior Secondary Education</div>
                     <div class="edu-school">St. Andrews School, Bowenpally</div>
@@ -1010,7 +1331,7 @@
                 <div class="edu-year">2020 – 2022</div>
             </div>
 
-            <div class="edu-card" style="transform: rotate(-1deg);">
+            <div class="edu-card reveal fade-up" style="--rot: -1deg; --delay: 0.3s">
                 <div>
                     <div class="edu-degree">Secondary Education</div>
                     <div class="edu-school">Delhi Public School, Secunderabad</div>
@@ -1024,7 +1345,7 @@
     <section class="contact-section" id="contact">
         <div class="safety-pin">🧷</div>
 
-        <div class="desk-form-container">
+        <div class="desk-form-container reveal fade-in">
             <h2>get in touch</h2>
             <p>Leave a note on my desk...</p>
 
@@ -1035,20 +1356,26 @@
                 <a href="PotluriChinmayi_Resume.pdf" download class="contact-link resume-dl">↓ Download Resume</a>
             </div>
 
-            <form action="#" method="POST" onsubmit="event.preventDefault(); alert('Message sent!');">
+            <form action="#" method="POST">
                 <div class="form-group">
-                    <label for="name">Your Name</label>
-                    <input type="text" id="name" required>
+                    <div class="field-wrap">
+                        <input type="text" id="name" required placeholder=" ">
+                        <label for="name">Your Name</label>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="scope">Project Scope</label>
-                    <input type="text" id="scope" placeholder="e.g., Living Room, Office, Retail Space">
+                    <div class="field-wrap">
+                        <input type="text" id="scope" placeholder=" ">
+                        <label for="scope">Project Scope</label>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="message">Tell me about your project</label>
-                    <textarea id="message" rows="4" required></textarea>
+                    <div class="field-wrap">
+                        <textarea id="message" rows="4" required placeholder=" "></textarea>
+                        <label for="message">Tell me about your project</label>
+                    </div>
                 </div>
 
                 <button type="submit" class="submit-btn">Send Message</button>
@@ -1056,5 +1383,65 @@
         </div>
     </section>
 
+    <script>
+        // --- Scroll reveal (one-shot) ---
+        const revealObserver = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // --- Active nav highlighting ---
+        const navLinks = document.querySelectorAll('.nav-tag[href^="#"]');
+        const navObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    navLinks.forEach(link =>
+                        link.classList.toggle('is-active',
+                            link.getAttribute('href') === `#${id}`)
+                    );
+                }
+            });
+        }, { rootMargin: '-25% 0px -65% 0px', threshold: 0 });
+        document.querySelectorAll('section[id]').forEach(s => navObserver.observe(s));
+
+        // --- Form submit ---
+        const form = document.querySelector('.desk-form-container form');
+        const btn = form.querySelector('.submit-btn');
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            btn.textContent = 'Message Sent ✓';
+            btn.classList.add('success');
+            btn.disabled = true;
+            setTimeout(() => {
+                btn.textContent = 'Send Message';
+                btn.classList.remove('success');
+                btn.disabled = false;
+                form.reset();
+            }, 4000);
+        });
+
+        // --- Hero parallax ---
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            const hero = document.querySelector('.hero-section');
+            let tick = false;
+            window.addEventListener('scroll', () => {
+                if (!tick) {
+                    requestAnimationFrame(() => {
+                        const maxOffset = hero.offsetHeight * 0.35;
+                        const offset = Math.min(window.scrollY * 0.28, maxOffset);
+                        hero.style.backgroundPositionY = `calc(center + ${offset}px)`;
+                        tick = false;
+                    });
+                    tick = true;
+                }
+            });
+        }
+    </script>
 </body>
 </html>
