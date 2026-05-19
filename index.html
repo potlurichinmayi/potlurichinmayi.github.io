@@ -236,8 +236,8 @@
 
         .ribbon {
             position: absolute;
-            top: -45px;
-            right: -10px;
+            top: -30px;
+            right: 5px;
             z-index: 6;
             transform: rotate(-5deg);
             width: 130px;
@@ -245,10 +245,11 @@
 
         .gold-heart-charm {
             position: absolute;
-            bottom: -70px;
-            right: -30px;
+            bottom: -65px;
+            left: -35px;
+            right: auto;
             width: 170px;
-            transform: rotate(8deg);
+            transform: rotate(-10deg);
             z-index: 5;
         }
 
@@ -375,14 +376,14 @@
             width: 65px;
             filter: drop-shadow(1px 2px 4px rgba(0,0,0,0.18));
         }
-        /* logos semi-randomly scattered around the tools & software folder */
-        #logo-autocad    { top: 4%;    right: 30%; }   /* above folder, left  */
-        #logo-vray       { top: 4%;    right: 6%;  }   /* above folder, right */
-        #logo-sketchup   { top: 35%;   right: 3%;  width: 75px; }  /* right side, upper */
-        #logo-enscape    { top: 58%;   right: 4%;  }   /* right side, lower  */
-        #logo-twinmotion { bottom: 10%; right: 30%; }  /* below folder, left  */
-        #logo-unity      { bottom: 9%;  right: 12%; }  /* below, centre-right */
-        #logo-d5         { bottom: 4%;  right: 2%;  }  /* bottom-far-right    */
+        /* logos on/near the edges of the tools & software folder card */
+        #logo-autocad    { top: 17%;    right: 30%; }          /* just above folder top, centre-left  */
+        #logo-vray       { top: 4%;     right: 6%;  }          /* top-right, loose scatter            */
+        #logo-sketchup   { top: 40%;    right: 14%; width: 75px; } /* on folder right edge, upper    */
+        #logo-enscape    { top: 59%;    right: 15%; }          /* on folder right edge, lower         */
+        #logo-twinmotion { bottom: 20%; right: 28%; }          /* just below folder bottom, centre    */
+        #logo-unity      { bottom: 8%;  right: 12%; }          /* bottom-right scatter                */
+        #logo-d5         { bottom: 4%;  right: 3%;  }          /* far bottom-right scatter            */
 
         /* --- PORTFOLIO --- */
         .portfolio-section {
