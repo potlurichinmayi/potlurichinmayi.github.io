@@ -236,20 +236,20 @@
 
         .ribbon {
             position: absolute;
-            top: -20px;
-            right: -10px;
-            z-index: 4;
-            transform: rotate(-10deg);
-            width: 150px;
+            top: -35px;
+            right: -20px;
+            z-index: 6;
+            transform: rotate(-5deg);
+            width: 120px;
         }
 
         .gold-heart-charm {
             position: absolute;
-            bottom: 20px;
-            left: 20px;
-            width: 190px;
-            transform: rotate(-15deg);
-            z-index: 4;
+            bottom: -55px;
+            right: -55px;
+            width: 160px;
+            transform: rotate(10deg);
+            z-index: 5;
         }
 
         /* --- SKILLS --- */
@@ -283,6 +283,8 @@
             padding: 25px;
             border-radius: 8px;
             box-shadow: 4px 4px 12px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: visible;
         }
 
         .skill-badge h3 {
@@ -369,22 +371,18 @@
             user-select: none;
             z-index: 1;
         }
-        .skills-lily {
-            width: 210px;
-            top: 3%;
-            left: 33%;
-        }
         .skills-logo {
             width: 65px;
             filter: drop-shadow(1px 2px 4px rgba(0,0,0,0.18));
         }
-        #logo-autocad    { top: 4%;  right: 13%; }
-        #logo-vray       { top: 11%; right: 6%;  }
-        #logo-sketchup   { top: 60%; left: 56%;  }
-        #logo-enscape    { top: 67%; left: 49%;  }
-        #logo-twinmotion { top: 60%; left: 69%;  }
-        #logo-unity      { top: 73%; right: 16%; }
-        #logo-d5         { top: 70%; right: 9%;  }
+        /* logos clustered around the tools & software folder (right half) */
+        #logo-autocad    { top: 4%;    right: 20%; }
+        #logo-vray       { top: 3%;    right: 8%;  }
+        #logo-sketchup   { top: 28%;   right: 2%;  }
+        #logo-enscape    { top: 50%;   right: 1%;  }
+        #logo-twinmotion { bottom: 18%; right: 20%; }
+        #logo-unity      { bottom: 12%; right: 10%; }
+        #logo-d5         { bottom: 8%;  right: 2%;  }
 
         /* --- PORTFOLIO --- */
         .portfolio-section {
@@ -1106,7 +1104,6 @@
         </div>
 
         <div class="hero-right">
-            <img src="elements/2.png" class="ribbon" alt="">
 
             <div class="scrapbook-frame">
                 <div class="frame-inner">
@@ -1115,11 +1112,11 @@
                         <div class="brand-subtitle">Interior Designer</div>
                     </div>
                 </div>
+                <img src="elements/1.png" class="gold-heart-charm" alt="">
             </div>
 
-            <img src="elements/1.png" class="gold-heart-charm" alt="">
-
             <div class="photo-strip">
+                <img src="elements/2.png" class="ribbon" alt="">
                 <div class="photo-placeholder">
                     <img src="photo.jpeg" alt="Potluri Chinmayi">
                 </div>
@@ -1137,6 +1134,7 @@
     <section class="skills-section" id="skills">
         <div class="skills-left">
             <div class="skill-badge reveal fade-up" style="--rot: -1deg; --delay: 0s">
+                <img src="elements/10.png" style="position:absolute; top:-110px; right:-30px; width:170px; pointer-events:none; z-index:5; transform:rotate(8deg);">
                 <h3>Spatial Design</h3>
                 <p>Space planning, furniture layouts, zoning, architectural scale, and custom compositions for residential, retail, and institutional environments.</p>
             </div>
@@ -1171,7 +1169,6 @@
         </div>
 
         <!-- decorative elements -->
-        <img src="elements/10.png" class="skills-deco skills-lily" alt="">
         <img src="elements/3.png"  class="skills-deco skills-logo" id="logo-autocad"    alt="">
         <img src="elements/7.png"  class="skills-deco skills-logo" id="logo-vray"       alt="">
         <img src="elements/5.png"  class="skills-deco skills-logo" id="logo-sketchup"   alt="">
