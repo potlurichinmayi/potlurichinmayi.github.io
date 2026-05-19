@@ -236,19 +236,18 @@
 
         .ribbon {
             position: absolute;
-            top: -15px;
-            right: 50px;
-            font-size: 2.5rem;
+            top: -20px;
+            right: -10px;
             z-index: 4;
             transform: rotate(-10deg);
+            width: 150px;
         }
 
         .gold-heart-charm {
             position: absolute;
-            bottom: 60px;
-            left: 40px;
-            font-size: 3rem;
-            text-shadow: 2px 4px 10px rgba(0,0,0,0.3);
+            bottom: 20px;
+            left: 20px;
+            width: 190px;
             transform: rotate(-15deg);
             z-index: 4;
         }
@@ -256,14 +255,9 @@
         /* --- SKILLS --- */
         .skills-section {
             background-color: var(--cream);
-            background-image:
-                linear-gradient(135deg, #edd5db 25%, transparent 25%),
-                linear-gradient(225deg, #edd5db 25%, transparent 25%),
-                linear-gradient(45deg, #edd5db 25%, transparent 25%),
-                linear-gradient(315deg, #edd5db 25%, var(--cream) 25%);
-            background-position: 40px 0, 40px 0, 0 0, 0 0;
-            background-size: 80px 80px;
-            background-repeat: repeat;
+            background-image: url('2.png');
+            background-size: cover;
+            background-position: center;
             padding: 120px 10%;
             display: flex;
             justify-content: center;
@@ -272,6 +266,7 @@
             min-height: 90vh;
             color: var(--dark-charcoal);
             position: relative;
+            overflow: hidden;
         }
 
         .skills-left {
@@ -367,13 +362,29 @@
             font-size: 0.6rem;
         }
 
-        .green-bow {
+        /* skills decorative elements */
+        .skills-deco {
             position: absolute;
-            top: 20px;
-            right: -20px;
-            font-size: 3.5rem;
-            transform: rotate(15deg);
+            pointer-events: none;
+            user-select: none;
+            z-index: 1;
         }
+        .skills-lily {
+            width: 210px;
+            top: 3%;
+            left: 33%;
+        }
+        .skills-logo {
+            width: 65px;
+            filter: drop-shadow(1px 2px 4px rgba(0,0,0,0.18));
+        }
+        #logo-autocad    { top: 4%;  right: 13%; }
+        #logo-vray       { top: 11%; right: 6%;  }
+        #logo-sketchup   { top: 60%; left: 56%;  }
+        #logo-enscape    { top: 67%; left: 49%;  }
+        #logo-twinmotion { top: 60%; left: 69%;  }
+        #logo-unity      { top: 73%; right: 16%; }
+        #logo-d5         { top: 70%; right: 9%;  }
 
         /* --- PORTFOLIO --- */
         .portfolio-section {
@@ -555,8 +566,9 @@
         /* --- EDUCATION --- */
         .services-section {
             background-color: #150508;
-            background-image: radial-gradient(circle, rgba(196, 122, 138, 0.18) 1.5px, transparent 1.5px);
-            background-size: 18px 18px;
+            background-image: url('3.png');
+            background-size: cover;
+            background-position: center;
             padding: 120px 10%;
             position: relative;
         }
@@ -1094,7 +1106,7 @@
         </div>
 
         <div class="hero-right">
-            <div class="ribbon">🎀</div>
+            <img src="elements/2.png" class="ribbon" alt="">
 
             <div class="scrapbook-frame">
                 <div class="frame-inner">
@@ -1105,7 +1117,7 @@
                 </div>
             </div>
 
-            <div class="gold-heart-charm">💛</div>
+            <img src="elements/1.png" class="gold-heart-charm" alt="">
 
             <div class="photo-strip">
                 <div class="photo-placeholder">
@@ -1144,7 +1156,6 @@
             <div class="folder-stack reveal slide-right">
                 <div class="folder folder-bg-manila"></div>
                 <div class="folder folder-main">
-                    <div class="green-bow">🎀</div>
                     <h2>tools &<br>software</h2>
                     <ul class="tools-list">
                         <li>AutoCAD</li>
@@ -1158,6 +1169,16 @@
                 </div>
             </div>
         </div>
+
+        <!-- decorative elements -->
+        <img src="elements/10.png" class="skills-deco skills-lily" alt="">
+        <img src="elements/3.png"  class="skills-deco skills-logo" id="logo-autocad"    alt="">
+        <img src="elements/7.png"  class="skills-deco skills-logo" id="logo-vray"       alt="">
+        <img src="elements/5.png"  class="skills-deco skills-logo" id="logo-sketchup"   alt="">
+        <img src="elements/6.png"  class="skills-deco skills-logo" id="logo-enscape"    alt="">
+        <img src="elements/8.png"  class="skills-deco skills-logo" id="logo-twinmotion" alt="">
+        <img src="elements/9.png"  class="skills-deco skills-logo" id="logo-unity"      alt="">
+        <img src="elements/4.png"  class="skills-deco skills-logo" id="logo-d5"         alt="">
     </section>
 
     <!-- EXPERIENCE -->
