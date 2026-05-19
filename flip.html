@@ -963,7 +963,6 @@
             overflow-y: auto !important;
             overflow-x: hidden !important;
             will-change: transform;
-            transform-origin: center center;
             visibility: hidden;
             pointer-events: none;
         }
@@ -1518,16 +1517,20 @@
             const outPage = pages[current];
             const inPage  = pages[index];
 
-            // Prepare incoming page: rotated 90deg, invisible
-            gsap.set(inPage, { rotationY: dir * 90, opacity: 0, visibility: 'visible', zIndex: 15 });
-            gsap.set(outPage, { zIndex: 20 });
+            // Forward: pivot on left edge. Backward: pivot on right edge.
+            const pivot = dir > 0 ? '0% 50%' : '100% 50%';
+
+            // Out page starts flat, folds away around the pivot edge
+            gsap.set(outPage, { transformOrigin: pivot, rotationY: 0, zIndex: 20, transformPerspective: 2200 });
+            // In page starts folded 90° behind the pivot edge, hidden
+            gsap.set(inPage,  { transformOrigin: pivot, rotationY: dir * -90, opacity: 0, visibility: 'visible', zIndex: 15, transformPerspective: 2200 });
 
             const tl = gsap.timeline({
                 onComplete() {
                     outPage.classList.remove('is-active');
-                    gsap.set(outPage, { visibility: 'hidden', zIndex: 10, rotationY: 0, opacity: 1 });
+                    gsap.set(outPage, { visibility: 'hidden', zIndex: 10, rotationY: 0, transformOrigin: '50% 50%' });
                     inPage.classList.add('is-active');
-                    gsap.set(inPage, { zIndex: 10 });
+                    gsap.set(inPage, { zIndex: 10, transformOrigin: '50% 50%' });
                     current = index;
                     animating = false;
                     updateUI();
@@ -1535,23 +1538,21 @@
                 }
             });
 
-            // Out: current page folds away
+            // Out: fold away (left edge stays fixed, right side swings back)
             tl.to(outPage, {
-                rotationY: dir * -90,
-                opacity: 0.15,
+                rotationY: dir * 90,
+                opacity: 0.2,
                 duration: DUR,
-                ease: EASE,
-                transformPerspective: 2200
+                ease: EASE
             });
 
-            // In: next page unfolds in (starts halfway through the out)
+            // In: unfold from behind the same edge (overlaps with out)
             tl.to(inPage, {
                 rotationY: 0,
                 opacity: 1,
                 duration: DUR,
-                ease: EASE,
-                transformPerspective: 2200
-            }, `-=${DUR * 0.4}`);
+                ease: EASE
+            }, `-=${DUR * 0.45}`);
         }
 
         document.getElementById('prevBtn').addEventListener('click', () => goTo(current - 1));
