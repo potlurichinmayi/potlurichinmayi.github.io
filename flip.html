@@ -953,17 +953,32 @@
             box-shadow: 3px 5px 14px rgba(0,0,0,0.45);
         }
 
-        /* ===== STPAGEFLIP SYSTEM ===== */
+        /* ===== GSAP PAGE FLIP SYSTEM ===== */
         #book {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            inset: 0;
+            perspective: 2000px;
+            perspective-origin: 50% 50%;
         }
         .page {
-            overflow: hidden;
-            background: var(--burgundy);
+            position: absolute;
+            inset: 0;
+            visibility: hidden;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+        .page.is-active {
+            visibility: visible;
+            z-index: 10;
+        }
+        .page-back {
+            position: absolute;
+            inset: 0;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            transform: rotateY(180deg);
+            background: linear-gradient(to right, #e8ddd4 0%, #f2ece5 50%, #e8ddd4 100%);
+            pointer-events: none;
         }
         section {
             width: 100% !important;
@@ -972,6 +987,8 @@
             overflow-y: auto !important;
             overflow-x: hidden !important;
             position: relative !important;
+            backface-visibility: hidden !important;
+            -webkit-backface-visibility: hidden !important;
         }
 
         /* --- Page flip navigation --- */
@@ -1158,7 +1175,7 @@
             }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 </head>
 <body>
 
@@ -1475,24 +1492,32 @@
     </div>
 
     <script>
-        // ===== STPAGEFLIP ENGINE =====
-        const pageCount = 6;
-        let current = 0;
+        // ===== GSAP PAGE FLIP ENGINE =====
 
+        // Inject paper-back face into every page
+        document.querySelectorAll('.page').forEach(p => {
+            const back = document.createElement('div');
+            back.className = 'page-back';
+            p.appendChild(back);
+        });
+
+        const pageEls = Array.from(document.querySelectorAll('.page'));
+        const pageCount = pageEls.length;
+        let current = 0;
+        let animating = false;
+        const DUR = 1.0;
+
+        // Build page dots
         const dotsContainer = document.getElementById('pageDots');
         for (let i = 0; i < pageCount; i++) {
             const dot = document.createElement('button');
             dot.className = 'page-dot' + (i === 0 ? ' is-active' : '');
             dot.setAttribute('aria-label', `Go to page ${i + 1}`);
-            dot.addEventListener('click', () => {
-                if (i > current) for (let j = current; j < i; j++) pageFlip.flipNext('top');
-                else if (i < current) for (let j = current; j > i; j--) pageFlip.flipPrev('top');
-            });
+            dot.addEventListener('click', () => goTo(i));
             dotsContainer.appendChild(dot);
         }
 
-        function updateUI(page) {
-            current = page;
+        function updateUI() {
             document.getElementById('prevBtn').disabled = current === 0;
             document.getElementById('nextBtn').disabled = current === pageCount - 1;
             dotsContainer.querySelectorAll('.page-dot').forEach((d, i) =>
@@ -1501,61 +1526,77 @@
             document.querySelectorAll('.nav-tag[data-page]').forEach(link =>
                 link.classList.toggle('is-active', parseInt(link.dataset.page) === current)
             );
-            // Reveal animations on the now-visible page
-            document.querySelectorAll('.page')[current]
-                .querySelectorAll('.reveal:not(.is-visible)')
-                .forEach(el => el.classList.add('is-visible'));
         }
 
-        const pageFlip = new PageFlip(document.getElementById('book'), {
-            width:              window.innerWidth,
-            height:             window.innerHeight,
-            size:               'stretch',
-            minWidth:           320,
-            maxWidth:           window.innerWidth,
-            minHeight:          400,
-            maxHeight:          window.innerHeight,
-            usePortrait:        true,
-            flippingTime:       1400,
-            drawShadow:         true,
-            maxShadowOpacity:   0.6,
-            mobileScrollSupport: false,
-            autoSize:           false,
-            showCover:          false,
-            clickEventForward:  true
-        });
+        function goTo(index) {
+            if (animating || index === current || index < 0 || index >= pageCount) return;
+            animating = true;
 
-        pageFlip.loadFromHTML(document.querySelectorAll('.page'));
+            const dir     = index > current ? 1 : -1;
+            const outPage = pageEls[current];
+            const inPage  = pageEls[index];
 
-        pageFlip.on('flip', e => updateUI(e.data));
+            // Pivot at the spine: right edge for forward flip, left for backward
+            const pivot = dir > 0 ? '100% 50%' : '0% 50%';
 
-        document.getElementById('prevBtn').addEventListener('click', () => pageFlip.flipPrev('top'));
-        document.getElementById('nextBtn').addEventListener('click', () => pageFlip.flipNext('top'));
+            // Out starts face-up at 0°; in starts face-down at ±180° (paper back visible)
+            gsap.set(outPage, { transformOrigin: pivot, rotationY: 0,          z: 0,   zIndex: 20, visibility: 'visible' });
+            gsap.set(inPage,  { transformOrigin: pivot, rotationY: dir * 180,  z: -1,  zIndex: 15, visibility: 'visible' });
+
+            const tl = gsap.timeline({
+                onComplete() {
+                    outPage.classList.remove('is-active');
+                    gsap.set(outPage, { visibility: 'hidden', rotationY: 0, rotationX: 0, z: 0, zIndex: 10, transformOrigin: '50% 50%' });
+                    inPage.classList.add('is-active');
+                    gsap.set(inPage,  { rotationY: 0, rotationX: 0, z: 0, zIndex: 10, transformOrigin: '50% 50%' });
+                    current = index;
+                    animating = false;
+                    updateUI();
+                    inPage.querySelectorAll('.reveal:not(.is-visible)').forEach(el => el.classList.add('is-visible'));
+                }
+            });
+
+            // Both pages flip simultaneously — out turns away, in unfolds toward viewer
+            tl.to(outPage, { rotationY: dir * -180, duration: DUR, ease: 'power2.inOut' }, 0)
+              .to(inPage,   { rotationY: 0,          duration: DUR, ease: 'power2.inOut' }, 0)
+
+            // Swap z-index at midpoint so arriving page is on top for the second half
+              .call(() => {
+                  gsap.set(outPage, { zIndex: 15 });
+                  gsap.set(inPage,  { zIndex: 20, z: 0 });
+              }, [], DUR * 0.5)
+
+            // Subtle bow: page flexes slightly mid-flip to simulate paper curl
+              .to(outPage, { rotationX: -5, duration: DUR * 0.5, ease: 'power1.in'  }, 0)
+              .to(outPage, { rotationX:  0, duration: DUR * 0.5, ease: 'power1.out' }, DUR * 0.5);
+        }
+
+        document.getElementById('prevBtn').addEventListener('click', () => goTo(current - 1));
+        document.getElementById('nextBtn').addEventListener('click', () => goTo(current + 1));
 
         document.addEventListener('keydown', e => {
-            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') pageFlip.flipNext('top');
-            if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   pageFlip.flipPrev('top');
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+            if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(current - 1);
         });
 
         let wheelCooldown = false;
         window.addEventListener('wheel', e => {
-            if (wheelCooldown) return;
-            const activePage = document.querySelectorAll('.page')[current].querySelector('section');
-            const atBottom = activePage.scrollTop + activePage.clientHeight >= activePage.scrollHeight - 8;
-            const atTop    = activePage.scrollTop <= 8;
-            if (e.deltaY > 0 && atBottom) { pageFlip.flipNext('top'); wheelCooldown = true; setTimeout(() => wheelCooldown = false, 1800); }
-            if (e.deltaY < 0 && atTop)    { pageFlip.flipPrev('top'); wheelCooldown = true; setTimeout(() => wheelCooldown = false, 1800); }
+            if (wheelCooldown || animating) return;
+            const sec = pageEls[current].querySelector('section');
+            const atBottom = sec.scrollTop + sec.clientHeight >= sec.scrollHeight - 8;
+            const atTop    = sec.scrollTop <= 8;
+            if (e.deltaY > 0 && atBottom) { goTo(current + 1); wheelCooldown = true; setTimeout(() => wheelCooldown = false, DUR * 1600); }
+            if (e.deltaY < 0 && atTop)    { goTo(current - 1); wheelCooldown = true; setTimeout(() => wheelCooldown = false, DUR * 1600); }
         }, { passive: true });
 
         document.querySelectorAll('.nav-tag[data-page]').forEach(link => {
             link.addEventListener('click', e => {
                 e.preventDefault();
-                const target = parseInt(link.dataset.page);
-                pageFlip.flip(target, 'top');
+                goTo(parseInt(link.dataset.page));
             });
         });
 
-        // --- Form submit ---
+        // Form submit
         const form = document.querySelector('.desk-form-container form');
         const submitBtn = form.querySelector('.submit-btn');
         form.addEventListener('submit', e => {
@@ -1571,8 +1612,10 @@
             }, 4000);
         });
 
-        // Reveal first page on load
-        pageFlip.on('init', () => updateUI(0));
+        // Initialize first page
+        pageEls[0].classList.add('is-active');
+        pageEls[0].querySelectorAll('.reveal').forEach(el => el.classList.add('is-visible'));
+        updateUI();
     </script>
 </body>
 </html>
