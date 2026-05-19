@@ -953,49 +953,26 @@
             box-shadow: 3px 5px 14px rgba(0,0,0,0.45);
         }
 
-        /* ===== SCRAPBOOK PAGE FLIP SYSTEM ===== */
-        #flip-stage {
+        /* ===== STPAGEFLIP SYSTEM ===== */
+        #book {
             position: fixed;
-            inset: 0;
-            perspective: 700px;
-            perspective-origin: 50% 40%;
-            transform-style: preserve-3d;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
         }
-        /* Sweep shadow overlay painted over the turning page */
-        .flip-shadow {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 30;
-            opacity: 0;
+        .page {
+            overflow: hidden;
+            background: var(--burgundy);
         }
         section {
-            position: absolute !important;
-            inset: 0 !important;
-            height: 100vh !important;
-            min-height: unset !important;
             width: 100% !important;
+            height: 100% !important;
+            min-height: unset !important;
             overflow-y: auto !important;
             overflow-x: hidden !important;
-            will-change: transform;
-            visibility: hidden;
-            pointer-events: none;
-            backface-visibility: hidden;
+            position: relative !important;
         }
-        section.is-active {
-            visibility: visible;
-            pointer-events: auto;
-            z-index: 10;
-        }
-        section.is-flipping {
-            visibility: visible;
-            pointer-events: none;
-            z-index: 15;
-        }
-        section.is-flipping-out {
-            z-index: 20;
-        }
-        /* GSAP handles flip animation — keyframes removed */
 
         /* --- Page flip navigation --- */
         .flip-nav {
@@ -1181,7 +1158,7 @@
             }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
 </head>
 <body>
 
@@ -1195,9 +1172,9 @@
         <a href="PotluriChinmayi_Resume.pdf" class="nav-tag resume-tag" download>Resume ↓</a>
     </nav>
 
-    <div id="flip-stage">
+    <div id="book">
     <!-- ABOUT -->
-    <section class="hero-section" id="about">
+    <div class="page"><section class="hero-section" id="about">
         <div class="lace-edge lace-top"></div>
 
         <div class="hero-left">
@@ -1236,10 +1213,10 @@
             </div>
         </div>
         <div class="lace-edge lace-bottom"></div>
-    </section>
+    </section></div>
 
     <!-- SKILLS -->
-    <section class="skills-section" id="skills">
+    <div class="page"><section class="skills-section" id="skills">
         <div class="lace-edge lace-top"></div>
         <div class="skills-left">
             <div class="skill-badge reveal fade-up" style="--rot: -1deg; --delay: 0s">
@@ -1285,10 +1262,10 @@
         <img src="elements/8.png"  class="skills-deco skills-logo" id="logo-twinmotion" alt="">
         <img src="elements/9.png"  class="skills-deco skills-logo" id="logo-unity"      alt="">
         <img src="elements/4.png"  class="skills-deco skills-logo" id="logo-d5"         alt="">
-    </section>
+    </section></div>
 
     <!-- EXPERIENCE -->
-    <section class="case-studies" id="cases">
+    <div class="page"><section class="case-studies" id="cases">
         <div class="lace-edge lace-top"></div>
         <div class="section-header-maximalist reveal fade-up">
             <h2 style="color: var(--cream);">experience</h2>
@@ -1355,10 +1332,10 @@
 
         </div>
         <div class="lace-edge lace-bottom"></div>
-    </section>
+    </section></div>
 
     <!-- PORTFOLIO -->
-    <section class="portfolio-section" id="notebook">
+    <div class="page"><section class="portfolio-section" id="notebook">
         <div class="lace-edge lace-top"></div>
         <div class="section-header-maximalist reveal fade-up" style="margin-bottom: 60px;">
             <h2>the work</h2>
@@ -1405,10 +1382,10 @@
 
         </div>
         <div class="lace-edge lace-bottom"></div>
-    </section>
+    </section></div>
 
     <!-- EDUCATION -->
-    <section class="services-section" id="services">
+    <div class="page"><section class="services-section" id="services">
         <div class="lace-edge lace-top"></div>
         <div class="section-header-maximalist reveal fade-in">
             <h2 style="color: var(--cream);">education</h2>
@@ -1441,10 +1418,10 @@
             </div>
         </div>
         <div class="lace-edge lace-bottom"></div>
-    </section>
+    </section></div>
 
     <!-- CONTACT -->
-    <section class="contact-section" id="contact">
+    <div class="page"><section class="contact-section" id="contact">
         <div class="lace-edge lace-top"></div>
         <div class="lace-edge lace-bottom"></div>
         <div class="safety-pin">🧷</div>
@@ -1486,9 +1463,9 @@
                 <button type="submit" class="submit-btn">Send Message</button>
             </form>
         </div>
-    </section>
+    </section></div>
 
-    </div><!-- /flip-stage -->
+    </div><!-- /book -->
 
     <!-- Scrapbook flip nav -->
     <div class="flip-nav" id="flipNav">
@@ -1498,127 +1475,83 @@
     </div>
 
     <script>
-        // ===== SCRAPBOOK PAGE FLIP ENGINE (GSAP) =====
-        gsap.registerPlugin();
-
-        const pages = Array.from(document.querySelectorAll('section'));
-        const DUR = 1.1;
+        // ===== STPAGEFLIP ENGINE =====
+        const pageCount = 6;
         let current = 0;
-        let animating = false;
 
-        // Build page dots
         const dotsContainer = document.getElementById('pageDots');
-        pages.forEach((_, i) => {
+        for (let i = 0; i < pageCount; i++) {
             const dot = document.createElement('button');
             dot.className = 'page-dot' + (i === 0 ? ' is-active' : '');
             dot.setAttribute('aria-label', `Go to page ${i + 1}`);
-            dot.addEventListener('click', () => goTo(i));
+            dot.addEventListener('click', () => {
+                if (i > current) for (let j = current; j < i; j++) pageFlip.flipNext('top');
+                else if (i < current) for (let j = current; j > i; j--) pageFlip.flipPrev('top');
+            });
             dotsContainer.appendChild(dot);
-        });
+        }
 
-        function updateUI() {
+        function updateUI(page) {
+            current = page;
             document.getElementById('prevBtn').disabled = current === 0;
-            document.getElementById('nextBtn').disabled = current === pages.length - 1;
+            document.getElementById('nextBtn').disabled = current === pageCount - 1;
             dotsContainer.querySelectorAll('.page-dot').forEach((d, i) =>
                 d.classList.toggle('is-active', i === current)
             );
             document.querySelectorAll('.nav-tag[data-page]').forEach(link =>
                 link.classList.toggle('is-active', parseInt(link.dataset.page) === current)
             );
+            // Reveal animations on the now-visible page
+            document.querySelectorAll('.page')[current]
+                .querySelectorAll('.reveal:not(.is-visible)')
+                .forEach(el => el.classList.add('is-visible'));
         }
 
-        // Reusable shadow overlay
-        const shadow = document.createElement('div');
-        shadow.className = 'flip-shadow';
-        document.getElementById('flip-stage').appendChild(shadow);
+        const pageFlip = new PageFlip(document.getElementById('book'), {
+            width:              window.innerWidth,
+            height:             window.innerHeight,
+            size:               'stretch',
+            minWidth:           320,
+            maxWidth:           window.innerWidth,
+            minHeight:          400,
+            maxHeight:          window.innerHeight,
+            usePortrait:        true,
+            flippingTime:       1400,
+            drawShadow:         true,
+            maxShadowOpacity:   0.6,
+            mobileScrollSupport: false,
+            autoSize:           false,
+            showCover:          false,
+            clickEventForward:  true
+        });
 
-        function goTo(index) {
-            if (animating || index === current || index < 0 || index >= pages.length) return;
-            animating = true;
+        pageFlip.loadFromHTML(document.querySelectorAll('.page'));
 
-            const dir = index > current ? 1 : -1;
-            const outPage = pages[current];
-            const inPage  = pages[index];
+        pageFlip.on('flip', e => updateUI(e.data));
 
-            // Pivot at the leading edge — the spine the page curls around
-            const pivot = dir > 0 ? '0% 50%' : '100% 50%';
-            // Shadow gradient sweeps from leading edge across the outgoing page
-            shadow.style.background = dir > 0
-                ? 'linear-gradient(to right, rgba(0,0,0,0.55) 0%, transparent 60%)'
-                : 'linear-gradient(to left,  rgba(0,0,0,0.55) 0%, transparent 60%)';
-
-            gsap.set(outPage, { transformOrigin: pivot, rotationY: 0, rotationX: 0, zIndex: 20 });
-            gsap.set(inPage,  { transformOrigin: pivot, rotationY: dir * -92, rotationX: -6,
-                                opacity: 0.3, visibility: 'visible', zIndex: 15 });
-            gsap.set(shadow,  { opacity: 0, zIndex: 30 });
-
-            const tl = gsap.timeline({
-                onComplete() {
-                    outPage.classList.remove('is-active');
-                    gsap.set(outPage, { visibility: 'hidden', zIndex: 10,
-                                       rotationY: 0, rotationX: 0, transformOrigin: '50% 50%' });
-                    inPage.classList.add('is-active');
-                    gsap.set(inPage,  { zIndex: 10, transformOrigin: '50% 50%' });
-                    gsap.set(shadow,  { opacity: 0 });
-                    current = index;
-                    animating = false;
-                    updateUI();
-                    inPage.querySelectorAll('.reveal:not(.is-visible)').forEach(el => el.classList.add('is-visible'));
-                }
-            });
-
-            // Phase 1 — page corner lifts, curls slightly in X
-            tl.to(outPage, {
-                rotationY: dir * 38,
-                rotationX: -10,
-                duration: DUR * 0.35,
-                ease: 'power1.in'
-            })
-            // Shadow sweeps in as the page lifts
-            .to(shadow, { opacity: 1, duration: DUR * 0.35, ease: 'power1.in' }, 0)
-
-            // Phase 2 — page swings fully over, curl relaxes
-            .to(outPage, {
-                rotationY: dir * 96,
-                rotationX: 0,
-                opacity: 0.15,
-                duration: DUR * 0.65,
-                ease: 'power2.in'
-            })
-            .to(shadow, { opacity: 0, duration: DUR * 0.5, ease: 'power1.out' }, `>-${DUR * 0.3}`)
-
-            // Incoming page uncurls and lands
-            .to(inPage, {
-                rotationY: 0,
-                rotationX: 0,
-                opacity: 1,
-                duration: DUR * 0.75,
-                ease: 'power3.out'
-            }, `-=${DUR * 0.35}`);
-        }
-
-        document.getElementById('prevBtn').addEventListener('click', () => goTo(current - 1));
-        document.getElementById('nextBtn').addEventListener('click', () => goTo(current + 1));
+        document.getElementById('prevBtn').addEventListener('click', () => pageFlip.flipPrev('top'));
+        document.getElementById('nextBtn').addEventListener('click', () => pageFlip.flipNext('top'));
 
         document.addEventListener('keydown', e => {
-            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
-            if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(current - 1);
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') pageFlip.flipNext('top');
+            if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   pageFlip.flipPrev('top');
         });
 
         let wheelCooldown = false;
         window.addEventListener('wheel', e => {
-            if (wheelCooldown || animating) return;
-            const activePage = pages[current];
+            if (wheelCooldown) return;
+            const activePage = document.querySelectorAll('.page')[current].querySelector('section');
             const atBottom = activePage.scrollTop + activePage.clientHeight >= activePage.scrollHeight - 8;
             const atTop    = activePage.scrollTop <= 8;
-            if (e.deltaY > 0 && atBottom)  { goTo(current + 1); wheelCooldown = true; setTimeout(() => wheelCooldown = false, DUR * 1800); }
-            if (e.deltaY < 0 && atTop)     { goTo(current - 1); wheelCooldown = true; setTimeout(() => wheelCooldown = false, DUR * 1800); }
+            if (e.deltaY > 0 && atBottom) { pageFlip.flipNext('top'); wheelCooldown = true; setTimeout(() => wheelCooldown = false, 1800); }
+            if (e.deltaY < 0 && atTop)    { pageFlip.flipPrev('top'); wheelCooldown = true; setTimeout(() => wheelCooldown = false, 1800); }
         }, { passive: true });
 
         document.querySelectorAll('.nav-tag[data-page]').forEach(link => {
             link.addEventListener('click', e => {
                 e.preventDefault();
-                goTo(parseInt(link.dataset.page));
+                const target = parseInt(link.dataset.page);
+                pageFlip.flip(target, 'top');
             });
         });
 
@@ -1638,10 +1571,8 @@
             }, 4000);
         });
 
-        // --- Initialize ---
-        pages[0].classList.add('is-active');
-        pages[0].querySelectorAll('.reveal').forEach(el => el.classList.add('is-visible'));
-        updateUI();
+        // Reveal first page on load
+        pageFlip.on('init', () => updateUI(0));
     </script>
 </body>
 </html>
