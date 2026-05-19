@@ -954,8 +954,23 @@
         }
 
         /* ===== SCRAPBOOK PAGE FLIP SYSTEM ===== */
+        #flip-stage {
+            position: fixed;
+            inset: 0;
+            perspective: 700px;
+            perspective-origin: 50% 40%;
+            transform-style: preserve-3d;
+        }
+        /* Sweep shadow overlay painted over the turning page */
+        .flip-shadow {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 30;
+            opacity: 0;
+        }
         section {
-            position: fixed !important;
+            position: absolute !important;
             inset: 0 !important;
             height: 100vh !important;
             min-height: unset !important;
@@ -965,6 +980,7 @@
             will-change: transform;
             visibility: hidden;
             pointer-events: none;
+            backface-visibility: hidden;
         }
         section.is-active {
             visibility: visible;
@@ -1179,6 +1195,7 @@
         <a href="PotluriChinmayi_Resume.pdf" class="nav-tag resume-tag" download>Resume ↓</a>
     </nav>
 
+    <div id="flip-stage">
     <!-- ABOUT -->
     <section class="hero-section" id="about">
         <div class="lace-edge lace-top"></div>
@@ -1471,6 +1488,8 @@
         </div>
     </section>
 
+    </div><!-- /flip-stage -->
+
     <!-- Scrapbook flip nav -->
     <div class="flip-nav" id="flipNav">
         <button class="flip-btn" id="prevBtn">&#9664; prev</button>
@@ -1483,8 +1502,7 @@
         gsap.registerPlugin();
 
         const pages = Array.from(document.querySelectorAll('section'));
-        const DUR = 0.55;
-        const EASE = 'power2.inOut';
+        const DUR = 1.1;
         let current = 0;
         let animating = false;
 
@@ -1509,6 +1527,11 @@
             );
         }
 
+        // Reusable shadow overlay
+        const shadow = document.createElement('div');
+        shadow.className = 'flip-shadow';
+        document.getElementById('flip-stage').appendChild(shadow);
+
         function goTo(index) {
             if (animating || index === current || index < 0 || index >= pages.length) return;
             animating = true;
@@ -1517,20 +1540,26 @@
             const outPage = pages[current];
             const inPage  = pages[index];
 
-            // Forward: pivot on left edge. Backward: pivot on right edge.
+            // Pivot at the leading edge — the spine the page curls around
             const pivot = dir > 0 ? '0% 50%' : '100% 50%';
+            // Shadow gradient sweeps from leading edge across the outgoing page
+            shadow.style.background = dir > 0
+                ? 'linear-gradient(to right, rgba(0,0,0,0.55) 0%, transparent 60%)'
+                : 'linear-gradient(to left,  rgba(0,0,0,0.55) 0%, transparent 60%)';
 
-            // Out page starts flat, folds away around the pivot edge
-            gsap.set(outPage, { transformOrigin: pivot, rotationY: 0, zIndex: 20, transformPerspective: 2200 });
-            // In page starts folded 90° behind the pivot edge, hidden
-            gsap.set(inPage,  { transformOrigin: pivot, rotationY: dir * -90, opacity: 0, visibility: 'visible', zIndex: 15, transformPerspective: 2200 });
+            gsap.set(outPage, { transformOrigin: pivot, rotationY: 0, rotationX: 0, zIndex: 20 });
+            gsap.set(inPage,  { transformOrigin: pivot, rotationY: dir * -92, rotationX: -6,
+                                opacity: 0.3, visibility: 'visible', zIndex: 15 });
+            gsap.set(shadow,  { opacity: 0, zIndex: 30 });
 
             const tl = gsap.timeline({
                 onComplete() {
                     outPage.classList.remove('is-active');
-                    gsap.set(outPage, { visibility: 'hidden', zIndex: 10, rotationY: 0, transformOrigin: '50% 50%' });
+                    gsap.set(outPage, { visibility: 'hidden', zIndex: 10,
+                                       rotationY: 0, rotationX: 0, transformOrigin: '50% 50%' });
                     inPage.classList.add('is-active');
-                    gsap.set(inPage, { zIndex: 10, transformOrigin: '50% 50%' });
+                    gsap.set(inPage,  { zIndex: 10, transformOrigin: '50% 50%' });
+                    gsap.set(shadow,  { opacity: 0 });
                     current = index;
                     animating = false;
                     updateUI();
@@ -1538,21 +1567,34 @@
                 }
             });
 
-            // Out: fold away (left edge stays fixed, right side swings back)
+            // Phase 1 — page corner lifts, curls slightly in X
             tl.to(outPage, {
-                rotationY: dir * 90,
-                opacity: 0.2,
-                duration: DUR,
-                ease: EASE
-            });
+                rotationY: dir * 38,
+                rotationX: -10,
+                duration: DUR * 0.35,
+                ease: 'power1.in'
+            })
+            // Shadow sweeps in as the page lifts
+            .to(shadow, { opacity: 1, duration: DUR * 0.35, ease: 'power1.in' }, 0)
 
-            // In: unfold from behind the same edge (overlaps with out)
-            tl.to(inPage, {
+            // Phase 2 — page swings fully over, curl relaxes
+            .to(outPage, {
+                rotationY: dir * 96,
+                rotationX: 0,
+                opacity: 0.15,
+                duration: DUR * 0.65,
+                ease: 'power2.in'
+            })
+            .to(shadow, { opacity: 0, duration: DUR * 0.5, ease: 'power1.out' }, `>-${DUR * 0.3}`)
+
+            // Incoming page uncurls and lands
+            .to(inPage, {
                 rotationY: 0,
+                rotationX: 0,
                 opacity: 1,
-                duration: DUR,
-                ease: EASE
-            }, `-=${DUR * 0.45}`);
+                duration: DUR * 0.75,
+                ease: 'power3.out'
+            }, `-=${DUR * 0.35}`);
         }
 
         document.getElementById('prevBtn').addEventListener('click', () => goTo(current - 1));
@@ -1569,8 +1611,8 @@
             const activePage = pages[current];
             const atBottom = activePage.scrollTop + activePage.clientHeight >= activePage.scrollHeight - 8;
             const atTop    = activePage.scrollTop <= 8;
-            if (e.deltaY > 0 && atBottom)  { goTo(current + 1); wheelCooldown = true; setTimeout(() => wheelCooldown = false, (DUR * 1000) + 200); }
-            if (e.deltaY < 0 && atTop)     { goTo(current - 1); wheelCooldown = true; setTimeout(() => wheelCooldown = false, (DUR * 1000) + 200); }
+            if (e.deltaY > 0 && atBottom)  { goTo(current + 1); wheelCooldown = true; setTimeout(() => wheelCooldown = false, DUR * 1800); }
+            if (e.deltaY < 0 && atTop)     { goTo(current - 1); wheelCooldown = true; setTimeout(() => wheelCooldown = false, DUR * 1800); }
         }, { passive: true });
 
         document.querySelectorAll('.nav-tag[data-page]').forEach(link => {
