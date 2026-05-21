@@ -25,6 +25,23 @@
             font-family: 'Inter', sans-serif;
             color: var(--cream);
             overflow-x: hidden;
+            cursor: none;
+        }
+
+        .cursor-dot {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #b57e8f;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s ease;
+        }
+
+        a, button, input, textarea, select, [role="button"] {
+            cursor: none;
         }
 
         .sticky-nav {
@@ -1473,6 +1490,17 @@
                 form.reset();
             }, 4000);
         });
+
+        // --- Custom cursor dot ---
+        const cursorDot = document.createElement('div');
+        cursorDot.className = 'cursor-dot';
+        document.body.appendChild(cursorDot);
+        document.addEventListener('mousemove', e => {
+            cursorDot.style.left = e.clientX + 'px';
+            cursorDot.style.top  = e.clientY + 'px';
+        });
+        document.addEventListener('mouseleave', () => { cursorDot.style.opacity = '0'; });
+        document.addEventListener('mouseenter', () => { cursorDot.style.opacity = '1'; });
 
         // (parallax handled via CSS background-attachment: fixed)
     </script>
