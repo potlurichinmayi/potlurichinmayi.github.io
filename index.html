@@ -68,6 +68,7 @@
             background-image: url('images/heroheader.png');
             background-size: cover;
             background-position: center;
+            background-attachment: fixed;
             position: relative;
             min-height: 100vh;
             padding: 80px 10%;
@@ -293,6 +294,7 @@
             background-image: url('images/sections/about-bg.png');
             background-size: cover;
             background-position: center;
+            background-attachment: fixed;
             padding: 120px 10%;
             display: flex;
             justify-content: center;
@@ -426,6 +428,7 @@
             background-image: url('images/sections/skills-bg.png');
             background-size: cover;
             background-position: center;
+            background-attachment: fixed;
             padding: 100px 8%;
             position: relative;
         }
@@ -515,6 +518,7 @@
             background-image: url('images/sections/portfolio-bg.png');
             background-size: cover;
             background-position: center;
+            background-attachment: fixed;
             padding: 100px 8%;
             color: var(--cream);
             position: relative;
@@ -602,6 +606,7 @@
             background-image: url('images/sections/experience-bg.png');
             background-size: cover;
             background-position: center;
+            background-attachment: fixed;
             padding: 120px 10%;
             position: relative;
         }
@@ -675,6 +680,7 @@
             background-image: url('images/sections/contact-bg.png');
             background-size: cover;
             background-position: center;
+            background-attachment: fixed;
             padding: 120px 10%;
             position: relative;
             display: flex;
@@ -1467,22 +1473,7 @@
             }, 4000);
         });
 
-        // --- Hero parallax ---
-        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            const hero = document.querySelector('.hero-section');
-            let tick = false;
-            window.addEventListener('scroll', () => {
-                if (!tick) {
-                    requestAnimationFrame(() => {
-                        const maxOffset = hero.offsetHeight * 0.35;
-                        const offset = Math.min(window.scrollY * 0.28, maxOffset);
-                        hero.style.backgroundPositionY = `calc(center + ${offset}px)`;
-                        tick = false;
-                    });
-                    tick = true;
-                }
-            });
-        }
+        // (parallax handled via CSS background-attachment: fixed)
     </script>
 </body>
 </html>
