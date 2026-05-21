@@ -117,8 +117,10 @@
         }
 
         .hero-left p {
-            font-size: 0.95rem;
-            line-height: 1.6;
+            font-family: 'Instrument Serif', serif;
+            font-style: normal;
+            font-size: 1.05rem;
+            line-height: 1.7;
             margin-bottom: 25px;
             color: rgba(253, 238, 242, 0.85);
             max-width: 380px;
@@ -199,15 +201,47 @@
             margin-top: 10px;
         }
 
-        .photo-strip {
+        .photo-card-stack {
             position: absolute;
             right: 0;
             top: 20px;
+            z-index: 3;
+            overflow: visible;
+        }
+
+        .photo-card-backing {
+            position: absolute;
+            inset: 0;
+            background: #e8d5db;
+            box-shadow: 8px 8px 20px rgba(0,0,0,0.25);
+            transform: rotate(8deg);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .name-card-stack {
+            position: relative;
+            overflow: visible;
+        }
+
+        .name-card-backing {
+            position: absolute;
+            top: 0; left: 0;
+            width: 320px;
+            height: 380px;
+            background: #d4aab5;
+            border-radius: 4px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
+            transform: rotate(-6deg) translateX(-70px);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .photo-strip {
+            position: relative;
             background: #fef5f7;
             padding: 12px 12px 30px 12px;
             box-shadow: 8px 8px 20px rgba(0,0,0,0.4);
             transform: rotate(5deg);
-            z-index: 3;
+            z-index: 1;
         }
 
         .photo-placeholder {
@@ -236,10 +270,10 @@
 
         .ribbon {
             position: absolute;
-            top: -45px;
+            top: -25px;
             right: -70px;
             z-index: 6;
-            transform: rotate(10deg);
+            transform: rotate(0deg);
             width: 130px;
         }
 
@@ -306,9 +340,10 @@
             width: 50%;
             position: relative;
             height: 500px;
+            overflow: visible;
         }
 
-        .folder-stack { position: relative; width: 100%; height: 100%; margin-left: 40px; }
+        .folder-stack { position: relative; width: 100%; height: 100%; margin-left: 40px; overflow: visible; }
 
         .folder {
             position: absolute;
@@ -365,25 +400,25 @@
             font-size: 0.6rem;
         }
 
-        /* skills decorative elements */
+        /* skills decorative elements — positioned relative to .folder-stack */
+        /* card sits at top:20px left:60px w:380px h:460px inside folder-stack */
         .skills-deco {
             position: absolute;
             pointer-events: none;
             user-select: none;
-            z-index: 1;
+            z-index: 4;
         }
         .skills-logo {
             width: 65px;
             filter: drop-shadow(1px 2px 4px rgba(0,0,0,0.18));
         }
-        /* logos positioned on/near edges of the tools & software folder card */
-        #logo-autocad    { top: 19%;    right: 31%; }          /* on folder top edge, horizontal centre */
-        #logo-vray       { top: 3%;     right: 5%;  }          /* top-right corner, away from folder    */
-        #logo-sketchup   { top: 41%;    right: 13%; width: 75px; } /* just outside folder right edge, upper */
-        #logo-enscape    { top: 58%;    right: 14%; }          /* at folder right edge, lower           */
-        #logo-twinmotion { bottom: 20%; right: 29%; }          /* on folder bottom edge, centre-right   */
-        #logo-unity      { bottom: 8%;  right: 12%; }          /* bottom-right scatter                  */
-        #logo-d5         { bottom: 4%;  right: 2%;  }          /* far bottom-right scatter              */
+        #logo-autocad    { top: -20px;  left: 330px; }                /* above card, top-right corner */
+        #logo-vray       { top:  10px;  left: 430px; }                /* top-right, right of card     */
+        #logo-unity      { top: 305px;  left: -35px; }                /* left of card, mid-height     */
+        #logo-enscape    { top: 365px;  left: -55px; }                /* bottom-left, below unity     */
+        #logo-sketchup   { top: 405px;  left:  -5px; width: 80px; }  /* bottom-left, card corner     */
+        #logo-twinmotion { top: 335px;  left: 450px; }                /* bottom-right, right of card  */
+        #logo-d5         { top: 415px;  left: 415px; }                /* bottom-right, below twinmotion */
 
         /* --- PORTFOLIO --- */
         .portfolio-section {
@@ -862,23 +897,29 @@
             transform: rotate(-1deg) scaleX(1.06);
         }
 
-        /* --- Scrapbook frame hover --- */
+        /* --- Name card folder-fan hover --- */
         .scrapbook-frame {
-            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-                        box-shadow 0.5s ease;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        box-shadow 0.35s ease;
         }
-        .scrapbook-frame:hover {
-            transform: rotate(-1.5deg) translateX(-60px) translateY(-8px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4), 6px 6px 0px rgba(0,0,0,0.15);
+        .name-card-stack:hover .name-card-backing {
+            transform: rotate(-13deg) translateX(-88px);
+        }
+        .name-card-stack:hover .scrapbook-frame {
+            transform: rotate(0deg) translateX(-70px) translateY(-14px);
+            box-shadow: 0 20px 45px rgba(0,0,0,0.32);
         }
 
-        /* --- Photo strip hover --- */
+        /* --- Photo card folder-fan hover --- */
         .photo-strip {
-            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-                        box-shadow 0.45s ease;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        box-shadow 0.35s ease;
         }
-        .photo-strip:hover {
-            transform: rotate(3deg) translateY(-10px);
+        .photo-card-stack:hover .photo-card-backing {
+            transform: rotate(-4deg) translateX(-18px);
+        }
+        .photo-card-stack:hover .photo-strip {
+            transform: rotate(2deg) translateY(-14px);
             box-shadow: 0 22px 40px rgba(0,0,0,0.5);
         }
 
@@ -933,8 +974,14 @@
         .scrapbook-frame {
             animation: heroSlideRight 1s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
         }
+        .name-card-backing {
+            animation: heroFadeIn 0.6s ease 0.6s both;
+        }
         .photo-strip {
             animation: heroSlideLeft 1s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both;
+        }
+        .photo-card-backing {
+            animation: heroFadeIn 0.6s ease 0.8s both;
         }
         .ribbon {
             animation: heroFadeIn 0.4s ease 0.85s both;
@@ -1052,6 +1099,10 @@
                 opacity: 1 !important;
                 transform: rotate(-3deg) translateX(-70px) !important;
             }
+            .name-card-backing, .photo-card-backing {
+                animation: none !important;
+                opacity: 1 !important;
+            }
             .photo-strip {
                 animation: none !important;
                 opacity: 1 !important;
@@ -1064,8 +1115,8 @@
             }
             .reveal.fade-in { transform: none !important; }
             .skill-badge, .case-booklet, .project-card, .edu-card,
-            .scrapbook-frame, .photo-strip, .folder-bg-manila, .folder-main,
-            .washi-tape-accent, .project-washi {
+            .scrapbook-frame, .name-card-backing, .photo-strip, .photo-card-backing,
+            .folder-bg-manila, .folder-main, .washi-tape-accent, .project-washi {
                 transition: none !important;
             }
         }
@@ -1099,25 +1150,31 @@
 
         <div class="hero-right">
 
-            <div class="scrapbook-frame">
-                <div class="frame-inner">
-                    <div>
-                        <div class="brand-title">Potluri<br>Chinmayi</div>
-                        <div class="brand-subtitle">Interior Designer</div>
+            <div class="name-card-stack">
+                <div class="name-card-backing"></div>
+                <div class="scrapbook-frame">
+                    <div class="frame-inner">
+                        <div>
+                            <div class="brand-title">Potluri<br>Chinmayi</div>
+                            <div class="brand-subtitle">Interior Designer</div>
+                        </div>
                     </div>
+                    <img src="images/elements/heart-charm.png" class="gold-heart-charm" alt="">
                 </div>
-                <img src="images/elements/heart-charm.png" class="gold-heart-charm" alt="">
             </div>
 
-            <div class="photo-strip">
-                <img src="images/elements/ribbon.png" class="ribbon" alt="">
-                <div class="photo-placeholder">
-                    <img src="images/photo.jpeg" alt="Potluri Chinmayi">
-                </div>
-                <div class="photo-placeholder" style="height:80px; background:#3d1020; flex-direction:column; gap:2px;">
-                    <span style="font-family:'Instrument Serif',serif; font-style:italic; font-size:0.95rem; color:var(--cream); line-height:1.2;">Woxsen University</span>
-                    <span style="font-family:'Syne',sans-serif; font-size:0.55rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--soft-gold);">B.Des Interior Design</span>
-                    <span style="font-family:'Instrument Serif',serif; font-style:italic; font-size:0.8rem; color:rgba(253,238,242,0.5);">2022 – 2026</span>
+            <div class="photo-card-stack">
+                <div class="photo-card-backing"></div>
+                <div class="photo-strip">
+                    <img src="images/elements/ribbon.png" class="ribbon" alt="">
+                    <div class="photo-placeholder">
+                        <img src="images/photo.jpeg" alt="Potluri Chinmayi">
+                    </div>
+                    <div class="photo-placeholder" style="height:80px; background:#3d1020; flex-direction:column; gap:2px;">
+                        <span style="font-family:'Instrument Serif',serif; font-style:italic; font-size:0.95rem; color:var(--cream); line-height:1.2;">Woxsen University</span>
+                        <span style="font-family:'Syne',sans-serif; font-size:0.55rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--soft-gold);">B.Des Interior Design</span>
+                        <span style="font-family:'Instrument Serif',serif; font-style:italic; font-size:0.8rem; color:rgba(253,238,242,0.5);">2022 – 2026</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1158,17 +1215,15 @@
                         <li>D5 Render</li>
                     </ul>
                 </div>
+                <img src="images/elements/logo-autocad.png"    class="skills-deco skills-logo" id="logo-autocad"    alt="">
+                <img src="images/elements/logo-vray.png"       class="skills-deco skills-logo" id="logo-vray"       alt="">
+                <img src="images/elements/logo-unity.png"      class="skills-deco skills-logo" id="logo-unity"      alt="">
+                <img src="images/elements/logo-enscape.png"    class="skills-deco skills-logo" id="logo-enscape"    alt="">
+                <img src="images/elements/logo-sketchup.png"   class="skills-deco skills-logo" id="logo-sketchup"   alt="">
+                <img src="images/elements/logo-twinmotion.png" class="skills-deco skills-logo" id="logo-twinmotion" alt="">
+                <img src="images/elements/logo-d5.png"         class="skills-deco skills-logo" id="logo-d5"         alt="">
             </div>
         </div>
-
-        <!-- decorative elements -->
-        <img src="images/elements/logo-autocad.png"  class="skills-deco skills-logo" id="logo-autocad"    alt="">
-        <img src="images/elements/logo-vray.png"  class="skills-deco skills-logo" id="logo-vray"       alt="">
-        <img src="images/elements/logo-sketchup.png"  class="skills-deco skills-logo" id="logo-sketchup"   alt="">
-        <img src="images/elements/logo-enscape.png"  class="skills-deco skills-logo" id="logo-enscape"    alt="">
-        <img src="images/elements/logo-twinmotion.png"  class="skills-deco skills-logo" id="logo-twinmotion" alt="">
-        <img src="images/elements/logo-unity.png"  class="skills-deco skills-logo" id="logo-unity"      alt="">
-        <img src="images/elements/logo-d5.png"  class="skills-deco skills-logo" id="logo-d5"         alt="">
     </section>
 
     <!-- EXPERIENCE -->
