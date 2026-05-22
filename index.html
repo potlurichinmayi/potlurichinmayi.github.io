@@ -830,8 +830,8 @@
                 width: 100%;
                 max-width: 100%;
             }
-            .hero-right  { height: 420px; margin-top: 40px; }
-            .skills-right { height: 450px; margin-top: 40px; }
+            .hero-right   { height: 420px; margin-top: 40px; }
+            .skills-right { height: 510px; margin-top: 40px; }
             .notebook-container::after { display: none; }
             .page-left { border-right: none; border-bottom: 2px dashed #ccc; padding-bottom: 60px; }
             .hero-left h1 { font-size: 3.5rem; }
@@ -840,18 +840,19 @@
             .desk-form-container { padding: 25px; }
             .sticky-nav { max-width: 90vw; top: 10px; right: 10px; }
 
-            /* Reduce scrapbook animation translateX for narrower containers */
-            .scrapbook-frame {
-                animation: none;
-                transform: rotate(-3deg) translateX(-40px);
+            /* Hide name card — photo card only in single-column layout */
+            .name-card-stack { display: none; }
+
+            /* Centre photo in hero-right */
+            .photo-card-stack {
+                position: static;
+                margin: 0 auto;
             }
-            .name-card-backing {
-                animation: none;
-                opacity: 1;
-                transform: rotate(-6deg) translateX(-40px);
-            }
-            .name-card-stack:hover .name-card-backing  { transform: rotate(-13deg) translateX(-58px); }
-            .name-card-stack:hover .scrapbook-frame    { transform: rotate(0deg) translateX(-40px) translateY(-14px); }
+            .photo-strip        { transform: rotate(3deg); animation: none; opacity: 1; }
+            .photo-card-backing { transform: rotate(6deg); animation: none; opacity: 1; }
+
+            /* Hide logos that overflow the folder edges in column layout */
+            .skills-logo { display: none; }
         }
 
         /* ---- Small tablets & large phones (≤ 600px) ---- */
@@ -860,18 +861,7 @@
             .hero-left h1 { font-size: 2.8rem; }
             .hero-left p  { font-size: 0.95rem; }
             .hero-right   { height: 360px; }
-            .skills-right { height: 420px; }
-
-            /* Hide name card — photo is enough at this size */
-            .name-card-stack { display: none; }
-
-            /* Centre photo in hero-right */
-            .photo-card-stack {
-                position: static;
-                margin: 0 auto;
-            }
-            .photo-strip   { transform: rotate(3deg); }
-            .photo-card-backing { transform: rotate(6deg); }
+            .skills-right { height: 430px; }
 
             /* Scale folder down */
             .folder { width: 290px; height: 360px; padding: 30px; }
@@ -879,9 +869,6 @@
             .folder-main      { top: 16px; left: 38px; }
             .folder-main h2   { font-size: 2.3rem; }
             .folder-stack     { margin-left: 10px; }
-
-            /* Hide off-screen logo decorations */
-            .skills-logo { display: none; }
 
             /* Section headers */
             .section-header-maximalist h2 { font-size: 2.4rem; }
