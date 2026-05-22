@@ -811,6 +811,12 @@
             transform: rotate(45deg);
         }
 
+        /* Touch devices — restore system cursor, hide custom dot */
+        @media (hover: none) {
+            body, a, button, input, textarea, select, [role="button"] { cursor: auto; }
+            .cursor-dot { display: none; }
+        }
+
         @media (max-width: 900px) {
             .hero-section, .skills-section, .case-studies,
             .portfolio-section, .services-section, .contact-section {
@@ -824,13 +830,93 @@
                 width: 100%;
                 max-width: 100%;
             }
-            .hero-right, .skills-right { height: 450px; margin-top: 40px; }
+            .hero-right  { height: 420px; margin-top: 40px; }
+            .skills-right { height: 450px; margin-top: 40px; }
             .notebook-container::after { display: none; }
             .page-left { border-right: none; border-bottom: 2px dashed #ccc; padding-bottom: 60px; }
             .hero-left h1 { font-size: 3.5rem; }
             .section-header-maximalist h2 { font-size: 3rem; }
+            .section-header-maximalist p  { font-size: 1.1rem; }
             .desk-form-container { padding: 25px; }
             .sticky-nav { max-width: 90vw; top: 10px; right: 10px; }
+
+            /* Reduce scrapbook animation translateX for narrower containers */
+            .scrapbook-frame {
+                animation: none;
+                transform: rotate(-3deg) translateX(-40px);
+            }
+            .name-card-backing {
+                animation: none;
+                opacity: 1;
+                transform: rotate(-6deg) translateX(-40px);
+            }
+            .name-card-stack:hover .name-card-backing  { transform: rotate(-13deg) translateX(-58px); }
+            .name-card-stack:hover .scrapbook-frame    { transform: rotate(0deg) translateX(-40px) translateY(-14px); }
+        }
+
+        /* ---- Small tablets & large phones (≤ 600px) ---- */
+        @media (max-width: 600px) {
+            .hero-section { padding: 70px 5% 50px; }
+            .hero-left h1 { font-size: 2.8rem; }
+            .hero-left p  { font-size: 0.95rem; }
+            .hero-right   { height: 360px; }
+            .skills-right { height: 420px; }
+
+            /* Hide name card — photo is enough at this size */
+            .name-card-stack { display: none; }
+
+            /* Centre photo in hero-right */
+            .photo-card-stack {
+                position: static;
+                margin: 0 auto;
+            }
+            .photo-strip   { transform: rotate(3deg); }
+            .photo-card-backing { transform: rotate(6deg); }
+
+            /* Scale folder down */
+            .folder { width: 290px; height: 360px; padding: 30px; }
+            .folder-bg-manila { top: 8px;  left: 12px; }
+            .folder-main      { top: 16px; left: 38px; }
+            .folder-main h2   { font-size: 2.3rem; }
+            .folder-stack     { margin-left: 10px; }
+
+            /* Hide off-screen logo decorations */
+            .skills-logo { display: none; }
+
+            /* Section headers */
+            .section-header-maximalist h2 { font-size: 2.4rem; }
+
+            /* Edu / contact */
+            .desk-form-container h2 { font-size: 2.6rem; }
+            .contact-pills { flex-direction: column; gap: 8px; }
+        }
+
+        /* ---- Phones (≤ 480px) ---- */
+        @media (max-width: 480px) {
+            .hero-left h1 { font-size: 2.2rem; }
+            .hero-right   { height: 320px; }
+            .skills-right { height: 380px; }
+
+            .photo-placeholder { width: 140px; height: 175px; }
+
+            /* Folder further reduced */
+            .folder { width: 250px; height: 310px; padding: 22px; }
+            .folder-bg-manila { top: 6px;  left: 8px; }
+            .folder-main      { top: 12px; left: 28px; }
+            .folder-main h2   { font-size: 1.9rem; letter-spacing: -1px; }
+            .tools-list       { font-size: 0.78rem; line-height: 1.9; }
+
+            .section-header-maximalist h2 { font-size: 2rem; }
+            .section-header-maximalist p  { font-size: 0.95rem; }
+
+            .sticky-nav { max-width: 95vw; gap: 5px; }
+            .nav-tag { padding: 5px 10px; font-size: 0.7rem; }
+
+            .skill-badge h3 { font-size: 1.8rem; }
+            .skill-badge p  { font-size: 0.8rem; }
+
+            .desk-form-container h2 { font-size: 2rem; }
+            .case-booklet, .project-card { margin-bottom: 20px; }
         }
 
         /* ============================================================
