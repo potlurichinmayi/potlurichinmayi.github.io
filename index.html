@@ -821,11 +821,8 @@
             }
         }
 
-        @media (max-width: 900px) {
-            .hero-section, .skills-section, .case-studies,
-            .portfolio-section, .services-section, .contact-section {
-                background-attachment: scroll; /* phones */
-            }
+        @media (max-width: 1024px) {
+            /* Column layout for all tablets including iPad landscape */
             .hero-section, .skills-section, .notebook-container, .case-grid {
                 flex-direction: column;
                 padding: 60px 5%;
@@ -844,7 +841,7 @@
             .desk-form-container { padding: 25px; }
             .sticky-nav { max-width: 90vw; top: 10px; right: 10px; }
 
-            /* Hide name card — photo card only in single-column layout */
+            /* Hide name card — photo only in single-column layout */
             .name-card-stack { display: none; }
 
             /* Centre photo in hero-right */
@@ -855,8 +852,15 @@
             .photo-strip        { transform: rotate(3deg); animation: none; opacity: 1; }
             .photo-card-backing { transform: rotate(6deg); animation: none; opacity: 1; }
 
-            /* Hide logos that overflow the folder edges in column layout */
+            /* Hide logos that overflow the folder in column layout */
             .skills-logo { display: none; }
+        }
+
+        @media (max-width: 900px) {
+            .hero-section, .skills-section, .case-studies,
+            .portfolio-section, .services-section, .contact-section {
+                background-attachment: scroll;
+            }
         }
 
         /* ---- Small tablets & large phones (≤ 600px) ---- */
