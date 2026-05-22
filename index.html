@@ -811,16 +811,20 @@
             transform: rotate(45deg);
         }
 
-        /* Touch devices — restore system cursor, hide custom dot */
+        /* Touch devices (phones + tablets) — restore cursor, fix blurry fixed bg */
         @media (hover: none) {
             body, a, button, input, textarea, select, [role="button"] { cursor: auto; }
             .cursor-dot { display: none; }
+            .hero-section, .skills-section, .case-studies,
+            .portfolio-section, .services-section, .contact-section {
+                background-attachment: scroll;
+            }
         }
 
         @media (max-width: 900px) {
             .hero-section, .skills-section, .case-studies,
             .portfolio-section, .services-section, .contact-section {
-                background-attachment: scroll;
+                background-attachment: scroll; /* phones */
             }
             .hero-section, .skills-section, .notebook-container, .case-grid {
                 flex-direction: column;
