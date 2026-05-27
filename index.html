@@ -83,109 +83,227 @@
 
         /* --- HERO --- */
         .hero-section {
-            position: relative;
-            min-height: 100vh;
-            overflow: hidden;
-        }
-
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            inset: 0;
             background-image: url('images/heroheader.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            z-index: 0;
-            animation: heroBgBlurReveal 2.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+            position: relative;
+            min-height: 100vh;
+            padding: 80px 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            overflow: hidden;
         }
 
-        .hero-tag {
+        .lace-edge {
             position: absolute;
-            top: 13%;
-            left: 6%;
-            z-index: 4;
+            left: 0;
+            width: 100%;
+            height: 24px;
+            background-image: radial-gradient(circle, transparent 4px, var(--cream) 5px);
+            background-size: 16px 24px;
+            opacity: 0.3;
+            z-index: 5;
+        }
+        .lace-top { top: 0; }
+        .lace-bottom { bottom: 0; }
+
+        .hero-left {
+            max-width: 45%;
+            z-index: 2;
+            position: relative;
         }
 
-        .hero-tag h1 {
+        .cherub-statue {
+            position: absolute;
+            left: -120px;
+            top: -50px;
+            font-size: 12rem;
+            opacity: 0.15;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .hero-left h1 {
             font-family: 'Syne', sans-serif;
-            font-size: 3.6rem;
-            font-weight: 800;
-            line-height: 0.88;
+            font-size: 5rem;
+            line-height: 0.85;
             text-transform: lowercase;
-            letter-spacing: -2px;
+            letter-spacing: -3px;
+            margin-bottom: 40px;
             color: var(--cream);
         }
 
-        .hero-center-img {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -48%);
-            width: 80%;
-            max-width: 1000px;
-            object-fit: contain;
-            z-index: 2;
-            pointer-events: none;
-            user-select: none;
-        }
-
-        .hero-bio {
-            position: absolute;
-            bottom: 4%;
-            right: 4%;
-            width: min(42%, 460px);
-            z-index: 4;
-            text-align: right;
-        }
-
-        .university-badge {
-            display: inline-block;
-            background: #b83060;
-            color: #fff;
-            font-family: 'Syne', sans-serif;
-            font-size: 0.62rem;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            padding: 5px 12px;
-            margin-bottom: 16px;
-            border-radius: 2px;
-        }
-
-        .hero-bio p {
+        .hero-left p {
             font-family: 'Instrument Serif', serif;
-            font-style: italic;
-            font-size: 1rem;
-            line-height: 1.75;
-            color: rgba(253,238,242,0.82);
-            margin-bottom: 14px;
+            font-style: normal;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 25px;
+            color: rgba(253, 238, 242, 0.85);
+            max-width: 380px;
         }
 
-        .hero-contact {
-            position: absolute;
-            bottom: 4%;
-            left: 5%;
+        .contact-pills {
             display: flex;
-            gap: 10px;
             flex-wrap: wrap;
-            z-index: 4;
+            gap: 10px;
+            margin-top: 30px;
         }
 
         .contact-pill {
-            background: rgba(15, 3, 10, 0.5);
-            border: 1px solid rgba(253,238,242,0.22);
+            background: rgba(253, 238, 242, 0.12);
+            border: 1px solid rgba(253, 238, 242, 0.3);
             color: var(--cream);
             text-decoration: none;
-            padding: 7px 14px;
+            padding: 8px 16px;
             border-radius: 20px;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-family: 'Syne', sans-serif;
-            transition: background 0.25s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: background 0.2s;
         }
 
-        .contact-pill:hover {
-            background: rgba(40, 8, 25, 0.7);
-            transform: translateY(-2px);
+        .contact-pill:hover { background: rgba(253, 238, 242, 0.25); }
+
+        .hero-right {
+            position: relative;
+            width: 45%;
+            height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .scrapbook-frame {
+            background-color: #7b1830;
+            border: 2px dashed rgba(253, 238, 242, 0.4);
+            padding: 30px;
+            width: 320px;
+            height: 380px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+            transform: rotate(-3deg) translateX(-70px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .frame-inner {
+            background: var(--cream);
+            width: 100%;
+            height: 100%;
+            border: 12px double var(--burgundy);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .brand-title {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-size: 3.2rem;
+            color: var(--burgundy);
+            text-align: center;
+            line-height: 1;
+        }
+
+        .brand-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--burgundy);
+            opacity: 0.65;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .photo-card-stack {
+            position: absolute;
+            right: 0;
+            top: 20px;
+            z-index: 3;
+            overflow: visible;
+        }
+
+        .photo-card-backing {
+            position: absolute;
+            inset: 0;
+            background: #e8d5db;
+            box-shadow: 8px 8px 20px rgba(0,0,0,0.25);
+            transform: rotate(8deg);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .name-card-stack {
+            position: relative;
+            overflow: visible;
+        }
+
+        .name-card-backing {
+            position: absolute;
+            top: 0; left: 0;
+            width: 320px;
+            height: 380px;
+            background: #d4aab5;
+            border-radius: 4px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
+            transform: rotate(-6deg) translateX(-70px);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .photo-strip {
+            position: relative;
+            background: #fef5f7;
+            padding: 12px 12px 30px 12px;
+            box-shadow: 8px 8px 20px rgba(0,0,0,0.4);
+            transform: rotate(5deg);
+            z-index: 1;
+        }
+
+        .photo-placeholder {
+            width: 160px;
+            height: 200px;
+            background: #2d0c18;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.75rem;
+            text-align: center;
+            padding: 10px;
+            color: #c47a8a;
+            border: 1px solid #5c1428;
+            overflow: hidden;
+        }
+
+        .photo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            display: block;
+        }
+
+        .ribbon {
+            position: absolute;
+            top: -25px;
+            right: -70px;
+            z-index: 6;
+            transform: rotate(0deg);
+            width: 130px;
+        }
+
+        .gold-heart-charm {
+            position: absolute;
+            bottom: -65px;
+            left: -35px;
+            right: auto;
+            width: 170px;
+            transform: rotate(-10deg);
+            z-index: 5;
         }
 
         /* --- SKILLS --- */
@@ -755,41 +873,48 @@
         @media (hover: none) {
             body, a, button, input, textarea, select, [role="button"] { cursor: auto; }
             .cursor-dot { display: none; }
-            .hero-section::before, .skills-section::before, .case-studies::before,
+            .hero-section, .skills-section::before, .case-studies::before,
             .portfolio-section::before, .services-section::before, .contact-section::before {
                 background-attachment: scroll;
             }
         }
 
         @media (max-width: 1024px) {
-            .skills-section, .notebook-container, .case-grid {
+            .hero-section, .skills-section, .notebook-container, .case-grid {
                 flex-direction: column;
                 padding: 60px 5%;
             }
-            .skills-left, .skills-right, .notebook-page {
+            .hero-left, .hero-right, .skills-left, .skills-right, .notebook-page {
                 width: 100%;
                 max-width: 100%;
             }
+            .hero-right   { height: 420px; margin-top: 40px; }
             .skills-right { height: 510px; margin-top: 40px; }
             .notebook-container::after { display: none; }
             .page-left { border-right: none; border-bottom: 2px dashed #ccc; padding-bottom: 60px; }
+            .hero-left h1 { font-size: 3.5rem; }
             .section-header-maximalist h2 { font-size: 3rem; }
             .section-header-maximalist p  { font-size: 1.1rem; }
             .desk-form-container { padding: 25px; }
             .sticky-nav { max-width: 90vw; top: 10px; right: 10px; }
 
-            /* Hero tablet adjustments */
-            .hero-tag h1 { font-size: 3rem; }
-            .hero-center-img { width: 85%; }
-            .hero-bio { max-width: 50%; }
-            .hero-bio p { font-size: 0.8rem; }
+            /* Hide name card — photo only in single-column layout */
+            .name-card-stack { display: none; }
+
+            /* Centre photo in hero-right */
+            .photo-card-stack {
+                position: static;
+                margin: 0 auto;
+            }
+            .photo-strip        { transform: rotate(3deg); animation: none; opacity: 1; }
+            .photo-card-backing { transform: rotate(6deg); animation: none; opacity: 1; }
 
             /* Hide logos that overflow the folder in column layout */
             .skills-logo { display: none; }
         }
 
         @media (max-width: 900px) {
-            .hero-section::before, .skills-section::before, .case-studies::before,
+            .hero-section, .skills-section::before, .case-studies::before,
             .portfolio-section::before, .services-section::before, .contact-section::before {
                 background-attachment: scroll;
             }
@@ -797,12 +922,11 @@
 
         /* ---- Small tablets & large phones (≤ 600px) ---- */
         @media (max-width: 600px) {
+            .hero-section { padding: 70px 5% 50px; }
+            .hero-left h1 { font-size: 2.8rem; }
+            .hero-left p  { font-size: 0.95rem; }
+            .hero-right   { height: 360px; }
             .skills-right { height: 430px; }
-            .hero-tag h1 { font-size: 2.2rem; }
-            .hero-center-img { width: 96%; }
-            .hero-bio { max-width: 92%; right: 4%; bottom: 28%; text-align: left; }
-            .hero-contact { bottom: 2%; gap: 6px; }
-            .university-badge { font-size: 0.55rem; }
 
             /* Scale folder down */
             .folder { width: 290px; height: 360px; padding: 30px; }
@@ -816,12 +940,16 @@
 
             /* Edu / contact */
             .desk-form-container h2 { font-size: 2.6rem; }
+            .contact-pills { flex-direction: column; gap: 8px; }
         }
 
         /* ---- Phones (≤ 480px) ---- */
         @media (max-width: 480px) {
-            .hero-tag h1 { font-size: 1.9rem; }
+            .hero-left h1 { font-size: 2.2rem; }
+            .hero-right   { height: 320px; }
             .skills-right { height: 380px; }
+
+            .photo-placeholder { width: 140px; height: 175px; }
 
             /* Folder further reduced */
             .folder { width: 250px; height: 310px; padding: 22px; }
@@ -859,14 +987,6 @@
         @keyframes heroFadeIn {
             from { opacity: 0; }
             to   { opacity: 1; }
-        }
-        @keyframes heroBlurReveal {
-            from { opacity: 0; filter: blur(14px); }
-            to   { opacity: 1; filter: blur(0px); }
-        }
-        @keyframes heroBgBlurReveal {
-            from { filter: blur(20px); }
-            to   { filter: blur(0px); }
         }
         @keyframes heroSlideRight {
             from { opacity: 0; transform: rotate(-3deg) translateX(10px); }
@@ -968,18 +1088,46 @@
             border-color: rgba(253, 238, 242, 0.65);
         }
 
+        /* --- Emoji ornaments (static) --- */
+        .ribbon       { display: inline-block; }
+        .gold-heart-charm { display: inline-block; }
+        .green-bow    { display: inline-block; }
+
+        /* --- Lace edges & cherub ambient --- */
+        .lace-edge { animation: lacePulse 4s ease-in-out infinite; }
+        .lace-bottom { animation-delay: -2s; }
+        .cherub-statue { animation: lacePulse 6s ease-in-out infinite; }
+
         /* --- Hero entrance sequence --- */
-        .hero-tag h1 {
+        .hero-left h1 {
             animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
         }
-        .hero-center-img {
-            animation: heroBlurReveal 2.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+        .hero-left p:nth-child(2) {
+            animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
         }
-        .hero-bio {
-            animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.45s both;
+        .hero-left p:nth-child(3) {
+            animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
         }
-        .hero-contact {
-            animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.65s both;
+        .contact-pills {
+            animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.68s both;
+        }
+        .scrapbook-frame {
+            animation: heroSlideRight 1s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
+        }
+        .name-card-backing {
+            animation: heroFadeIn 0.6s ease 0.6s both;
+        }
+        .photo-strip {
+            animation: heroSlideLeft 1s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both;
+        }
+        .photo-card-backing {
+            animation: heroFadeIn 0.6s ease 0.8s both;
+        }
+        .ribbon {
+            animation: heroFadeIn 0.4s ease 0.85s both;
+        }
+        .gold-heart-charm {
+            animation: heroFadeIn 0.4s ease 0.95s both;
         }
 
         /* --- Active nav state --- */
@@ -1077,15 +1225,33 @@
 
         /* --- Reduced motion --- */
         @media (prefers-reduced-motion: reduce) {
+            .lace-edge, .lace-bottom, .cherub-statue {
+                animation: none !important;
+            }
+            .hero-left h1, .hero-left p:nth-child(2), .hero-left p:nth-child(3),
+            .contact-pills, .ribbon, .gold-heart-charm {
+                animation: none !important;
+                opacity: 1 !important;
+                transform: none !important;
+            }
+            .scrapbook-frame {
+                animation: none !important;
+                opacity: 1 !important;
+                transform: rotate(-3deg) translateX(-70px) !important;
+            }
+            .name-card-backing, .photo-card-backing {
+                animation: none !important;
+                opacity: 1 !important;
+            }
+            .photo-strip {
+                animation: none !important;
+                opacity: 1 !important;
+                transform: rotate(5deg) !important;
+            }
             .skills-section::before, .case-studies::before, .portfolio-section::before,
             .services-section::before, .contact-section::before {
                 filter: blur(0px) !important;
                 transition: none !important;
-            }
-            .hero-tag h1, .hero-center-img, .hero-bio, .hero-contact {
-                animation: none !important;
-                opacity: 1 !important;
-                transform: none !important;
             }
             .reveal {
                 opacity: 1 !important;
@@ -1094,6 +1260,7 @@
             }
             .reveal.fade-in { transform: none !important; }
             .skill-badge, .case-booklet, .project-card, .edu-card,
+            .scrapbook-frame, .name-card-backing, .photo-strip, .photo-card-backing,
             .folder-bg-manila, .folder-main, .washi-tape-accent, .project-washi {
                 transition: none !important;
             }
@@ -1114,22 +1281,49 @@
 
     <!-- ABOUT -->
     <section class="hero-section" id="about">
-        <div class="hero-tag">
-            <h1>meet the<br>designer</h1>
-        </div>
-
-        <img src="images/photo-ghibli.png" class="hero-center-img" alt="Potluri Chinmayi">
-
-        <div class="hero-bio">
-            <span class="university-badge">WOXSEN UNIVERSITY &nbsp;|&nbsp; 2022–26</span>
+        <div class="lace-edge lace-top"></div>
+        <div class="hero-left">
+            <h1>meet the designer</h1>
             <p>I craft spaces that tell compelling stories by blending bold concepts with functional, user-centered solutions. I focus on projects that bridge tradition and innovation, creating meaningful, immersive environments.</p>
+            <p>Known for my leadership and dynamic presentation skills, I thrive in fast-paced, collaborative settings — turning visionary ideas into impactful designs.</p>
+            <div class="contact-pills">
+                <a href="mailto:potlurichinmayi@gmail.com" class="contact-pill">✉ potlurichinmayi@gmail.com</a>
+                <a href="tel:+919381217295" class="contact-pill">📞 +91 93812 17295</a>
+                <a href="https://www.linkedin.com/in/chinmayi-potluri/" target="_blank" class="contact-pill">in LinkedIn</a>
+            </div>
         </div>
 
-        <div class="hero-contact">
-            <a href="mailto:potlurichinmayi@gmail.com" class="contact-pill">✉ potlurichinmayi@gmail.com</a>
-            <a href="tel:+919381217295" class="contact-pill">📞 +91 93812 17295</a>
-            <a href="https://www.linkedin.com/in/chinmayi-potluri/" target="_blank" class="contact-pill">in LinkedIn</a>
+        <div class="hero-right">
+
+            <div class="name-card-stack">
+                <div class="name-card-backing"></div>
+                <div class="scrapbook-frame">
+                    <div class="frame-inner">
+                        <div>
+                            <div class="brand-title">Potluri<br>Chinmayi</div>
+                            <div class="brand-subtitle">Interior Designer</div>
+                        </div>
+                    </div>
+                    <img src="images/elements/heart-charm.png" class="gold-heart-charm" alt="">
+                </div>
+            </div>
+
+            <div class="photo-card-stack">
+                <div class="photo-card-backing"></div>
+                <div class="photo-strip">
+                    <img src="images/elements/ribbon.png" class="ribbon" alt="">
+                    <div class="photo-placeholder">
+                        <img src="images/photo.jpeg" alt="Potluri Chinmayi">
+                    </div>
+                    <div class="photo-placeholder" style="height:80px; background:#3d1020; flex-direction:column; gap:2px;">
+                        <span style="font-family:'Instrument Serif',serif; font-style:italic; font-size:0.95rem; color:var(--cream); line-height:1.2;">Woxsen University</span>
+                        <span style="font-family:'Syne',sans-serif; font-size:0.55rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--soft-gold);">B.Des Interior Design</span>
+                        <span style="font-family:'Instrument Serif',serif; font-style:italic; font-size:0.8rem; color:rgba(253,238,242,0.5);">2022 – 2026</span>
+                    </div>
+                </div>
+            </div>
         </div>
+        <div class="lace-edge lace-bottom"></div>
     </section>
 
     <!-- SKILLS -->
