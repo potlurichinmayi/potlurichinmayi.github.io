@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Meowdoku</title>
+<style>
+  :root {
+    --bg-top: #fff1e6;
+    --bg-bottom: #ffd6e8;
+    --card: #fffaf6;
+    --ink: #4a3b3b;
+    --accent: #ff8fab;
+    --accent-dark: #e8638a;
+    --line: #d8c9c0;
+    --heavy-line: #6b4f4f;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    font-family: 'Baloo 2', 'Comic Sans MS', 'Trebuchet MS', system-ui, sans-serif;
+    background: linear-gradient(160deg, var(--bg-top), var(--bg-bottom));
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 560px;
+    padding: 20px 16px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  h1 {
+    margin: 4px 0 0;
+    font-size: clamp(2rem, 8vw, 2.8rem);
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 0 rgba(255,255,255,0.6);
+  }
+
+  h1 .paw { display: inline-block; transform: rotate(-12deg); }
+
+  .subtitle {
+    margin: -6px 0 6px;
+    font-size: 0.95rem;
+    opacity: 0.75;
+    text-align: center;
+  }
+
+  .panel {
+    width: 100%;
+    background: var(--card);
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(120, 80, 80, 0.15);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .controls-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .diff-group {
+    display: flex;
+    gap: 6px;
+    background: #f4e8e0;
+    border-radius: 999px;
+    padding: 4px;
+  }
+
+  .diff-btn {
+    border: none;
+    background: transparent;
+    color: var(--ink);
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .15s, color .15s, transform .1s;
+  }
+
+  .diff-btn.active {
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 2px 6px rgba(232, 99, 138, 0.5);
+  }
+
+  .diff-btn:active { transform: scale(0.94); }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .hearts { display: flex; gap: 3px; font-size: 1.3rem; }
+  .heart-lost { opacity: 0.25; filter: grayscale(1); }
+
+  .timer { font-variant-numeric: tabular-nums; }
+
+  .new-game-btn {
+    border: none;
+    background: var(--accent-dark);
+    color: white;
+    padding: 9px 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 3px 0 #b2405f;
+    transition: transform .08s;
+  }
+  .new-game-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #b2405f; }
+
+  .hint-text {
+    text-align: center;
+    font-size: 0.82rem;
+    opacity: 0.7;
+    line-height: 1.4;
+  }
+
+  #board {
+    display: grid;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 0 3px var(--heavy-line);
+    background: var(--heavy-line);
+    gap: 1px;
+    touch-action: manipulation;
+    user-select: none;
+  }
+
+  .cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(1rem, 5.2vmin, 2.1rem);
+    cursor: pointer;
+    background: #eee;
+    transition: filter .1s;
+  }
+
+  .cell:active { filter: brightness(0.92); }
+
+  .cell.border-top    { border-top: 3px solid var(--heavy-line); }
+  .cell.border-bottom { border-bottom: 3px solid var(--heavy-line); }
+  .cell.border-left   { border-left: 3px solid var(--heavy-line); }
+  .cell.border-right  { border-right: 3px solid var(--heavy-line); }
+
+  .cell.marked::after {
+    content: "✕";
+    color: rgba(74,59,59,0.35);
+    font-size: 0.7em;
+    font-weight: 700;
+  }
+
+  .cell.cat { font-size: clamp(1.1rem, 6vmin, 2.4rem); }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+  .cell.shake { animation: shake .35s; }
+  .cell.bad-flash { background: #ff8f8f !important; }
+
+  @keyframes pop {
+    0% { transform: scale(0.3); }
+    60% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  .cell.cat span { display: inline-block; animation: pop .25s ease-out; }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(74, 59, 59, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s;
+  }
+  .modal-overlay.show { opacity: 1; pointer-events: auto; }
+
+  .modal {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 28px 24px;
+    max-width: 340px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+    transform: translateY(10px) scale(0.96);
+    transition: transform .2s;
+  }
+  .modal-overlay.show .modal { transform: translateY(0) scale(1); }
+
+  .modal .emoji { font-size: 3rem; margin-bottom: 4px; }
+  .modal h2 { margin: 0 0 6px; }
+  .modal p { margin: 0 0 18px; opacity: 0.8; }
+
+  .modal-btn {
+    border: none;
+    background: var(--accent);
+    color: white;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 3px 0 var(--accent-dark);
+  }
+  .modal-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--accent-dark); }
+
+  footer {
+    opacity: 0.55;
+    font-size: 0.75rem;
+    margin-top: 4px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1><span class="paw">🐾</span> Meowdoku</h1>
+  <p class="subtitle">One cat per region. No shares row, column, or touching neighbor.</p>
+
+  <div class="panel">
+    <div class="controls-row">
+      <div class="diff-group" id="diffGroup">
+        <button class="diff-btn" data-size="5">Easy</button>
+        <button class="diff-btn" data-size="7">Medium</button>
+        <button class="diff-btn" data-size="9">Hard</button>
+      </div>
+      <button class="new-game-btn" id="newGameBtn">New Game</button>
+    </div>
+    <div class="stat-row">
+      <div class="hearts" id="hearts"></div>
+      <div class="timer" id="timer">00:00</div>
+    </div>
+  </div>
+
+  <div id="board"></div>
+
+  <p class="hint-text">Tap once to place a cat 🐱, tap again to mark ✕ (ruled out), tap a third time to clear.</p>
+
+  <footer>Inspired by Meowdoku — built for fun with HTML, CSS &amp; JS.</footer>
+</div>
+
+<div class="modal-overlay" id="winModal">
+  <div class="modal">
+    <div class="emoji">🐱🎉</div>
+    <h2>Solved it!</h2>
+    <p id="winTime">Time: 00:00</p>
+    <button class="modal-btn" id="winPlayAgain">Play Again</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="loseModal">
+  <div class="modal">
+    <div class="emoji">😿</div>
+    <h2>Out of hearts</h2>
+    <p>The cats got away this time. Give it another go!</p>
+    <button class="modal-btn" id="loseTryAgain">Try Again</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  const REGION_COLORS = [
+    "#ffd3e0", "#c7e8ff", "#d6f5d0", "#fff2b8", "#e3d4ff",
+    "#ffdbb0", "#c9f5ea", "#f5c9dc", "#d0e8ff", "#e8f0b8"
+  ];
+
+  const MAX_HEARTS = 3;
+
+  let size = 5;
+  let regions = [];      // regions[r][c] = region id
+  let solution = [];     // solution[r] = c  (row -> col of the cat)
+  let cats = [];         // cats[r][c] = 'cat' | 'mark' | null
+  let hearts = MAX_HEARTS;
+  let timerInterval = null;
+  let startTime = null;
+  let gameOver = false;
+
+  const boardEl = document.getElementById("board");
+  const heartsEl = document.getElementById("hearts");
+  const timerEl = document.getElementById("timer");
+  const diffGroup = document.getElementById("diffGroup");
+  const newGameBtn = document.getElementById("newGameBtn");
+  const winModal = document.getElementById("winModal");
+  const loseModal = document.getElementById("loseModal");
+  const winTime = document.getElementById("winTime");
+
+  // ---------- Puzzle generation ----------
+
+  function isSafe(colsUsed, row, col) {
+    if (colsUsed.includes(col)) return false;
+    // adjacency (king move) check against previous row only, since one cat per row placed top->bottom
+    if (row > 0) {
+      const prevCol = colsUsed[row - 1];
+      if (Math.abs(prevCol - col) <= 1) return false;
+    }
+    return true;
+  }
+
+  function generateSolution(n) {
+    const cols = [];
+    const order = shuffledRange(n);
+
+    function backtrack(row) {
+      if (row === n) return true;
+      const rowOrder = shuffledRange(n);
+      for (const col of rowOrder) {
+        if (isSafe(cols, row, col)) {
+          cols.push(col);
+          if (backtrack(row + 1)) return true;
+          cols.pop();
+        }
+      }
+      return false;
+    }
+
+    backtrack(0);
+    return cols; // cols[row] = col
+  }
+
+  function shuffledRange(n) {
+    const arr = Array.from({ length: n }, (_, i) => i);
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function neighbors4(r, c, n) {
+    const out = [];
+    if (r > 0) out.push([r - 1, c]);
+    if (r < n - 1) out.push([r + 1, c]);
+    if (c > 0) out.push([r, c - 1]);
+    if (c < n - 1) out.push([r, c + 1]);
+    return out;
+  }
+
+  // Grow N regions simultaneously (random flood-fill) from each solution cat's cell,
+  // guaranteeing every region contains exactly one solution cat.
+  function generateRegions(n, sol) {
+    const grid = Array.from({ length: n }, () => Array(n).fill(-1));
+    const frontiers = [];
+    for (let r = 0; r < n; r++) {
+      const c = sol[r];
+      grid[r][c] = r;
+      frontiers.push([[r, c]]);
+    }
+
+    let remaining = n * n - n;
+    let stuckStreak = 0;
+
+    while (remaining > 0 && stuckStreak < n * 2) {
+      let grew = false;
+      const order = shuffledRange(n);
+      for (const regionId of order) {
+        const frontier = frontiers[regionId];
+        // gather candidate empty neighbor cells for this region
+        const candidates = [];
+        for (const [r, c] of frontier) {
+          for (const [nr, nc] of neighbors4(r, c, n)) {
+            if (grid[nr][nc] === -1) candidates.push([nr, nc]);
+          }
+        }
+        if (candidates.length === 0) continue;
+        const [nr, nc] = candidates[Math.floor(Math.random() * candidates.length)];
+        if (grid[nr][nc] === -1) {
+          grid[nr][nc] = regionId;
+          frontier.push([nr, nc]);
+          remaining--;
+          grew = true;
+        }
+      }
+      stuckStreak = grew ? 0 : stuckStreak + 1;
+    }
+
+    // Mop up any unreached cells (rare, e.g. isolated pockets) by assigning to nearest-neighbor region.
+    for (let r = 0; r < n; r++) {
+      for (let c = 0; c < n; c++) {
+        if (grid[r][c] === -1) {
+          for (const [nr, nc] of neighbors4(r, c, n)) {
+            if (grid[nr][nc] !== -1) { grid[r][c] = grid[nr][nc]; break; }
+          }
+        }
+      }
+    }
+    // Final fallback pass in case of stubborn -1 cells
+    let guard = 0;
+    while (grid.some(row => row.includes(-1)) && guard < 50) {
+      for (let r = 0; r < n; r++) {
+        for (let c = 0; c < n; c++) {
+          if (grid[r][c] === -1) {
+            for (const [nr, nc] of neighbors4(r, c, n)) {
+              if (grid[nr][nc] !== -1) { grid[r][c] = grid[nr][nc]; break; }
+            }
+          }
+        }
+      }
+      guard++;
+    }
+
+    return grid;
+  }
+
+  // Counts solutions (capped) for a given region layout using row-by-row backtracking.
+  function countSolutions(regionGrid, n, cap) {
+    let count = 0;
+    const colUsed = Array(n).fill(false);
+    const regionUsed = Array(n).fill(false);
+    const placedCol = Array(n).fill(-1);
+
+    function backtrack(row) {
+      if (count >= cap) return;
+      if (row === n) { count++; return; }
+      for (let col = 0; col < n; col++) {
+        if (colUsed[col]) continue;
+        const reg = regionGrid[row][col];
+        if (regionUsed[reg]) continue;
+        if (row > 0) {
+          const prevCol = placedCol[row - 1];
+          if (Math.abs(prevCol - col) <= 1) continue;
+        }
+        colUsed[col] = true;
+        regionUsed[reg] = true;
+        placedCol[row] = col;
+        backtrack(row + 1);
+        colUsed[col] = false;
+        regionUsed[reg] = false;
+        if (count >= cap) return;
+      }
+    }
+
+    backtrack(0);
+    return count;
+  }
+
+  function generatePuzzle(n) {
+    const MAX_ATTEMPTS = 60;
+    for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+      const sol = generateSolution(n);
+      const regionGrid = generateRegions(n, sol);
+      const solCount = countSolutions(regionGrid, n, 2);
+      if (solCount === 1) {
+        return { solution: sol, regions: regionGrid };
+      }
+    }
+    // Fallback: return the last generated puzzle even if not proven unique
+    // (extremely rare with reasonable grid sizes).
+    const sol = generateSolution(n);
+    const regionGrid = generateRegions(n, sol);
+    return { solution: sol, regions: regionGrid };
+  }
+
+  // ---------- Game state / rendering ----------
+
+  function startNewGame(newSize) {
+    if (newSize) size = newSize;
+    const puzzle = generatePuzzle(size);
+    solution = puzzle.solution;
+    regions = puzzle.regions;
+    cats = Array.from({ length: size }, () => Array(size).fill(null));
+    hearts = MAX_HEARTS;
+    gameOver = false;
+    stopTimer();
+    startTime = null;
+    timerEl.textContent = "00:00";
+    hideModals();
+    renderHearts();
+    renderBoard();
+  }
+
+  function renderHearts() {
+    heartsEl.innerHTML = "";
+    for (let i = 0; i < MAX_HEARTS; i++) {
+      const span = document.createElement("span");
+      span.textContent = "❤️";
+      if (i >= hearts) span.classList.add("heart-lost");
+      heartsEl.appendChild(span);
+    }
+  }
+
+  function renderBoard() {
+    boardEl.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+    boardEl.style.gridTemplateRows = `repeat(${size}, 1fr)`;
+    boardEl.innerHTML = "";
+
+    for (let r = 0; r < size; r++) {
+      for (let c = 0; c < size; c++) {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.style.background = REGION_COLORS[regions[r][c] % REGION_COLORS.length];
+        cell.dataset.r = r;
+        cell.dataset.c = c;
+
+        if (r === 0 || regions[r - 1][c] !== regions[r][c]) cell.classList.add("border-top");
+        if (r === size - 1 || regions[r + 1][c] !== regions[r][c]) cell.classList.add("border-bottom");
+        if (c === 0 || regions[r][c - 1] !== regions[r][c]) cell.classList.add("border-left");
+        if (c === size - 1 || regions[r][c + 1] !== regions[r][c]) cell.classList.add("border-right");
+
+        applyCellContent(cell, r, c);
+
+        cell.addEventListener("click", () => handleCellClick(r, c));
+        boardEl.appendChild(cell);
+      }
+    }
+  }
+
+  function applyCellContent(cell, r, c) {
+    const state = cats[r][c];
+    cell.classList.remove("cat", "marked");
+    cell.innerHTML = "";
+    if (state === "cat") {
+      cell.classList.add("cat");
+      const span = document.createElement("span");
+      span.textContent = "🐱";
+      cell.appendChild(span);
+    } else if (state === "mark") {
+      cell.classList.add("marked");
+    }
+  }
+
+  function handleCellClick(r, c) {
+    if (gameOver) return;
+    if (startTime === null) startTimer();
+
+    const current = cats[r][c];
+    if (current === null) {
+      // attempt to place a cat
+      if (isPlacementValid(r, c)) {
+        cats[r][c] = "cat";
+        const cellEl = cellAt(r, c);
+        applyCellContent(cellEl, r, c);
+        checkWin();
+      } else {
+        loseHeart(r, c);
+        cats[r][c] = "mark";
+        applyCellContent(cellAt(r, c), r, c);
+      }
+    } else if (current === "cat") {
+      cats[r][c] = "mark";
+      applyCellContent(cellAt(r, c), r, c);
+    } else {
+      cats[r][c] = null;
+      applyCellContent(cellAt(r, c), r, c);
+    }
+  }
+
+  function cellAt(r, c) {
+    return boardEl.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+  }
+
+  function isPlacementValid(r, c) {
+    const reg = regions[r][c];
+    for (let rr = 0; rr < size; rr++) {
+      for (let cc = 0; cc < size; cc++) {
+        if (cats[rr][cc] !== "cat") continue;
+        if (rr === r && cc === c) continue;
+        if (cc === c) return false;               // same column
+        if (rr === r) return false;                // same row
+        if (regions[rr][cc] === reg) return false; // same region
+        if (Math.abs(rr - r) <= 1 && Math.abs(cc - c) <= 1) return false; // adjacent incl. diagonal
+      }
+    }
+    return true;
+  }
+
+  function loseHeart(r, c) {
+    hearts--;
+    renderHearts();
+    const cellEl = cellAt(r, c);
+    cellEl.classList.add("shake", "bad-flash");
+    setTimeout(() => cellEl.classList.remove("shake", "bad-flash"), 350);
+
+    if (hearts <= 0) {
+      gameOver = true;
+      stopTimer();
+      setTimeout(showLoseModal, 400);
+    }
+  }
+
+  function checkWin() {
+    let placed = 0;
+    for (let r = 0; r < size; r++) {
+      for (let c = 0; c < size; c++) {
+        if (cats[r][c] === "cat") placed++;
+      }
+    }
+    if (placed !== size) return;
+
+    for (let r = 0; r < size; r++) {
+      for (let c = 0; c < size; c++) {
+        if (cats[r][c] === "cat" && !isPlacementValid(r, c)) return;
+      }
+    }
+
+    gameOver = true;
+    stopTimer();
+    winTime.textContent = `Time: ${timerEl.textContent}`;
+    setTimeout(showWinModal, 300);
+  }
+
+  // ---------- Timer ----------
+
+  function startTimer() {
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const mm = String(Math.floor(elapsed / 60)).padStart(2, "0");
+      const ss = String(elapsed % 60).padStart(2, "0");
+      timerEl.textContent = `${mm}:${ss}`;
+    }, 250);
+  }
+
+  function stopTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  // ---------- Modals ----------
+
+  function showWinModal() { winModal.classList.add("show"); }
+  function showLoseModal() { loseModal.classList.add("show"); }
+  function hideModals() {
+    winModal.classList.remove("show");
+    loseModal.classList.remove("show");
+  }
+
+  // ---------- Wiring ----------
+
+  diffGroup.addEventListener("click", (e) => {
+    const btn = e.target.closest(".diff-btn");
+    if (!btn) return;
+    [...diffGroup.children].forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+    startNewGame(parseInt(btn.dataset.size, 10));
+  });
+
+  newGameBtn.addEventListener("click", () => startNewGame());
+  document.getElementById("winPlayAgain").addEventListener("click", () => startNewGame());
+  document.getElementById("loseTryAgain").addEventListener("click", () => startNewGame());
+
+  // init: default to Easy
+  diffGroup.children[0].classList.add("active");
+  startNewGame(5);
+})();
+</script>
+</body>
+</html>
