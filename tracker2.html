@@ -9,7 +9,7 @@
 <link rel="preload" as="image" href="tracker-assets/bg.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&family=Baskervville&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&display=swap" rel="stylesheet">
 <style>
   :root {
     --ground: #0a1128;
@@ -28,12 +28,13 @@
     --danger: #f5a896;
 
     --serif: 'Baskervville', 'Baskerville', 'Libre Baskerville', Georgia, serif;
-    --sans: 'Alegreya Sans', 'Gill Sans', 'Trebuchet MS', sans-serif;
+    --sans: var(--serif);
 
     --r: 14px;
     --r-sm: 8px;
     --gap: 20px;
-    --pad: clamp(16px, 3vw, 32px);
+    --pad: 24px;
+    --line: rgba(240, 232, 217, 0.65);
     --ease: cubic-bezier(0.16, 1, 0.3, 1);
     --shadow: 0 20px 40px -24px rgba(1, 3, 14, 0.9);
     --shadow-lift: 0 26px 48px -20px rgba(1, 3, 14, 0.95);
@@ -43,7 +44,7 @@
   [hidden] { display: none !important; }
 
   html {
-    background: var(--ground);
+    background: var(--ground) url('tracker-assets/bg.webp') center top / cover no-repeat;
     color-scheme: dark;
     scroll-behavior: smooth;
     scroll-padding-top: 84px;
@@ -55,8 +56,8 @@
     margin: 0;
     min-height: 100vh;
     font-family: var(--sans);
-    font-size: 17px;
-    line-height: 1.4;
+    font-size: 16px;
+    line-height: 1.3;
     color: var(--ink);
     caret-color: var(--ember);
     font-variant-numeric: lining-nums tabular-nums;
@@ -64,16 +65,11 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* the photograph stays put while the page scrolls over it */
-  body::before, body::after { content: ''; position: fixed; inset: 0 0 auto 0; height: 100lvh; pointer-events: none; }
-  body::before { z-index: -2; background: var(--ground) url('tracker-assets/bg.webp') center 22% / cover no-repeat; }
-  body::after { z-index: -1; background: linear-gradient(180deg, rgba(8, 13, 34, 0.55), rgba(8, 13, 34, 0.18) 38%, rgba(8, 13, 34, 0.5)); }
-
   ::selection { background: var(--ember); color: var(--on-ember); }
   :focus-visible { outline: 2px solid var(--ember); outline-offset: 2px; }
   h1, h2, h3, p, figure { margin: 0; }
   h1, h2, h3 { font-weight: 400; text-wrap: balance; }
-  img { display: block; max-width: 100%; }
+  img { display: block; max-width: 100%; height: auto; }
   button, input, select, textarea { font: inherit; color: inherit; }
   button { cursor: pointer; }
   a { color: inherit; text-underline-offset: 3px; }
@@ -89,7 +85,7 @@
     gap: 8px;
     min-height: 42px;
     padding: 0 18px;
-    font-weight: 500;
+    font-weight: 400;
     font-size: 16px;
     white-space: nowrap;
     border: 0;
@@ -143,28 +139,13 @@
     .link-btn { min-height: 44px; }
   }
 
-  /* ---------- Top bar ---------- */
-  .bar {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 12px max(var(--pad), calc((100% - 1320px) / 2 + var(--pad)));
-    padding-top: max(12px, env(safe-area-inset-top));
-    transition: background-color 0.3s, box-shadow 0.3s;
-  }
-  .bar.scrolled {
-    background: rgba(9, 15, 38, 0.8);
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
-    box-shadow: 0 1px 0 var(--rule), 0 14px 30px -22px rgba(1, 3, 14, 0.9);
-  }
+  /* ---------- Masthead (tracker's: in the page flow, rule beneath) ---------- */
+  .bar { display: flex; flex-wrap: wrap; align-items: center; column-gap: 14px; max-width: 1366px; margin: 0 auto; padding: 40px var(--pad) 0; }
+  .bar::after { content: ''; flex-basis: 100%; margin-top: 6px; border-bottom: 1px solid var(--line); }
   .brand { display: flex; align-items: center; gap: 12px; margin-right: auto; text-decoration: none; border-radius: 999px; }
-  .brand img { width: 40px; height: 40px; border-radius: 50%; transition: transform 0.6s var(--ease); }
+  .brand img { width: 52px; height: 52px; border-radius: 50%; transition: transform 0.6s var(--ease); }
   .brand:hover img { transform: rotate(40deg); }
-  .brand span { font-family: var(--serif); font-size: 20px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .brand span { font-family: var(--serif); font-size: 21px; letter-spacing: 0.02em; text-transform: uppercase; }
 
   .fab {
     position: fixed;
@@ -186,54 +167,60 @@
   .fab .ic { width: 26px; height: 26px; stroke-width: 1.8; }
   .fab:active { transform: scale(0.93); }
 
-  /* ---------- Page grid ---------- */
-  .page { max-width: 1320px; margin: 0 auto; padding: 8px var(--pad) 40px; }
-  /* desktop follows the original mockup: two independent columns */
-  .grid { display: grid; grid-template-columns: minmax(0, 643fr) minmax(0, 633fr); gap: var(--gap) 40px; align-items: start; }
-  .side { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--gap); align-content: start; min-width: 0; }
-  .side-left { grid-template-areas: "ti ti we we mo mo" "go go go td td td" "qu qu qu td td td" "pe pe pe pe pe pe" "ca ca ca ca ca ca"; grid-template-rows: auto auto 1fr; }
-  .side-right { grid-template-areas: "wk wk wk no no no" "pr pr pr pr pr pr" "fi fi fi fi fi fi" "ga ga ga ga ga ga"; }
-  .a-glance { grid-area: gl; }
-  .a-today { grid-area: td; }
-  .a-weekly { grid-area: wk; }
-  .a-personal { grid-area: pe; }
-  .a-projects { grid-area: pr; }
-  .a-goals { grid-area: go; }
-  .a-calendar { grid-area: ca; }
-  .a-notes { grid-area: no; }
-  .a-finance { grid-area: fi; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap); }
-  .a-quote { grid-area: qu; }
-  .a-gallery { grid-area: ga; }
+  /* ---------- Page layout: sizes and positions copied from tracker.html ---------- */
+  .page { max-width: 1366px; margin: 0 auto; padding: 22px var(--pad) 56px; }
+  .grid { display: grid; grid-template-columns: minmax(0, 643fr) minmax(0, 633fr); column-gap: 40px; align-items: start; }
+  .side { display: flex; flex-direction: column; min-width: 0; }
+  .side-right { padding-top: 18px; }
+  .row-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 35px; align-items: start; }
+  .row-2 > * { min-width: 0; }
+  hr.rule { width: 100%; margin: 25px 0 22px; border: 0; border-top: 1px solid var(--line); }
 
   .panel {
     display: flex;
     flex-direction: column;
     min-width: 0;
-    padding: 20px 22px 22px;
+    padding: 22px;
     background: var(--panel);
     border-radius: var(--r);
     box-shadow: var(--shadow);
   }
-  .head { display: flex; align-items: center; gap: 10px; min-height: 38px; margin-bottom: 10px; }
-  .head h2 { font-family: var(--serif); font-size: 23px; line-height: 1.15; }
-  .head .sub { font-size: 15px; color: var(--ink-3); margin-right: auto; padding-top: 3px; }
+  /* headings sit above their cards */
+  .head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .head h2 { font-family: var(--serif); font-size: 21px; line-height: 0.95; letter-spacing: 0.01em; }
+  .head .sub { font-size: 14px; color: var(--ink-2); margin-right: auto; }
   .head h2:only-child, .head h2:not(:has(+ .sub)) { margin-right: auto; }
-  .head .icon-btn { margin-right: -8px; }
+  .head .icon-btn { width: 26px; height: 26px; margin: -5px 0; color: var(--ink); box-shadow: inset 0 0 0 1px var(--rule-2); }
+  .head .icon-btn .ic { width: 14px; height: 14px; }
+  .head.ruled { padding-bottom: 8px; border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+
+  #goals-body { min-height: 236px; }
+  #today-body { min-height: 368px; }
+  .a-personal { margin-top: 100px; }
+  #personal-body { min-height: 150px; }
+  .a-calendar { margin-top: 28px; }
+  .cal-card { min-height: 424px; padding: 24px 28px 20px; }
+  #weekly-body { min-height: 270px; }
+  #notes-body { aspect-ratio: 1 / 1; min-height: 0; overflow-y: auto; scrollbar-width: thin; }
+  #notes-body > * { flex: none; }
+  .a-projects { margin-top: 16px; }
+  .a-projects .head.ruled { margin-bottom: 10px; }
+  .a-finance { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 104px; }
+  .a-gallery { margin-top: 46px; }
 
   /* ---------- Glance ---------- */
-  .glance { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.55fr); padding: 0; }
-  .zone { padding: 22px 26px 24px; min-width: 0; }
-  .zone + .zone { border-left: 1px solid var(--rule); }
+  .glance { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .zone { min-width: 0; min-height: 165px; padding: 20px 22px 22px; background: var(--panel); border-radius: var(--r); box-shadow: var(--shadow); }
   .zone h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  .big { display: flex; align-items: baseline; gap: 8px; font-family: var(--serif); font-size: 54px; line-height: 1; white-space: nowrap; }
-  .big small { font-family: var(--sans); font-size: 17px; font-weight: 500; letter-spacing: 0.04em; color: var(--ink-2); }
+  .big { display: flex; align-items: baseline; gap: 8px; font-family: var(--serif); font-size: 42px; line-height: 1; white-space: nowrap; }
+  .big small { font-family: var(--sans); font-size: 17px; font-weight: 400; letter-spacing: 0.04em; color: var(--ink-2); }
   .zone .line { margin-top: 10px; font-size: 16px; color: var(--ink-2); }
-  .weather-now { display: flex; align-items: center; gap: 14px; }
-  .weather-now .ic { width: 38px; height: 38px; stroke-width: 1.2; color: var(--ember); }
-  .month-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-  .month-top strong { font-family: var(--serif); font-weight: 400; font-size: 30px; line-height: 1.1; }
+  .weather-now { display: flex; align-items: center; gap: 10px; }
+  .weather-now .ic { width: 30px; height: 30px; stroke-width: 1.2; color: var(--ember); }
+  .month-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 12px; }
+  .month-top strong { font-family: var(--serif); font-weight: 400; font-size: 26px; line-height: 1.1; }
   .month-top span { font-size: 16px; color: var(--ink-2); }
-  .ticks { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 3px; align-items: end; height: 30px; margin-top: 14px; }
+  .ticks { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 2px; align-items: end; height: 26px; margin-top: 14px; }
   .ticks i { display: block; height: 55%; border-radius: 2px; background: var(--rule); transform-origin: bottom; }
   .ticks i.past { background: var(--ink-3); }
   .ticks i.now { height: 100%; background: var(--ember); }
@@ -269,15 +256,15 @@
   @keyframes tick-draw { from { opacity: 0; transform: scale(0.3) rotate(-25deg); } }
 
   .row-main { display: block; width: 100%; min-height: 44px; padding: 10px 8px 10px 0; border: 0; background: none; text-align: left; border-radius: var(--r-sm); }
-  .row-title { display: block; font-size: 17px; line-height: 1.3; overflow-wrap: anywhere; transition: color 0.18s; }
+  .row-title { display: block; font-size: 16px; line-height: 1.3; overflow-wrap: anywhere; transition: color 0.18s; }
   .row-main:hover .row-title { color: var(--ember-hi); }
   .row.is-done .row-title { color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--rule-2); }
-  .meta { display: flex; flex-wrap: wrap; margin-top: 2px; font-size: 14px; line-height: 1.35; color: var(--ink-3); }
+  .meta { display: flex; flex-wrap: wrap; margin-top: 2px; font-size: 13px; line-height: 1.35; color: var(--ink-3); }
   .meta span + span::before { content: '·'; margin: 0 7px; color: var(--ink-3); }
   .meta .overdue { color: var(--danger); }
   .meta .doing { color: var(--ember); }
 
-  .group-label { margin: 10px 0 2px; font-size: 14px; font-weight: 500; color: var(--ink-3); }
+  .group-label { margin: 10px 0 2px; font-size: 14px; font-weight: 400; color: var(--ink-3); }
   .group-label:first-child { margin-top: 0; }
   .group-label.overdue { color: var(--danger); }
 
@@ -293,17 +280,16 @@
   .quiet { padding: 8px 0; font-size: 15px; color: var(--ink-3); }
 
   /* ---------- Projects ---------- */
-  .board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); flex: 1; }
-  .col { min-width: 0; padding: 6px 18px 6px; border-left: 1px solid var(--rule); border-radius: var(--r-sm); transition: background-color 0.18s; }
-  .col:first-child { padding-left: 0; border-left: 0; }
-  .col:last-child { padding-right: 0; }
-  .col.drop { background: var(--raise); box-shadow: inset 0 0 0 1px var(--ember); }
-  .col-head { display: flex; justify-content: space-between; gap: 8px; padding: 0 0 8px; font-size: 15px; font-weight: 500; color: var(--ink-2); }
-  .col-head span { color: var(--ink-3); font-weight: 400; }
+  .board { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr); gap: 14px; }
+  .col { min-width: 0; min-height: 196px; padding: 48px 12px 20px; background: var(--panel); border-radius: var(--r); box-shadow: var(--shadow); transition: background-color 0.18s; }
+  .col.drop { box-shadow: inset 0 0 0 1.5px var(--ember), var(--shadow); }
+  .col-head { display: flex; justify-content: center; align-items: baseline; gap: 8px; padding: 0 0 14px; font-size: 21px; line-height: 0.95; font-weight: 400; color: var(--ink-2); }
+  .col-head span { font-size: 14px; color: var(--ink-3); font-weight: 400; }
+  .col:first-child .col-head { justify-content: flex-start; }
   .proj { padding: 10px 0 8px; border-top: 1px solid var(--rule); cursor: grab; transition: opacity 0.18s; }
   .proj:active { cursor: grabbing; }
   .proj.dragging { opacity: 0.4; }
-  .proj-title { display: block; width: 100%; padding: 2px 0; border: 0; background: none; text-align: left; font-size: 18px; font-weight: 500; line-height: 1.25; overflow-wrap: anywhere; border-radius: 4px; transition: color 0.18s; }
+  .proj-title { display: block; width: 100%; padding: 2px 0; border: 0; background: none; text-align: left; font-size: 18px; font-weight: 400; line-height: 1.25; overflow-wrap: anywhere; border-radius: 4px; transition: color 0.18s; }
   .proj-title:hover { color: var(--ember-hi); }
   .proj .meta { margin-top: 1px; }
   .bar-track { height: 3px; margin: 8px 0 4px; border-radius: 2px; background: var(--rule); overflow: hidden; }
@@ -317,27 +303,27 @@
 
   /* ---------- Calendar ---------- */
   .cal-head { display: flex; align-items: center; gap: 4px; min-height: 38px; margin-bottom: 8px; }
-  .cal-head h2 { margin-right: auto; font-family: var(--serif); font-size: 23px; line-height: 1.15; }
-  .cal-head h2 span { color: var(--ink-3); margin-left: 6px; }
+  .cal-head h3 { margin-right: auto; font-family: var(--serif); font-size: 21px; line-height: 1.15; }
+  .cal-head h3 span { color: var(--ink-3); margin-left: 6px; }
   .cal-week, .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
   .cal-week { padding-bottom: 6px; border-bottom: 1px solid var(--rule); font-size: 14px; color: var(--ink-3); text-align: center; }
-  .cal-grid { gap: 2px; padding-top: 6px; }
+  .cal-grid { flex: 1; grid-auto-rows: minmax(44px, 1fr); gap: 2px; padding-top: 6px; }
   .cal-grid.to-next { animation: slide-next 0.3s var(--ease); }
   .cal-grid.to-prev { animation: slide-prev 0.3s var(--ease); }
   @keyframes slide-next { from { opacity: 0; transform: translateX(14px); } }
   @keyframes slide-prev { from { opacity: 0; transform: translateX(-14px); } }
-  .day { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; height: 48px; padding: 0; border: 0; border-radius: var(--r-sm); background: none; font-size: 16px; transition: background-color 0.15s, box-shadow 0.15s; }
+  .day { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 0; border: 0; border-radius: var(--r-sm); background: none; font-size: 16px; transition: background-color 0.15s, box-shadow 0.15s; }
   .day:hover { background: var(--raise-2); }
   .day .num { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; }
   .day.out { color: var(--ink-3); }
-  .day.today .num { background: var(--ember); color: var(--on-ember); font-weight: 700; }
+  .day.today .num { background: var(--ember); color: var(--on-ember); font-weight: 400; }
   .day[aria-pressed="true"] { background: var(--raise); box-shadow: inset 0 0 0 1.5px var(--ember); }
   .dots { display: flex; gap: 3px; height: 4px; }
   .dots i { width: 4px; height: 4px; border-radius: 50%; background: var(--ember); }
   .dots i.done { background: var(--ink-3); }
   .agenda { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--rule); }
   .agenda-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-  .agenda-head h3 { font-size: 16px; font-weight: 500; }
+  .agenda-head h3 { font-size: 16px; font-weight: 400; }
 
   /* ---------- Notes ---------- */
   .notes { margin: 0 -8px; }
@@ -345,7 +331,7 @@
   .note:first-child { border-top: 0; }
   .note:hover { background: var(--raise); border-radius: var(--r-sm); }
   .note-title, .note-preview { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
-  .note-title { font-size: 17px; font-weight: 500; line-height: 1.3; -webkit-line-clamp: 2; }
+  .note-title { font-size: 17px; font-weight: 400; line-height: 1.3; -webkit-line-clamp: 2; }
   .note-title.untitled { font-weight: 400; -webkit-line-clamp: 3; white-space: pre-line; }
   .note-preview { margin-top: 2px; font-size: 15px; color: var(--ink-2); -webkit-line-clamp: 2; }
   .note-meta { display: flex; align-items: center; gap: 6px; margin-top: 4px; font-size: 14px; color: var(--ink-3); }
@@ -353,20 +339,19 @@
   .more { margin-top: 8px; }
 
   /* ---------- Finance placeholder ---------- */
-  .placeholder { justify-content: center; min-height: 170px; background: rgba(11, 18, 46, 0.62); box-shadow: inset 0 0 0 1px var(--rule-2); }
-  .placeholder h2 { font-family: var(--serif); font-size: 21px; line-height: 1.15; }
+  .placeholder { min-height: 206px; padding: 78px 30px 30px; background: rgba(11, 18, 46, 0.62); box-shadow: inset 0 0 0 1px var(--rule-2); }
+  .placeholder h2 { font-family: var(--serif); font-size: 21px; line-height: 0.95; letter-spacing: 0.01em; }
   .placeholder p { margin-top: 8px; font-size: 15px; color: var(--ink-3); }
 
   /* ---------- Stickers ---------- */
-  .a-quote { display: grid; place-items: center; padding: 12px 0; }
-  .a-quote img { width: min(100%, 380px); transform: rotate(-3deg); filter: drop-shadow(0 18px 18px rgba(1, 3, 14, 0.55)); transition: transform 0.6s var(--ease); }
-  .a-quote:hover img { transform: rotate(0.5deg) scale(1.03); }
+  .a-quote { margin-top: 12px; }
+  .a-quote img { width: 100%; }
   .a-gallery img { width: 100%; filter: drop-shadow(0 22px 26px rgba(1, 3, 14, 0.5)); }
   .js .reveal { opacity: 0; transform: translateY(22px); }
   .js .reveal.in { opacity: 1; transform: none; transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
 
   /* ---------- Footer ---------- */
-  .foot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; max-width: 1320px; margin: 0 auto; padding: 18px var(--pad) calc(28px + env(safe-area-inset-bottom)); font-size: 15px; color: var(--ink-2); }
+  .foot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; max-width: 1366px; margin: 0 auto; padding: 18px var(--pad) calc(28px + env(safe-area-inset-bottom)); font-size: 15px; color: var(--ink-2); }
   .foot p { margin-right: auto; max-width: 60ch; }
 
   /* ---------- Sheets (dialogs) ---------- */
@@ -402,7 +387,7 @@
   .seg-opts input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
   .seg-opts span { display: grid; place-items: center; min-height: 40px; padding: 4px 6px; font-size: 15px; text-align: center; line-height: 1.15; color: var(--ink-2); border-radius: 999px; box-shadow: inset 0 0 0 1px var(--rule-2); transition: background-color 0.18s, color 0.18s, box-shadow 0.18s; }
   .seg-opts label:hover span { color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink-3); }
-  .seg-opts input:checked + span { background: var(--ember); color: var(--on-ember); font-weight: 500; box-shadow: none; }
+  .seg-opts input:checked + span { background: var(--ember); color: var(--on-ember); font-weight: 400; box-shadow: none; }
   .seg-opts input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: 2px; }
 
   .field { margin-bottom: 18px; min-width: 0; }
@@ -457,66 +442,53 @@
     animation: toast-in 0.4s var(--ease);
   }
   .toast span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 6px 12px 6px 0; }
-  .toast button { min-height: 38px; padding: 0 16px; border: 0; border-radius: 999px; background: var(--on-ember); color: var(--ink); font-weight: 500; font-size: 15px; }
+  .toast button { min-height: 38px; padding: 0 16px; border: 0; border-radius: 999px; background: var(--on-ember); color: var(--ink); font-weight: 400; font-size: 15px; }
   .toast button:hover { background: #1a2450; }
   @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 16px); } }
 
-  /* ---------- Desktop: glance band splits into the mockup's three cards ---------- */
-  @media (min-width: 1100px) {
-    .glance { display: contents; }
-    .zone { padding: 20px 22px 22px; background: var(--panel); border-radius: var(--r); box-shadow: var(--shadow); }
-    .zone + .zone { border-left: 0; }
-    .zone:nth-child(1) { grid-area: ti; }
-    .zone:nth-child(2) { grid-area: we; }
-    .zone.month { grid-area: mo; }
-    .big { font-size: 42px; }
-    .weather-now { gap: 10px; }
-    .weather-now .ic { width: 30px; height: 30px; }
-    .month-top { flex-wrap: wrap; gap: 2px 12px; }
-    .month-top strong { font-size: 26px; }
-    .ticks { gap: 2px; height: 26px; }
-    .board { grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr) minmax(0, 1fr); }
-    .a-today { min-height: 380px; }
-    .a-goals { min-height: 230px; }
-    .a-quote { align-self: start; padding: 4px 0 0; }
+  /* ---------- Stacked (tracker's 900px breakpoint) ---------- */
+  @media (max-width: 1100px) {
+    .placeholder { padding: 40px 20px 24px; }
   }
 
-  /* ---------- Two columns ---------- */
-  @media (max-width: 1099px) {
-    .side { display: contents; }
-    .grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--gap);
-      grid-template-areas: "gl gl" "td wk" "pe go" "pr pr" "ca no" "fi qu" "ga ga";
-    }
-    .glance { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-    .zone.month { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--rule); }
-    .a-finance { grid-template-columns: minmax(0, 1fr); align-content: start; }
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: minmax(0, 1fr); row-gap: 40px; }
+    .side-right { padding-top: 0; }
+    .a-personal, .a-finance { margin-top: 40px; }
+    #notes-body { aspect-ratio: auto; min-height: 240px; max-height: 380px; }
   }
 
   /* ---------- Phone ---------- */
   @media (max-width: 719px) {
     :root { --gap: 14px; }
     body { padding-bottom: 84px; }
-    .grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "gl" "td" "wk" "pe" "go" "pr" "ca" "no" "fi" "qu" "ga"; }
+    :root { --pad: 16px; }
+    .bar { padding-top: 24px; }
+    .row-2 { grid-template-columns: minmax(0, 1fr); gap: 28px; }
     .bar .btn { display: none; }
     .fab { display: grid; }
-    .brand img { width: 36px; height: 36px; }
+    .brand img { width: 44px; height: 44px; }
     .panel { padding: 16px 16px 18px; }
-    .glance { padding: 0; }
-    .zone { padding: 16px 16px 18px; }
-    .big { font-size: 42px; gap: 6px; }
-    .big small { font-size: 15px; }
-    .weather-now { gap: 10px; }
-    .weather-now .ic { width: 30px; height: 30px; }
-    .month-top strong { font-size: 26px; }
+    .glance { gap: 8px; }
+    .zone { min-height: 110px; padding: 14px 12px 16px; }
+    .zone .line { font-size: 14px; }
+    .big { font-size: 30px; gap: 4px; }
+    .big small { font-size: 12px; }
+    .weather-now { gap: 6px; }
+    .weather-now .ic { width: 22px; height: 22px; }
+    .month-top strong { font-size: 19px; }
+    .month-top span { font-size: 13px; }
+    .ticks { gap: 1px; }
     .board { grid-template-columns: minmax(0, 1fr); }
-    .col, .col:first-child, .col:last-child { padding: 14px 0 6px; border-left: 0; border-top: 1px solid var(--rule); border-radius: 0; }
-    .col:first-child { padding-top: 0; border-top: 0; }
-    .day { height: 46px; }
+    .col { min-height: 130px; padding: 24px 20px; }
+    .col-head { justify-content: flex-start; }
+    #today-body { min-height: 240px; }
+    #weekly-body, #personal-body { min-height: 120px; }
+    .a-finance { grid-template-columns: minmax(0, 1fr); }
+    .cal-card { min-height: 320px; padding: 18px 16px 16px; }
     .toast { bottom: calc(88px + env(safe-area-inset-bottom)); }
     .foot { padding-bottom: 12px; }
-    .placeholder { min-height: 0; }
+    .placeholder { min-height: 130px; padding: 24px 20px; }
 
     /* dialogs become bottom sheets */
     dialog.sheet { width: 100%; max-width: none; max-height: 92dvh; margin: auto 0 0; border-radius: 20px 20px 0 0; }
@@ -563,7 +535,7 @@
 <span id="top"></span>
 <header class="bar" id="bar">
   <a class="brand" href="#top">
-    <img src="tracker-assets/eye.png" alt="" width="40" height="40">
+    <img src="tracker-assets/eye.png" alt="" width="52" height="52">
     <span>Potluri</span>
   </a>
   <button class="btn primary" type="button" data-add>
@@ -578,7 +550,7 @@
     <div class="side side-left">
 
     <!-- Glance: time, weather, month -->
-    <section class="panel glance a-glance" aria-label="Right now">
+    <section class="glance a-glance" aria-label="Right now">
       <div class="zone">
         <h2>Hyderabad time</h2>
         <p class="big"><span id="clock">--:--</span><small id="clock-ampm"></small></p>
@@ -599,41 +571,48 @@
       </div>
     </section>
 
-    <section class="panel a-today" aria-labelledby="h-today">
+    <hr class="rule">
+
+    <div class="row-2">
+    <div>
+    <section class="a-goals" aria-labelledby="h-goals">
+      <div class="head">
+        <h2 id="h-goals">Goal Tracker</h2>
+        <span class="sub" id="goals-sub"></span>
+        <button class="icon-btn" type="button" data-add="goal" aria-label="Add goal"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
+      </div>
+      <div id="goals-body" class="panel"></div>
+    </section>
+
+    <figure class="a-quote reveal">
+      <img src="tracker-assets/quote.png" width="608" height="208" loading="lazy"
+           alt="“The worst enemy you can meet will always be yourself.” Friedrich Nietzsche">
+    </figure>
+    </div>
+    <section class="a-today" aria-labelledby="h-today">
       <div class="head">
         <h2 id="h-today">Today</h2>
         <span class="sub" id="today-sub"></span>
         <button class="icon-btn" type="button" id="today-add" aria-label="Add something for today"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
       </div>
-      <div id="today-body"></div>
+      <div id="today-body" class="panel"></div>
     </section>
+    </div>
 
-    <section class="panel a-goals" aria-labelledby="h-goals">
-      <div class="head">
-        <h2 id="h-goals">Goals</h2>
-        <span class="sub" id="goals-sub"></span>
-        <button class="icon-btn" type="button" data-add="goal" aria-label="Add goal"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
-      </div>
-      <div id="goals-body"></div>
-    </section>
-
-    <figure class="a-quote reveal">
-      <img src="tracker-assets/quote.webp" width="608" height="208" loading="lazy"
-           alt="“The worst enemy you can meet will always be yourself.” Friedrich Nietzsche">
-    </figure>
-
-    <section class="panel a-personal" aria-labelledby="h-personal">
-      <div class="head">
-        <h2 id="h-personal">Personal</h2>
+    <section class="a-personal" aria-labelledby="h-personal">
+      <div class="head ruled">
+        <h2 id="h-personal">Personal Tasks</h2>
         <span class="sub" id="personal-sub"></span>
         <button class="icon-btn" type="button" data-add="personal" aria-label="Add personal task"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
       </div>
       <div id="personal-body"></div>
     </section>
 
-    <section class="panel a-calendar" aria-label="Calendar">
+    <section class="a-calendar" aria-labelledby="h-calendar">
+      <div class="head"><h2 id="h-calendar">Calendar</h2></div>
+      <div class="panel cal-card">
       <div class="cal-head">
-        <h2 id="cal-title" aria-live="polite"></h2>
+        <h3 id="cal-title" aria-live="polite"></h3>
         <button class="btn small" type="button" id="cal-today">Today</button>
         <button class="icon-btn" type="button" id="cal-prev" aria-label="Previous month"><svg class="ic" aria-hidden="true"><use href="#i-left"/></svg></button>
         <button class="icon-btn" type="button" id="cal-next" aria-label="Next month"><svg class="ic" aria-hidden="true"><use href="#i-right"/></svg></button>
@@ -647,32 +626,35 @@
         </div>
         <div id="agenda-body"></div>
       </div>
+      </div>
     </section>
 
     </div>
 
     <div class="side side-right">
 
-    <section class="panel a-weekly" aria-labelledby="h-weekly">
-      <div class="head">
-        <h2 id="h-weekly">Weekly</h2>
+    <div class="row-2">
+    <section class="a-weekly" aria-labelledby="h-weekly">
+      <div class="head ruled">
+        <h2 id="h-weekly">Weekly Tasks</h2>
         <span class="sub" id="weekly-sub"></span>
         <button class="icon-btn" type="button" data-add="weekly" aria-label="Add weekly task"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
       </div>
       <div id="weekly-body"></div>
     </section>
 
-    <section class="panel a-notes" aria-labelledby="h-notes">
+    <section class="a-notes" aria-labelledby="h-notes">
       <div class="head">
         <h2 id="h-notes">Notes</h2>
         <span class="sub" id="notes-sub"></span>
         <button class="icon-btn" type="button" id="note-add" aria-label="Add note"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
       </div>
-      <div id="notes-body"></div>
+      <div id="notes-body" class="panel"></div>
     </section>
+    </div>
 
-    <section class="panel a-projects" aria-labelledby="h-projects">
-      <div class="head">
+    <section class="a-projects" aria-labelledby="h-projects">
+      <div class="head ruled">
         <h2 id="h-projects">Projects</h2>
         <span class="sub" id="projects-sub"></span>
         <button class="icon-btn" type="button" data-add="project" aria-label="Add project"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
@@ -1198,9 +1180,7 @@
       col.querySelector('.col-head span').textContent = projects.length || '';
       const body = col.querySelector('.col-body');
       if (!projects.length) {
-        body.replaceChildren(status === 'todo' && !state.projects.length
-          ? emptyEl('Add a project, then break it into tasks.', 'Add a project', () => openEntry({ type: 'project' }))
-          : el('p', { class: 'quiet' }, 'Nothing here.'));
+        body.replaceChildren(el('p', { class: 'quiet' }, state.projects.length ? 'Nothing here.' : 'No projects yet.'));
         return;
       }
       body.replaceChildren(...projects.map((shown) => {
@@ -1239,6 +1219,7 @@
   /* ---------- Calendar ---------- */
   let calView = todayKey().slice(0, 7);   // 'YYYY-MM' being shown
   let calSelected = todayKey();
+  let calPicked = false;   // the agenda under the grid shows once a day has been picked
 
   function renderCalendar(direction) {
     const today = todayKey();
@@ -1281,6 +1262,7 @@
       grid.classList.add(direction > 0 ? 'to-next' : 'to-prev');
     }
 
+    document.querySelector('.agenda').hidden = !calPicked;
     const entries = sortEntries(datedEntries().filter((e) => e.doc.date === calSelected));
     $('agenda-title').textContent = calSelected === today ? `Today, ${fmtShort.format(parseKey(today))}` : fmtLong.format(parseKey(calSelected));
     $('agenda-body').replaceChildren(entries.length
@@ -1290,6 +1272,7 @@
 
   function selectDay(key, focus) {
     const before = calView;
+    calPicked = true;
     calSelected = key;
     calView = key.slice(0, 7);
     renderCalendar(calView === before ? 0 : calView > before ? 1 : -1);
@@ -1302,12 +1285,13 @@
     calView = toKey(next).slice(0, 7);
     // keep the selection inside the month being shown
     calSelected = calView === todayKey().slice(0, 7) ? todayKey() : `${calView}-01`;
+    calPicked = false;
     renderCalendar(delta);
   }
 
   $('cal-prev').addEventListener('click', () => shiftMonth(-1));
   $('cal-next').addEventListener('click', () => shiftMonth(1));
-  $('cal-today').addEventListener('click', () => selectDay(todayKey()));
+  $('cal-today').addEventListener('click', () => { selectDay(todayKey()); calPicked = false; renderCalendar(); });
   $('agenda-add').addEventListener('click', () => openEntry({ date: calSelected }));
   $('cal-grid').addEventListener('keydown', (e) => {
     const step = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 }[e.key];
