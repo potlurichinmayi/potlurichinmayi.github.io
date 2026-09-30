@@ -188,17 +188,11 @@
 
   /* ---------- Page grid ---------- */
   .page { max-width: 1320px; margin: 0 auto; padding: 8px var(--pad) 40px; }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: var(--gap);
-    grid-template-areas:
-      "gl gl gl gl gl gl gl gl gl gl gl gl"
-      "td td td td td wk wk wk pe pe pe pe"
-      "pr pr pr pr pr pr pr pr go go go go"
-      "ca ca ca ca ca no no no no fi fi fi"
-      "qu qu qu qu ga ga ga ga ga ga ga ga";
-  }
+  /* desktop follows the original mockup: two independent columns */
+  .grid { display: grid; grid-template-columns: minmax(0, 643fr) minmax(0, 633fr); gap: var(--gap) 40px; align-items: start; }
+  .side { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--gap); align-content: start; min-width: 0; }
+  .side-left { grid-template-areas: "ti ti we we mo mo" "go go go td td td" "qu qu qu td td td" "pe pe pe pe pe pe" "ca ca ca ca ca ca"; grid-template-rows: auto auto 1fr; }
+  .side-right { grid-template-areas: "wk wk wk no no no" "pr pr pr pr pr pr" "fi fi fi fi fi fi" "ga ga ga ga ga ga"; }
   .a-glance { grid-area: gl; }
   .a-today { grid-area: td; }
   .a-weekly { grid-area: wk; }
@@ -207,7 +201,7 @@
   .a-goals { grid-area: go; }
   .a-calendar { grid-area: ca; }
   .a-notes { grid-area: no; }
-  .a-finance { grid-area: fi; }
+  .a-finance { grid-area: fi; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap); }
   .a-quote { grid-area: qu; }
   .a-gallery { grid-area: ga; }
 
@@ -359,11 +353,9 @@
   .more { margin-top: 8px; }
 
   /* ---------- Finance placeholder ---------- */
-  .placeholder { background: rgba(11, 18, 46, 0.62); box-shadow: inset 0 0 0 1px var(--rule-2); }
-  .placeholder ul { list-style: none; margin: 0; padding: 0; }
-  .placeholder li { display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-top: 1px dashed var(--rule-2); font-size: 16px; }
-  .placeholder li span { font-size: 14px; color: var(--ink-3); white-space: nowrap; }
-  .placeholder p { margin-bottom: 12px; font-size: 15px; color: var(--ink-2); }
+  .placeholder { justify-content: center; min-height: 170px; background: rgba(11, 18, 46, 0.62); box-shadow: inset 0 0 0 1px var(--rule-2); }
+  .placeholder h2 { font-family: var(--serif); font-size: 21px; line-height: 1.15; }
+  .placeholder p { margin-top: 8px; font-size: 15px; color: var(--ink-3); }
 
   /* ---------- Stickers ---------- */
   .a-quote { display: grid; place-items: center; padding: 12px 0; }
@@ -469,14 +461,37 @@
   .toast button:hover { background: #1a2450; }
   @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 16px); } }
 
+  /* ---------- Desktop: glance band splits into the mockup's three cards ---------- */
+  @media (min-width: 1100px) {
+    .glance { display: contents; }
+    .zone { padding: 20px 22px 22px; background: var(--panel); border-radius: var(--r); box-shadow: var(--shadow); }
+    .zone + .zone { border-left: 0; }
+    .zone:nth-child(1) { grid-area: ti; }
+    .zone:nth-child(2) { grid-area: we; }
+    .zone.month { grid-area: mo; }
+    .big { font-size: 42px; }
+    .weather-now { gap: 10px; }
+    .weather-now .ic { width: 30px; height: 30px; }
+    .month-top { flex-wrap: wrap; gap: 2px 12px; }
+    .month-top strong { font-size: 26px; }
+    .ticks { gap: 2px; height: 26px; }
+    .board { grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr) minmax(0, 1fr); }
+    .a-today { min-height: 380px; }
+    .a-goals { min-height: 230px; }
+    .a-quote { align-self: start; padding: 4px 0 0; }
+  }
+
   /* ---------- Two columns ---------- */
   @media (max-width: 1099px) {
+    .side { display: contents; }
     .grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--gap);
       grid-template-areas: "gl gl" "td wk" "pe go" "pr pr" "ca no" "fi qu" "ga ga";
     }
     .glance { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
     .zone.month { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--rule); }
+    .a-finance { grid-template-columns: minmax(0, 1fr); align-content: start; }
   }
 
   /* ---------- Phone ---------- */
@@ -501,6 +516,7 @@
     .day { height: 46px; }
     .toast { bottom: calc(88px + env(safe-area-inset-bottom)); }
     .foot { padding-bottom: 12px; }
+    .placeholder { min-height: 0; }
 
     /* dialogs become bottom sheets */
     dialog.sheet { width: 100%; max-width: none; max-height: 92dvh; margin: auto 0 0; border-radius: 20px 20px 0 0; }
@@ -559,6 +575,8 @@
   <h1 class="sr">Potluri tracker</h1>
   <div class="grid">
 
+    <div class="side side-left">
+
     <!-- Glance: time, weather, month -->
     <section class="panel glance a-glance" aria-label="Right now">
       <div class="zone">
@@ -590,14 +608,19 @@
       <div id="today-body"></div>
     </section>
 
-    <section class="panel a-weekly" aria-labelledby="h-weekly">
+    <section class="panel a-goals" aria-labelledby="h-goals">
       <div class="head">
-        <h2 id="h-weekly">Weekly</h2>
-        <span class="sub" id="weekly-sub"></span>
-        <button class="icon-btn" type="button" data-add="weekly" aria-label="Add weekly task"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
+        <h2 id="h-goals">Goals</h2>
+        <span class="sub" id="goals-sub"></span>
+        <button class="icon-btn" type="button" data-add="goal" aria-label="Add goal"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
       </div>
-      <div id="weekly-body"></div>
+      <div id="goals-body"></div>
     </section>
+
+    <figure class="a-quote reveal">
+      <img src="tracker-assets/quote.webp" width="608" height="208" loading="lazy"
+           alt="“The worst enemy you can meet will always be yourself.” Friedrich Nietzsche">
+    </figure>
 
     <section class="panel a-personal" aria-labelledby="h-personal">
       <div class="head">
@@ -606,28 +629,6 @@
         <button class="icon-btn" type="button" data-add="personal" aria-label="Add personal task"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
       </div>
       <div id="personal-body"></div>
-    </section>
-
-    <section class="panel a-projects" aria-labelledby="h-projects">
-      <div class="head">
-        <h2 id="h-projects">Projects</h2>
-        <span class="sub" id="projects-sub"></span>
-        <button class="icon-btn" type="button" data-add="project" aria-label="Add project"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
-      </div>
-      <div class="board">
-        <div class="col" data-status="todo"><div class="col-head">To-do <span></span></div><div class="col-body"></div></div>
-        <div class="col" data-status="doing"><div class="col-head">In progress <span></span></div><div class="col-body"></div></div>
-        <div class="col" data-status="done"><div class="col-head">Completed <span></span></div><div class="col-body"></div></div>
-      </div>
-    </section>
-
-    <section class="panel a-goals" aria-labelledby="h-goals">
-      <div class="head">
-        <h2 id="h-goals">Goals</h2>
-        <span class="sub" id="goals-sub"></span>
-        <button class="icon-btn" type="button" data-add="goal" aria-label="Add goal"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
-      </div>
-      <div id="goals-body"></div>
     </section>
 
     <section class="panel a-calendar" aria-label="Calendar">
@@ -648,6 +649,19 @@
       </div>
     </section>
 
+    </div>
+
+    <div class="side side-right">
+
+    <section class="panel a-weekly" aria-labelledby="h-weekly">
+      <div class="head">
+        <h2 id="h-weekly">Weekly</h2>
+        <span class="sub" id="weekly-sub"></span>
+        <button class="icon-btn" type="button" data-add="weekly" aria-label="Add weekly task"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
+      </div>
+      <div id="weekly-body"></div>
+    </section>
+
     <section class="panel a-notes" aria-labelledby="h-notes">
       <div class="head">
         <h2 id="h-notes">Notes</h2>
@@ -657,25 +671,31 @@
       <div id="notes-body"></div>
     </section>
 
-    <!-- Finance is not designed yet: placeholder only -->
-    <section class="panel placeholder a-finance" aria-labelledby="h-finance">
-      <div class="head"><h2 id="h-finance">Finance</h2></div>
-      <p>Not set up yet. Three trackers will live here.</p>
-      <ul>
-        <li>Budget and spending <span>Coming later</span></li>
-        <li>Current investments <span>Coming later</span></li>
-        <li>Finance goals <span>Coming later</span></li>
-      </ul>
+    <section class="panel a-projects" aria-labelledby="h-projects">
+      <div class="head">
+        <h2 id="h-projects">Projects</h2>
+        <span class="sub" id="projects-sub"></span>
+        <button class="icon-btn" type="button" data-add="project" aria-label="Add project"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
+      </div>
+      <div class="board">
+        <div class="col" data-status="todo"><div class="col-head">To-do <span></span></div><div class="col-body"></div></div>
+        <div class="col" data-status="doing"><div class="col-head">In progress <span></span></div><div class="col-body"></div></div>
+        <div class="col" data-status="done"><div class="col-head">Completed <span></span></div><div class="col-body"></div></div>
+      </div>
     </section>
 
-    <figure class="a-quote reveal">
-      <img src="tracker-assets/quote.webp" width="608" height="208" loading="lazy"
-           alt="“The worst enemy you can meet will always be yourself.” Friedrich Nietzsche">
-    </figure>
+    <!-- Finance is not designed yet: placeholders only -->
+    <section class="a-finance" aria-label="Finance">
+      <div class="panel placeholder"><h2>Budget and spending</h2><p>Coming later</p></div>
+      <div class="panel placeholder"><h2>Current investments</h2><p>Coming later</p></div>
+      <div class="panel placeholder"><h2>Finance goals</h2><p>Coming later</p></div>
+    </section>
 
     <figure class="a-gallery reveal">
       <img src="tracker-assets/gallery.webp" width="1236" height="776" loading="lazy" alt="Moodboard collage of paintings, a vinyl record, tigers and a cup of tea">
     </figure>
+
+    </div>
 
   </div>
 </main>
