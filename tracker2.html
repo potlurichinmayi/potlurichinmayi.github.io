@@ -238,7 +238,7 @@
   .month-top strong { font-family: var(--serif); font-weight: 400; font-size: 26px; line-height: 1.1; }
   .month-top span { font-size: 16px; color: var(--ink-2); }
   .ticks { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 2px; align-items: end; height: 26px; margin-top: 14px; }
-  .ticks i { display: block; height: 55%; border-radius: 2px; background: var(--rule); transform-origin: bottom; }
+  .ticks i { display: block; height: 55%; border-radius: 999px; background: var(--rule); transform-origin: bottom; }
   .ticks i.past { background: var(--ink-3); }
   .ticks i.now { height: 100%; background: var(--ember); }
   .ticks.intro i { animation: tick-in 0.5s var(--ease) both; animation-delay: calc(var(--i) * 16ms); }
@@ -373,7 +373,7 @@
   .views a .ic { width: 21px; height: 21px; }
   .views a:hover { color: var(--ink); background: var(--raise-2); }
   .views a[aria-current="page"] { color: var(--ink); background: var(--raise-2); box-shadow: inset 0 0 0 1px var(--rule-2); }
-  .add-circle { display: grid; place-items: center; width: 44px; height: 44px; margin-right: 4px; padding: 0; border: 0; border-radius: 50%; background: var(--ember); color: var(--on-ember); transition: background-color 0.18s, transform 0.18s var(--ease); }
+  .add-circle { display: grid; place-items: center; width: 44px; height: 44px; margin-left: 4px; padding: 0; border: 0; border-radius: 50%; background: var(--ember); color: var(--on-ember); transition: background-color 0.18s, transform 0.18s var(--ease); }
   .add-circle .ic { width: 22px; height: 22px; stroke-width: 1.9; }
   .add-circle:hover { background: var(--ember-hi); }
   .add-circle:active { transform: scale(0.93); }
@@ -417,12 +417,30 @@
   .open .two { margin-top: 2px; }
   .fin-grid > * { min-width: 0; }
   .s12 { grid-column: span 12; } .s7 { grid-column: span 7; } .s6 { grid-column: span 6; } .s5 { grid-column: span 5; } .s4 { grid-column: span 4; } .s3 { grid-column: span 3; }
-  .cols .hrows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 40px; }
+  .cols .hrows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; }
+  .cat-wrap { display: grid; grid-template-columns: minmax(240px, 4fr) minmax(0, 8fr); gap: 20px 40px; align-items: center; }
+  .donut svg { display: block; width: 100%; max-width: 280px; height: auto; margin: 0 auto; overflow: visible; }
+  .slice { cursor: pointer; transform-box: view-box; transform-origin: 50% 50%; transition: transform 0.3s var(--ease), opacity 0.25s; }
+  .donut .slice:focus-visible { transform: scale(1.035); }
+  .slice:focus-visible { outline: none; }
+  .slice-label rect { fill: var(--ink); }
+  .slice-label text { font-family: var(--sans); font-size: 12px; fill: var(--on-ember); }
+  .donut-total { font-family: var(--serif); font-size: 30px; fill: var(--ink); }
+  .donut-caption { font-family: var(--sans); font-size: 13px; fill: var(--ink-3); }
+  .donut-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 16px; margin: 16px 0 0; padding: 0; list-style: none; font-size: 14px; color: var(--ink-2); }
+  .donut-legend li { display: flex; align-items: center; gap: 7px; }
+  .donut-legend i { width: 10px; height: 10px; border-radius: 50%; }
+  .charts-in .slice { animation: slice-in 0.7s var(--ease) both; animation-delay: calc(180ms + var(--b, 0) * 90ms); }
+  .charts-in .slice-label, .charts-in .donut-total, .charts-in .donut-caption { animation: soft-in 0.5s ease-out both; animation-delay: 0.9s; }
+  @keyframes slice-in { from { opacity: 0; transform: scale(0.86) rotate(-12deg); } }
   .ptitle { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 14px; font-family: var(--serif); font-size: 21px; line-height: 1.15; }
   .ptitle small { font-size: 14px; color: var(--ink-3); }
 
+  /* every stat shares the same rows (label, number, notes), so labels sit on one line,
+     the numbers share a baseline, and nothing floats at the top of an empty box */
   .hero { display: grid; grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr)); padding: 0; }
-  .hero > div { padding: 22px 24px 24px; min-width: 0; }
+  .hero > div { display: grid; grid-row: span 4; grid-template-rows: subgrid; align-content: start; padding: 22px 24px; min-width: 0; }
+  .hero .hero-num, .hero .stat-num { align-self: last baseline; }
   .hero > div + div { border-left: 1px solid var(--rule); }
   .stat-label { font-size: 15px; color: var(--ink-3); }
   .hero-num { margin-top: 6px; font-family: var(--serif); font-size: 52px; line-height: 1; }
@@ -454,7 +472,14 @@
   .chart .grid-line { stroke: var(--rule); stroke-width: 1; }
   .chart .avg-line { stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 4 4; }
   .chart .avg-label { font-family: var(--sans); font-size: 12px; fill: var(--ink-2); }
-  .chart .bar { fill: var(--ember); transition: fill 0.15s; }
+  .chart .bar { fill: var(--ember); transition: fill 0.2s, opacity 0.25s; }
+  @media (hover: hover) {
+    .chart svg:hover .bar { opacity: 0.4; }          /* hovering one bar quietens the rest */
+    .chart .bar-g:hover .bar { opacity: 1; }
+    .donut svg:hover .slice { opacity: 0.5; }
+    .donut .slice:hover { opacity: 1; transform: scale(1.035); }
+  }
+  .chart .grid-line { stroke-dasharray: 2 5; }
   .chart .bar.now { fill: var(--ember-hi); }
   .chart .bar-g { cursor: pointer; }
   .chart .bar-g:hover .bar { fill: var(--ember-hi); }
@@ -465,8 +490,8 @@
   button.hrow:hover { background: var(--raise); }
   .hrow .hname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .hrow .hval { text-align: right; white-space: nowrap; }
-  .htrack { grid-column: 1 / -1; height: 6px; border-radius: 3px; background: var(--rule); overflow: hidden; }
-  .hfill { display: block; height: 100%; border-radius: 3px; background: var(--ember); }
+  .htrack { grid-column: 1 / -1; height: 8px; border-radius: 999px; background: var(--rule); overflow: hidden; }
+  .hfill { display: block; height: 100%; border-radius: 999px; background: var(--ember); }
   .over .hfill { background: var(--danger); }
   .hmeta { grid-column: 1 / -1; font-size: 13px; color: var(--ink-3); }
   .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 24px; }
@@ -519,7 +544,7 @@
   .bud-form .grid2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px 16px; margin: 6px 0 18px; }
   .bud-form label > span { display: block; margin-bottom: 4px; font-size: 14px; color: var(--ink-3); }
   .bud-form input { width: 100%; }
-  .fin-sync { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 20px; font-size: 14px; color: var(--ink-2); }
+  .foot .fin-sync { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; margin-right: 0; font-size: 15px; }
 
   .chart-tip { position: fixed; z-index: 70; padding: 6px 10px; border-radius: 8px; background: var(--ink); color: var(--on-ember); font-size: 14px; white-space: nowrap; pointer-events: none; box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.8); transform: translate(-50%, calc(-100% - 8px)); }
 
@@ -537,9 +562,16 @@
     .fin-grid { gap: 14px; }
     .s12, .s7, .s6, .s5, .s4, .s3 { grid-column: span 12; }
     .cols .hrows { grid-template-columns: minmax(0, 1fr); }
-    .hero > div { padding: 16px; }
+    .cat-wrap { grid-template-columns: minmax(0, 1fr); }
+    /* phone: the total gets its own row, the three stats share the next */
+    .hero { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .hero > div { padding: 14px 12px; border-top: 0; }
+    .hero > div:first-child { grid-column: 1 / -1; padding: 16px; border-bottom: 1px solid var(--rule); }
+    .hero > div:nth-child(3) { border-left: 1px solid var(--rule); }
+    .hero > div:nth-child(2) { border-left: 0; }
     .hero-num { font-size: 40px; }
-    .stat-num { font-size: 24px; }
+    .stat-num { font-size: 22px; }
+    .hero .stat-sub { font-size: 13px; }
     .two, .tx-edit { grid-template-columns: minmax(0, 1fr); }
     .hm-day { min-height: 44px; padding: 4px; font-size: 11px; }
   }
@@ -716,6 +748,162 @@
     .sheet-actions .grow { display: none; }
   }
 
+  /* ---------- Spending: story cards ---------- */
+  .story-card { gap: 0; }
+  .kicker { margin-bottom: 6px; font-size: 14px; color: var(--ink-3); }
+  .finding { margin-bottom: 18px; font-family: var(--serif); font-size: 23px; line-height: 1.25; }
+  .hl { color: var(--ember-hi); }
+  .finding-sm { margin: -8px 0 16px; font-size: 15px; color: var(--ink-2); }
+  .lede .finding { margin-bottom: 10px; font-size: 34px; line-height: 1.15; }
+  .lede .stat-sub { margin: 0 0 12px; }
+  .lede .chart { flex: 1; min-height: 190px; margin-top: 10px; }
+  .fill-card { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+  .trend { display: inline-flex; align-items: center; gap: 6px; width: fit-content; padding: 3px 10px; border-radius: 999px; font-size: 13px; background: var(--raise-2); color: var(--ink-2); white-space: nowrap; }
+  .trend.up { background: rgba(245, 168, 150, 0.16); color: var(--danger); }
+
+  .actual { stroke: var(--ember); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+  .actual-area { fill: rgba(233, 162, 108, 0.16); }
+  .actual-dot { fill: var(--ember); stroke: var(--ground); stroke-width: 2; }
+  .prev { stroke: var(--ink-3); stroke-width: 1.5; stroke-dasharray: 3 5; }
+  .keys { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; font-size: 13px; color: var(--ink-2); }
+  .keys span { display: inline-flex; align-items: center; gap: 6px; }
+  .keys i { width: 18px; height: 0; border-top: 2px solid var(--ember); }
+  .keys i.k-prev { border-top: 2px dashed var(--ink-3); }
+  .chart .note-label { font-family: var(--serif); font-size: 12px; fill: var(--ink); }
+
+  .gauge svg { display: block; width: 100%; max-width: 360px; height: auto; margin: 0 auto; overflow: visible; }
+  .gauge .track { stroke: var(--rule); }
+  .gauge .spent { stroke: var(--ember); }
+  .gauge .spent.over { stroke: var(--danger); }
+  .gauge .needle { stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+  .gauge .g-big { font-family: var(--serif); font-size: 40px; fill: var(--ink); }
+  .gauge .g-sub { font-family: var(--serif); font-size: 14px; fill: var(--ink-3); }
+  .trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 18px; border-top: 1px solid var(--rule); }
+  .trio div { padding: 14px 4px 0; text-align: center; }
+  .trio div + div { border-left: 1px solid var(--rule); }
+  .trio p:last-child { margin-top: 4px; font-family: var(--serif); font-size: 22px; }
+
+  .stack { display: flex; gap: 4px; height: 26px; }
+  .stack > * { min-width: 8px; padding: 0; border: 0; border-radius: 999px; transition: transform 0.25s var(--ease), opacity 0.25s; }
+  .stack button { cursor: pointer; }
+  @media (hover: hover) { .stack:hover > * { opacity: 0.5; } .stack > *:hover { opacity: 1; transform: scaleY(1.2); } }
+  .stack-legend { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 24px; margin: 18px 0 0; padding: 0; list-style: none; }
+  .stack-legend li { display: grid; grid-template-columns: 12px 1fr; column-gap: 8px; align-items: baseline; font-size: 15px; }
+  .stack-legend i { width: 10px; height: 10px; border-radius: 50%; }
+  .stack-legend small { grid-column: 2; font-size: 13px; color: var(--ink-3); }
+  .moves { margin-top: 22px; }
+  .moves ul { margin: 0; padding: 0; list-style: none; }
+  .moves li { display: grid; grid-template-columns: minmax(0, 1fr) auto 76px; align-items: center; gap: 12px; padding: 6px 0; border-top: 1px solid var(--rule); font-size: 15px; }
+  .moves .link-btn { justify-self: start; color: var(--ink); font-size: 15px; }
+  .moves .stat-sub { margin: 0; }
+  .moves .trend { justify-self: end; }
+  .hrows .hrow[type="button"] { cursor: pointer; }
+
+  .punch svg { display: block; width: 100%; height: auto; }
+  .punch .tick { font-family: var(--serif); font-size: 11px; fill: var(--ink-3); }
+  .punch .hit { fill: transparent; }
+  .punch .pc { transition: opacity 0.2s; }
+  .punch .pc-empty { fill: var(--rule); }
+  @media (hover: hover) { .punch svg:hover .pc { opacity: 0.45; } .punch .pcell:hover .pc { opacity: 1; } }
+
+  .rhist { flex: 1; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: end; gap: 10px; min-height: 170px; }
+  .rcol { display: flex; flex-wrap: wrap-reverse; justify-content: center; align-content: flex-start; gap: 5px; padding: 0 4px; }
+  .rcol i { width: 13px; height: 13px; border-radius: 50%; }
+  .rlabels { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--rule); font-size: 13px; color: var(--ink-3); text-align: center; }
+  .rlabels b { display: block; font-weight: 400; font-size: 15px; color: var(--ink); }
+
+  .bigcal-week, .bigcal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)) 70px; gap: 6px; }
+  .bigcal-week { margin-bottom: 8px; font-size: 14px; color: var(--ink-3); text-align: center; }
+  .bigcal-week span:last-child { text-align: right; padding-right: 8px; }
+  .bday { display: flex; flex-direction: column; gap: 6px; min-height: 84px; padding: 8px 9px; border: 0; border-radius: 12px; background: var(--raise); color: var(--ink); text-align: left; transition: box-shadow 0.2s, opacity 0.3s, transform 0.2s var(--ease); }
+  .bday:hover { box-shadow: inset 0 0 0 1.5px var(--ember-hi); }
+  .bday .n { font-size: 14px; color: var(--ink-2); }
+  .bday .amt { margin-top: auto; font-size: 19px; }
+  .bday.hot .n { color: rgba(11, 18, 48, 0.7); }
+  .bday.hot .amt { color: var(--on-ember); }
+  .bday .mix { display: flex; gap: 2px; height: 6px; }
+  .bday .mix i { border-radius: 999px; min-width: 4px; }
+  .bday.sel { box-shadow: inset 0 0 0 2px var(--ink); transform: scale(1.03); }
+  .bday.dim { opacity: 0.22; }
+  .bday.future { opacity: 0.3; }
+  .bday.today .n::after { content: ' · today'; }
+  .wk { display: flex; flex-direction: column; justify-content: center; align-items: flex-end; padding: 0 8px; font-size: 13px; color: var(--ink-3); }
+  .wk strong { font-weight: 400; font-size: 17px; color: var(--ink); }
+  .cchips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .cchip { display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px; border: 0; border-radius: 999px; background: var(--raise-2); font-size: 14px; color: var(--ink); transition: background-color 0.2s, color 0.2s; }
+  .cchip i { width: 9px; height: 9px; border-radius: 50%; }
+  .cchip.on { background: var(--ember); color: var(--on-ember); }
+  .day-list { margin: 0; padding: 0; list-style: none; overflow-y: auto; max-height: 440px; }
+  .day-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 9px 0; border-top: 1px solid var(--rule); }
+  .day-list small { grid-column: 1; font-size: 13px; color: var(--ink-3); }
+  .s8 { grid-column: span 8; }
+
+  .charts-in .pop { animation: cell-in 0.5s var(--ease) both; animation-delay: calc(120ms + var(--b, 0) * 12ms); }
+  .charts-in .fill-x { transform-origin: left; animation: fill-grow 1s var(--ease) both; animation-delay: calc(220ms + var(--b, 0) * 60ms); }
+  .charts-in .draw { stroke-dasharray: 1; animation: draw 1.4s var(--ease) both; animation-delay: 0.25s; }
+  .charts-in .fade, .charts-in .note-label { animation: soft-in 0.6s ease-out both; animation-delay: 0.6s; }
+  .charts-in .pc { transform-box: fill-box; transform-origin: center; animation: cell-in 0.5s var(--ease) both; animation-delay: calc(150ms + var(--b, 0) * 4ms); }
+  @keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+
+  @media (max-width: 1100px) {
+    .s8 { grid-column: span 12; }
+    .fin-grid > .s4.day-card { grid-column: span 12; }
+  }
+  @media (max-width: 719px) {
+    .lede .finding { font-size: 26px; }
+    .finding { font-size: 20px; }
+    .stack-legend { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .moves li { grid-template-columns: minmax(0, 1fr) auto; }
+    .moves .stat-sub { display: none; }
+    .bigcal-week, .bigcal { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+    .wk, .bigcal-week span:last-child { display: none; }
+    .bday { min-height: 56px; padding: 5px; }
+    .bday .amt { font-size: 12px; }
+    .bday .n { font-size: 11px; }
+    .bday.today .n::after { content: ''; }
+    .rcol i { width: 9px; height: 9px; }
+  }
+
+  /* ---------- Motion ---------- */
+  :root { interpolate-size: allow-keywords; }   /* lets <details> open and close smoothly where supported */
+  @keyframes rise { from { opacity: 0; transform: translateY(16px); } }
+  @keyframes bar-grow { from { transform: scaleY(0); } }
+  @keyframes fill-grow { from { transform: scaleX(0); } }
+  @keyframes cell-in { from { opacity: 0; transform: scale(0.82); } }
+  @keyframes soft-in { from { opacity: 0; } }
+
+  /* blocks ease up into place, one after another, when a view or tab opens */
+  .rise { animation: rise 0.75s var(--ease) both; animation-delay: calc(var(--i, 0) * 55ms); }
+  header.bar { animation: soft-in 0.6s ease-out both; }
+
+  /* cards lift on hover */
+  .panel, .zone, .col { transition: box-shadow 0.35s var(--ease), transform 0.35s var(--ease); }
+  .panel:not(.no-lift):hover, .zone:hover, .col:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 32px 56px -24px rgba(1, 3, 14, 0.95), inset 0 0 0 1px rgba(240, 232, 217, 0.08);
+  }
+
+  /* charts draw themselves the first time they appear */
+  .charts-in .chart .bar { transform-box: fill-box; transform-origin: 50% 100%; animation: bar-grow 0.8s var(--ease) both; animation-delay: calc(180ms + var(--b, 0) * 16ms); }
+  .charts-in .hfill, .charts-in .bud-track i, .charts-in .mini-track i { transform-origin: left; animation: fill-grow 1s var(--ease) both; animation-delay: calc(220ms + var(--b, 0) * 45ms); }
+  .charts-in .hm-day { animation: cell-in 0.5s var(--ease) both; animation-delay: calc(120ms + var(--b, 0) * 12ms); }
+  .charts-in .avg-line, .charts-in .avg-label, .charts-in .grid-line, .charts-in .tick { animation: soft-in 0.6s ease-out both; animation-delay: 0.5s; }
+
+  /* the active finance tab is a pill that slides between tabs */
+  .fin-tabs { position: relative; }
+  .fin-tabs a { position: relative; z-index: 1; }
+  .fin-tabs a[aria-selected="true"] { background: none; }
+  .tab-pill { position: absolute; top: 4px; bottom: 4px; left: 0; width: 0; border-radius: 999px; background: var(--ember); transition: transform 0.45s var(--ease), width 0.45s var(--ease); }
+  .tab-pill.instant { transition: none; }
+
+  /* transactions open and close smoothly */
+  details::details-content { height: 0; overflow: clip; transition: height 0.35s var(--ease), content-visibility 0.35s allow-discrete; }
+  details[open]::details-content { height: auto; }
+
+  .chart-tip { animation: soft-in 0.15s ease-out; }
+  .views a, .fin-month .icon-btn { transition: background-color 0.25s, color 0.25s, box-shadow 0.25s, transform 0.25s var(--ease); }
+  .views a:active { transform: scale(0.92); }
+
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0s !important; transition-duration: 0.01ms !important; }
@@ -763,13 +951,13 @@
     <img src="tracker-assets/eye.png" alt="" width="52" height="52">
     <span>Potluri</span>
   </a>
-  <button class="add-circle" type="button" data-add aria-label="Add" title="Add">
-    <svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg>
-  </button>
   <nav class="views" aria-label="Sections">
     <a href="#overview" data-view="tracker" aria-label="Overview" title="Overview"><svg class="ic" aria-hidden="true"><use href="#i-overview"/></svg></a>
     <a href="#finance" data-view="finance" aria-label="Finance" title="Finance"><svg class="ic" aria-hidden="true"><use href="#i-finance"/></svg></a>
   </nav>
+  <button class="add-circle" type="button" data-add aria-label="Add" title="Add">
+    <svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg>
+  </button>
 </header>
 
 <main class="page" id="tracker-view">
@@ -918,6 +1106,7 @@
       <a href="#finance/spending" role="tab" data-tab="spending">Spending</a>
       <a href="#finance/transactions" role="tab" data-tab="transactions">Transactions</a>
       <a href="#finance/budget" role="tab" data-tab="budget">Budget</a>
+      <span class="tab-pill" aria-hidden="true"></span>
     </nav>
     <div class="fin-month">
       <button class="icon-btn" type="button" id="fm-prev" aria-label="Previous month"><svg class="ic" aria-hidden="true"><use href="#i-left"/></svg></button>
@@ -929,7 +1118,7 @@
   <section id="tab-spending" role="tabpanel" aria-label="Spending"></section>
 
   <section id="tab-transactions" role="tabpanel" aria-label="Transactions" hidden>
-    <div class="panel">
+    <div class="panel no-lift">
       <div class="tx-tools">
         <input type="search" id="tx-q" placeholder="Search payee or details" aria-label="Search transactions" autocomplete="off">
         <select id="tx-type" aria-label="Spent or received">
@@ -952,11 +1141,11 @@
 
   <section id="tab-budget" role="tabpanel" aria-label="Budget" hidden></section>
 
-  <p class="fin-sync"><span id="fin-sync"></span><button class="link-btn" type="button" id="fin-setup-link">Gmail connection</button></p>
 </main>
 
 <footer class="foot">
   <p id="storage-note">Saved in this browser only.</p>
+  <p class="fin-sync"><span id="fin-sync"></span><button class="link-btn" type="button" id="fin-setup-link">Gmail connection</button></p>
   <button class="btn small" type="button" id="signout-btn" hidden>Sign out</button>
 </footer>
 
@@ -2134,6 +2323,55 @@
   const pct = (part, whole) => (whole > 0 ? Math.round((part / whole) * 100) : 0);
   const budget = () => state.budgets.find((b) => b.id === 'default') || null;
 
+  /* ---------- Motion helpers ---------- */
+  // blocks rise into place one after another; the class comes off once each has landed
+  function stagger(nodes, offset = 0) {
+    if (reduceMotion) return;
+    [...nodes].forEach((node, i) => {
+      node.style.setProperty('--i', offset + i);
+      node.classList.remove('rise');
+      void node.offsetWidth;
+      node.classList.add('rise');
+      const done = (e) => { if (e.target === node) { node.classList.remove('rise'); node.removeEventListener('animationend', done); } };
+      node.addEventListener('animationend', done);
+    });
+  }
+
+  // charts and bars inside `root` draw in; the class is dropped so later data updates don't replay it
+  function drawIn(root) {
+    if (reduceMotion) return;
+    root.classList.add('charts-in');
+    setTimeout(() => root.classList.remove('charts-in'), 2400);
+  }
+
+  // numbers count up to their value: <p data-count="1234" data-money>
+  function countUp(root) {
+    if (reduceMotion) return;
+    root.querySelectorAll('[data-count]').forEach((node) => {
+      const to = Number(node.dataset.count);
+      const format = node.hasAttribute('data-money') ? (v) => rupees.format(v) : (v) => String(Math.round(v));
+      const start = performance.now();
+      const step = (now) => {
+        const t = Math.min(1, (now - start) / 900);
+        node.textContent = format(to * (1 - 2 ** (-10 * t)));
+        if (t < 1) requestAnimationFrame(step); else node.textContent = format(to);
+      };
+      requestAnimationFrame(step);
+    });
+  }
+
+  function movePill(instant) {
+    const active = document.querySelector('.fin-tabs a[aria-selected="true"]');
+    const pill = document.querySelector('.tab-pill');
+    if (!active || !active.offsetWidth) return;
+    pill.classList.toggle('instant', Boolean(instant));
+    pill.style.width = `${active.offsetWidth}px`;
+    pill.style.transform = `translateX(${active.offsetLeft}px)`;
+  }
+  window.addEventListener('resize', () => movePill(true));
+
+  let animateNext = true;   // the next finance render plays its entrance
+
   /* ---------- Views and tabs (#tracker, #finance/spending|transactions|budget) ---------- */
   let view = 'tracker';
   let finTab = 'spending';
@@ -2143,38 +2381,63 @@
   function route() {
     const [name, tab] = location.hash.replace(/^#/, '').split('/');
     const before = view;
+    const beforeTab = finTab;
     view = name === 'finance' ? 'finance' : 'tracker';   // #overview (or anything else) is the tracker
     if (view === 'finance') finTab = FIN_TABS.includes(tab) ? tab : 'spending';
+    if (before !== view || beforeTab !== finTab || !routed) animateNext = true;
     document.body.dataset.view = view;
     $('tracker-view').hidden = view !== 'tracker';
     $('finance-view').hidden = view !== 'finance';
     document.querySelectorAll('.views a').forEach((a) => a.setAttribute('aria-current', a.dataset.view === view ? 'page' : 'false'));
     document.querySelectorAll('.fin-tabs a').forEach((a) => a.setAttribute('aria-selected', String(a.dataset.tab === finTab)));
     FIN_TABS.forEach((t) => { $(`tab-${t}`).hidden = t !== finTab; });
-    if (view === 'finance') renderFinance();
+    if (view === 'finance') { movePill(before !== view || !routed); renderFinance(); }
+    if (view === 'tracker' && (before !== view || !routed)) enterTracker();
     if (before !== view) window.scrollTo(0, 0);
+    routed = true;
+  }
+  let routed = false;
+
+  function enterTracker() {
+    stagger(document.querySelectorAll('#tracker-view .side-left > *'));
+    stagger(document.querySelectorAll('#tracker-view .side-right > *'), 1);
+    drawIn($('tracker-view'));
   }
   window.addEventListener('hashchange', route);
 
   const goFinance = (tab = 'spending') => { location.hash = `#finance/${tab}`; };
 
-  $('fm-prev').addEventListener('click', () => { finMonth = addMonths(finMonth, -1); txFilter.date = ''; renderFinance(); });
-  $('fm-next').addEventListener('click', () => { finMonth = addMonths(finMonth, 1); txFilter.date = ''; renderFinance(); });
+  $('fm-prev').addEventListener('click', () => { finMonth = addMonths(finMonth, -1); txFilter.date = ''; animateNext = true; renderFinance(); });
+  $('fm-next').addEventListener('click', () => { finMonth = addMonths(finMonth, 1); txFilter.date = ''; animateNext = true; renderFinance(); });
+
+  function renderSyncNote() {
+    const sync = state.meta.find((m) => m.id === 'finance');
+    $('fin-sync').textContent = sync
+      ? `Checked Gmail ${ago(sync.lastSync)}${sync.caughtUp === false ? ', still bringing in older alerts' : ''}.`
+      : 'Gmail isn’t connected yet.';
+  }
 
   function renderFinance() {
+    renderSyncNote();
     if (view !== 'finance') return;
     const { months } = finData();
     const first = months[0] || thisMonth();
     $('fm-label').textContent = fmtMonthYear.format(parseKey(`${finMonth}-01`));
     $('fm-prev').disabled = finMonth <= first;
     $('fm-next').disabled = finMonth >= thisMonth();
-    const sync = state.meta.find((m) => m.id === 'finance');
-    $('fin-sync').textContent = sync
-      ? `Checked Gmail ${ago(sync.lastSync)}${sync.caughtUp === false ? ', still bringing in older alerts' : ''}.`
-      : 'Gmail isn’t connected yet.';
+    const animate = animateNext;
+    animateNext = false;
     if (finTab === 'spending') renderSpendingTab();
     if (finTab === 'transactions') renderTransactionsTab();
     if (finTab === 'budget') renderBudgetTab();
+    if (animate) {
+      const panel = $(`tab-${finTab}`);
+      const grid = panel.querySelector('.fin-grid');
+      stagger(grid ? grid.children : panel.children);
+      if (finTab === 'transactions') stagger([...$('tx-list').children].slice(0, 16), 2);
+      drawIn(panel);
+      countUp(panel);
+    }
   }
 
   function ago(ms) {
@@ -2218,8 +2481,8 @@
     const top = Math.max(step, Math.ceil(max / step) * step);
     const y = (v) => pad.t + innerH - (Math.max(0, v) / top) * innerH;
     const band = innerW / Math.max(data.length, 1);
-    const gap = Math.max(2, band * 0.22);
-    const barW = Math.max(2, band - gap);
+    const barW = Math.max(3, Math.min(28, band * 0.62));
+    const gap = band - barW;
 
     const nodes = [];
     for (let v = 0; v <= top + 0.001; v += step) {
@@ -2230,9 +2493,11 @@
       const x = pad.l + i * band + gap / 2;
       const base = y(0);
       const h = base - y(d.value);
-      const r = Math.min(4, barW / 2, h);
+      // a fully rounded (pill) top, square on the baseline
+      const r = Math.min(barW / 2, h);
+      const top = base - h;
       const bar = h > 0.5
-        ? svg('path', { class: 'bar' + (d.now ? ' now' : ''), d: `M${x},${base}V${base - h + r}Q${x},${base - h} ${x + r},${base - h}H${x + barW - r}Q${x + barW},${base - h} ${x + barW},${base - h + r}V${base}Z` })
+        ? svg('path', { class: 'bar', style: `--b:${i};fill:${shadeOf(d.value, max)}`, d: `M${x},${base}V${top + r}A${r},${r} 0 0 1 ${x + r},${top}H${x + barW - r}A${r},${r} 0 0 1 ${x + barW},${top + r}V${base}Z` })
         : null;
       const group = svg('g', { class: 'bar-g', 'data-tip': d.tip, tabindex: d.onPick ? '0' : null, role: d.onPick ? 'button' : null, 'aria-label': d.tip },
         svg('rect', { class: 'hit', x: pad.l + i * band, y: pad.t, width: band, height: innerH }), bar);
@@ -2241,7 +2506,11 @@
         group.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); d.onPick(); } });
       }
       nodes.push(group);
-      if (i % labelEvery === 0 || d.now) {
+      if (d.note && h > 0.5) nodes.push(svg('text', { class: 'note-label', x: x + barW / 2, y: base - h - 8, 'text-anchor': 'middle' }, d.note));
+      // thin out labels on narrow charts, and only add the highlighted bar's label where it won't collide
+      const every = Math.max(labelEvery, Math.ceil(40 / band));
+      const offset = i % every;
+      if (offset === 0 || (d.now && offset >= 2 && every - offset >= 2)) {
         nodes.push(svg('text', { class: 'tick', x: x + barW / 2, y: height - 8, 'text-anchor': 'middle' }, d.label));
       }
     });
@@ -2252,194 +2521,358 @@
     holder.replaceChildren(svg('svg', { viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-label': ariaLabel }, svg('title', {}, ariaLabel), nodes));
   }
 
+  /* one orange scale for every chart: a bigger amount is a deeper, bolder orange; a smaller one is paler */
+  const PALE = [248, 222, 198];
+  const DEEP = [207, 96, 36];
+  function shade(t) {
+    const k = Math.min(1, Math.max(0, t));
+    return `rgb(${PALE.map((p, i) => Math.round(p + (DEEP[i] - p) * k)).join(',')})`;
+  }
+  const shadeOf = (value, max) => shade(max > 0 ? Math.sqrt(Math.max(0, value) / max) : 0);
+
+  // donut: slices [{ name, value, color, tip, onPick }], largest first; percentages ride on the ring in pills.
+  // Each slice is a ring segment with softly rounded corners and a small gap to its neighbours:
+  // the shape is drawn slightly inset, then stroked in its own colour with round joins.
+  function donutChart(slices, centre) {
+    const size = 260;
+    const c = size / 2;
+    const outer = 122;
+    const inner = 74;
+    const corner = 7;
+    const gap = 5;
+    const total = slices.reduce((s, d) => s + d.value, 0) || 1;
+    const point = (angle, radius) => `${(c + radius * Math.sin(angle)).toFixed(2)},${(c - radius * Math.cos(angle)).toFixed(2)}`;
+    const ro = outer - corner;
+    const ri = inner + corner;
+    let angle = 0;
+    const nodes = slices.map((d, i) => {
+      const span = (d.value / total) * Math.PI * 2;
+      const start = angle;
+      angle += span;
+      const mid = start + span / 2;
+      const padO = (gap / 2 + corner) / ro;
+      const padI = (gap / 2 + corner) / ri;
+      const oa = Math.min(start + padO, mid);
+      const ob = Math.max(start + span - padO, mid);
+      const ia = Math.min(start + padI, mid);
+      const ib = Math.max(start + span - padI, mid);
+      const large = ob - oa > Math.PI ? 1 : 0;
+      const shape = slices.length === 1
+        ? `M${point(0, ro)}A${ro},${ro} 0 1 1 ${point(Math.PI * 1.999, ro)}Z M${point(0, ri)}A${ri},${ri} 0 1 0 ${point(Math.PI * 1.999, ri)}Z`
+        : `M${point(oa, ro)}A${ro},${ro} 0 ${large} 1 ${point(ob, ro)}L${point(ib, ri)}A${ri},${ri} 0 ${large} 0 ${point(ia, ri)}Z`;
+      const share = Math.round((d.value / total) * 100);
+      const label = `${share}%`;
+      const [lx, ly] = point(mid, (outer + inner) / 2).split(',').map(Number);
+      const w = label.length * 7 + 14;
+      const group = svg('g', { class: 'slice', 'data-tip': d.tip, tabindex: d.onPick ? '0' : null, role: d.onPick ? 'button' : null, 'aria-label': d.tip, style: `--b:${i}` },
+        svg('path', { class: 'slice-shape', d: shape, fill: d.color, stroke: d.color, 'stroke-width': corner * 2, 'stroke-linejoin': 'round', 'fill-rule': 'evenodd' }),
+        share >= 5 ? svg('g', { class: 'slice-label' },
+          svg('rect', { x: lx - w / 2, y: ly - 10, width: w, height: 20, rx: 10 }),
+          svg('text', { x: lx, y: ly + 4, 'text-anchor': 'middle' }, label)) : null);
+      if (d.onPick) {
+        group.addEventListener('click', d.onPick);
+        group.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); d.onPick(); } });
+      }
+      return group;
+    });
+    return el('div', { class: 'donut' },
+      svg('svg', { viewBox: `0 0 ${size} ${size}`, role: 'img', 'aria-label': `Spending by category: ${slices.map((d) => `${d.name} ${Math.round((d.value / total) * 100)}%`).join(', ')}` },
+        nodes,
+        svg('text', { class: 'donut-total', x: c, y: c + 4, 'text-anchor': 'middle' }, centre.value),
+        svg('text', { class: 'donut-caption', x: c, y: c + 24, 'text-anchor': 'middle' }, centre.caption)),
+      el('ul', { class: 'donut-legend' }, slices.map((d) =>
+        el('li', {}, el('i', { style: `background:${d.color}` }), d.name))));
+  }
+
   // labelled horizontal bars: [{ name, value, meta, onPick, over }]
   function hbars(rows, max) {
-    return el('div', { class: 'hrows' }, rows.map((r) => el(r.onPick ? 'button' : 'div', {
+    return el('div', { class: 'hrows' }, rows.map((r, i) => el(r.onPick ? 'button' : 'div', {
       class: 'hrow' + (r.over ? ' over' : ''), type: r.onPick ? 'button' : null, onclick: r.onPick || null,
     },
-    el('span', { class: 'hname' }, r.name), el('span', { class: 'hval' }, rupees.format(r.value)),
-    el('span', { class: 'htrack' }, el('span', { class: 'hfill', style: `width:${max > 0 ? Math.max(1, (Math.max(0, r.value) / max) * 100) : 0}%` })),
+    el('span', { class: 'hname' }, r.name), el('span', { class: 'hval' }, r.valueText || rupees.format(r.value)),
+    el('span', { class: 'htrack' }, el('span', { class: 'hfill', style: `--b:${i};width:${max > 0 ? Math.max(1, (Math.max(0, r.value) / max) * 100) : 0}%;background:${r.color || shadeOf(r.value, max)}` })),
     r.meta ? el('span', { class: 'hmeta' }, r.meta) : null)));
   }
 
   /* ---------- Spending tab ---------- */
+  /* ---------- Spending tab: story cards on a grid ----------
+     Each card opens with a small topic, then one sentence stating the finding, then the chart behind it. */
+  const SP_WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const SP_DAYNAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const spWeekday = (key) => (parseKey(key).getUTCDay() + 6) % 7;
+  const hourName = (h) => `${h % 12 || 12} ${h < 12 ? 'am' : 'pm'}`;
+  const ordinal = (n) => `${n}${n % 10 === 1 && n !== 11 ? 'st' : n % 10 === 2 && n !== 12 ? 'nd' : n % 10 === 3 && n !== 13 ? 'rd' : 'th'}`;
+  let spPicked = null;     // the day shown beside the calendar
+  let spCategory = null;   // a category picked on the calendar
+
+  function monthStory(m) {
+    const counted = monthOf(m).filter((t) => !t.excluded);
+    const days = daysIn(m);
+    const elapsed = daysElapsed(m);
+    const today = todayKey();
+    const payments = counted.filter((t) => t.type === 'debit' && t.spend > 0);
+    const perDay = Array.from({ length: days }, (_, i) => {
+      const key = `${m}-${String(i + 1).padStart(2, '0')}`;
+      const items = counted.filter((t) => t.date === key);
+      return { key, day: i + 1, items, future: key > today, spend: Math.max(0, sumSpend(items)), count: items.filter((t) => t.type === 'debit' && t.spend > 0).length };
+    });
+    const groupBy = (keyFn) => {
+      const map = new Map();
+      for (const t of counted) {
+        if (t.income) continue;
+        const k = keyFn(t);
+        const g = map.get(k) || { key: k, value: 0, count: 0, items: [] };
+        g.value += t.spend;
+        if (t.type === 'debit' && t.spend > 0) g.count += 1;
+        g.items.push(t);
+        map.set(k, g);
+      }
+      return [...map.values()].filter((g) => g.value > 0).sort((a, b) => b.value - a.value);
+    };
+    const cats = groupBy((t) => t.category).map((g) => ({ ...g, name: g.key }));
+    const payees = groupBy((t) => t.key).map((g) => ({ ...g, name: g.items[0].payee, category: g.items[0].category }));
+    return {
+      m, days, elapsed, perDay, payments, cats, payees, counted,
+      name: fmtMonth.format(parseKey(`${m}-01`)),
+      isCurrent: m === thisMonth(),
+      paid: counted.filter((t) => t.type === 'debit').reduce((s, t) => s + t.amount, 0),
+      refunded: counted.filter((t) => t.refund).reduce((s, t) => s + t.amount, 0),
+      received: counted.filter((t) => t.income).reduce((s, t) => s + t.amount, 0),
+      net: Math.max(0, sumSpend(counted.filter((t) => !t.income))),
+    };
+  }
+  const runningTotal = (s) => { let run = 0; return s.perDay.map((d) => (d.future ? null : (run += d.spend))); };
+  const spentBy = (s, day) => s.perDay.filter((d) => d.day <= day).reduce((a, d) => a + d.spend, 0);
+
+  // lines across the days of a month: series [{ values, cls, area, dot, dashed }]
+  function lineChart(holder, series, { height: minH = 190, days } = {}) {
+    const width = Math.max(240, Math.round(holder.clientWidth || 600));
+    const height = Math.max(minH, Math.floor(holder.clientHeight || 0));
+    const pad = { l: 4, r: 8, t: 10, b: 6 };
+    const n = days || Math.max(...series.map((s) => s.values.length));
+    const max = Math.max(1, ...series.flatMap((s) => s.values.filter((v) => v != null)));
+    const x = (i) => pad.l + (i / Math.max(n - 1, 1)) * (width - pad.l - pad.r);
+    const y = (v) => pad.t + (height - pad.t - pad.b) * (1 - v / max);
+    const nodes = [];
+    for (const s of series) {
+      const pts = s.values.map((v, i) => (v == null ? null : [x(i), y(v)])).filter(Boolean);
+      if (!pts.length) continue;
+      const d = pts.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join('');
+      if (s.area) nodes.push(svg('path', { class: `${s.cls}-area fade`, d: `${d}L${pts[pts.length - 1][0]},${y(0)}L${pts[0][0]},${y(0)}Z` }));
+      nodes.push(svg('path', { class: `${s.cls}${s.dashed ? '' : ' draw'}`, d, pathLength: s.dashed ? null : '1', fill: 'none' }));
+      if (s.dot) nodes.push(svg('circle', { class: `${s.cls}-dot fade`, cx: pts[pts.length - 1][0], cy: pts[pts.length - 1][1], r: 4.5 }));
+    }
+    holder.replaceChildren(svg('svg', { viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-label': 'Running total of spending through the month' }, nodes));
+  }
+
   function renderSpendingTab() {
     const tab = $('tab-spending');
     if (!state.transactions.length) { tab.replaceChildren(connectPrompt()); return; }
+    const s = monthStory(finMonth);
+    if (!s.payments.length) {
+      tab.replaceChildren(el('div', { class: 'panel' }, emptyEl(`No spending recorded in ${s.name}.`)));
+      return;
+    }
+    const prev = monthStory(addMonths(s.m, -1));
+    const avg = s.elapsed ? s.net / s.elapsed : 0;
+    const hl = (t) => el('span', { class: 'hl' }, t);
+    const card = (cls, kicker, finding, ...body) => el('section', { class: `panel story-card ${cls}` },
+      el('p', { class: 'kicker' }, kicker), el('h3', { class: 'finding' }, finding), ...body);
+    const toTransactions = (filter) => () => { txFilter = { ...blankFilter(), ...filter }; goFinance('transactions'); };
 
-    const month = finMonth;
-    const list = monthOf(month);
-    const counted = list.filter((t) => !t.excluded);
-    const paid = counted.filter((t) => t.type === 'debit').reduce((s, t) => s + t.amount, 0);
-    // payments after refunds: a fully refunded one drops out, a partly refunded one shows what's left
-    const payments = counted.filter((t) => t.type === 'debit' && t.spend > 0);
-    const refunded = counted.filter((t) => t.refund).reduce((s, t) => s + t.amount, 0);
-    const received = counted.filter((t) => t.income).reduce((s, t) => s + t.amount, 0);
-    const net = paid - refunded;
-    const elapsed = daysElapsed(month);
-    const monthName = fmtMonth.format(parseKey(`${month}-01`));
-    const prev = addMonths(month, -1);
-    const prevName = fmtMonth.format(parseKey(`${prev}-01`));
-    const current = month === thisMonth();
-    const prevList = monthOf(prev);
-    const prevNet = sumSpend(prevList.filter((t) => !current || Number(t.date.slice(8)) <= elapsed));
+    /* 1 · the month so far, with its running total against last month */
     let compare = null;
-    if (prevList.length && prevNet > 0) {
-      const change = Math.round(((net - prevNet) / prevNet) * 100);
-      const when = current ? ` at this point` : '';
-      compare = change === 0 ? `Same as ${prevName}${when}` : `${Math.abs(change)}% ${change > 0 ? 'more' : 'less'} than ${prevName}${when}`;
-      // the first month with alerts is usually partial
-      const firstDay = finData().list.map((t) => t.date).filter((d) => d && d.startsWith(prev)).sort()[0];
-      if (prev === finData().months[0] && firstDay && Number(firstDay.slice(8)) > 3) compare += ` (records start ${fmtShort.format(parseKey(firstDay)).replace(/^\w+ /, '')})`;
+    const prevBase = s.isCurrent ? spentBy(prev, s.elapsed) : prev.net;
+    if (prev.payments.length && prevBase > 0) {
+      const change = Math.round(((s.net - prevBase) / prevBase) * 100);
+      const firstDay = prev.counted.map((t) => t.date).sort()[0];
+      const partial = prev.m === finData().months[0] && firstDay && Number(firstDay.slice(8)) > 3;
+      compare = { change, text: `${change === 0 ? `Same as ${prev.name}` : `${Math.abs(change)}% ${change > 0 ? 'more' : 'less'} than ${prev.name}`}${s.isCurrent && change !== 0 ? ' by this point' : ''}${partial ? ` (records start ${fmtShort.format(parseKey(firstDay)).replace(/^\w+ /, '')})` : ''}` };
+    }
+    const cum = el('div', { class: 'chart' });
+    const lede = el('section', { class: 'panel story-card lede s8' },
+      el('p', { class: 'kicker' }, `${s.name}${s.isCurrent ? ', so far' : ''}`),
+      el('h3', { class: 'finding' }, s.isCurrent ? 'You’ve spent ' : 'You spent ', el('span', { class: 'hl', 'data-count': s.net, 'data-money': true }, rupees.format(s.net)), ', about ', hl(rupees.format(avg)), ' a day.'),
+      el('p', { class: 'stat-sub' }, [plural(s.payments.length, 'payment'), `typically ${rupees.format(median(s.payments.map((t) => t.spend)))}`,
+        `${rupees.format(s.received)} received`, s.refunded ? `${rupees.format(s.refunded)} credited back` : null].filter(Boolean).join(' · ')),
+      compare ? el('span', { class: `trend ${compare.change > 0 ? 'up' : 'down'}` }, `${compare.change > 0 ? '▲' : compare.change < 0 ? '▼' : '='} ${compare.text}`) : null,
+      cum,
+      el('div', { class: 'keys' }, el('span', {}, el('i'), `${s.name}, running total`), prev.payments.length ? el('span', {}, el('i', { class: 'k-prev' }), prev.name) : null));
+
+    /* 2 · budget gauge */
+    const b = budget();
+    let gaugeCard;
+    if (!b?.total) {
+      gaugeCard = card('s4', 'Budget', 'Set a monthly budget to see whether you’re on pace.',
+        el('div', { class: 'fill-card' }, el('button', { class: 'btn primary', type: 'button', onclick: () => goFinance('budget') }, 'Set a budget')));
+    } else {
+      const limit = Number(b.total);
+      const share = s.elapsed / s.days;
+      const ahead = s.net - limit * share;
+      const left = limit - s.net;
+      const daysLeft = s.isCurrent ? s.days - s.elapsed : 0;
+      const g = 170; const R = 130;
+      const at = (f, r = R) => { const a = Math.PI * (1 - Math.min(1, Math.max(0, f))); return [g + r * Math.cos(a), g - r * Math.sin(a)]; };
+      const arc = (f) => { const [px, py] = at(f); return `M${g - R},${g}A${R},${R} 0 0 1 ${px.toFixed(1)},${py.toFixed(1)}`; };
+      const [ix, iy] = at(share, R - 22); const [ox, oy] = at(share, R + 22);
+      const finding = !s.isCurrent
+        ? (left >= 0 ? ['You finished ', hl(rupees.format(left)), ' under budget.'] : ['You went ', hl(rupees.format(-left)), ' over budget.'])
+        : ahead > 0 ? ['You’re ', hl(rupees.format(ahead)), ' ahead of an even pace.'] : ['You’re ', hl(rupees.format(-ahead)), ' under an even pace.'];
+      gaugeCard = card('s4', 'Budget', finding,
+        s.isCurrent ? el('p', { class: 'finding-sm' }, 'The white mark is where an even pace would be today.') : null,
+        el('div', { class: 'gauge fill-card' }, svg('svg', { viewBox: `0 0 ${g * 2} ${g + 30}`, role: 'img', 'aria-label': `${rupees.format(s.net)} of ${rupees.format(limit)} budget` },
+          svg('path', { class: 'track', d: arc(1), fill: 'none', 'stroke-width': 26, 'stroke-linecap': 'round' }),
+          svg('path', { class: `spent draw${s.net > limit ? ' over' : ''}`, d: arc(s.net / limit), fill: 'none', 'stroke-width': 26, 'stroke-linecap': 'round', pathLength: '1' }),
+          s.isCurrent ? svg('line', { class: 'needle fade', x1: ix, y1: iy, x2: ox, y2: oy }) : null,
+          svg('text', { class: 'g-big', x: g, y: g - 18, 'text-anchor': 'middle' }, rupees.format(s.net)),
+          svg('text', { class: 'g-sub', x: g, y: g + 6, 'text-anchor': 'middle' }, `of ${rupees.format(limit)} budget`))),
+        s.isCurrent
+          ? el('div', { class: 'trio' },
+            el('div', {}, el('p', { class: 'stat-label' }, left >= 0 ? 'Left' : 'Over'), el('p', {}, rupees.format(Math.abs(left)))),
+            el('div', {}, el('p', { class: 'stat-label' }, 'Per day left'), el('p', {}, daysLeft ? rupees.format(Math.max(0, left) / daysLeft) : '—')),
+            el('div', {}, el('p', { class: 'stat-label' }, 'Days left'), el('p', {}, String(daysLeft))))
+          : el('div', { class: 'trio' },
+            el('div', {}, el('p', { class: 'stat-label' }, 'Spent'), el('p', {}, rupees.format(s.net))),
+            el('div', {}, el('p', { class: 'stat-label' }, 'Budget'), el('p', {}, rupees.format(limit))),
+            el('div', {}, el('p', { class: 'stat-label' }, left >= 0 ? 'Under' : 'Over'), el('p', {}, rupees.format(Math.abs(left))))));
     }
 
-    const hero = el('section', { class: 'panel hero s12' },
-      el('div', {},
-        el('p', { class: 'stat-label' }, `Spent in ${monthName}${current ? ' so far' : ''}`),
-        el('p', { class: 'hero-num' }, rupees.format(net)),
-        refunded ? el('p', { class: 'stat-sub' }, `${rupees.format(paid)} paid, ${rupees.format(refunded)} credited`) : null,
-        compare ? el('p', { class: 'stat-sub' + (/more/.test(compare) ? ' more' : '') }, compare) : null),
-      el('div', {}, el('p', { class: 'stat-label' }, 'Payments'), el('p', { class: 'stat-num' }, String(payments.length)),
-        el('p', { class: 'stat-sub' }, payments.length ? `typically ${rupees.format(median(payments.map((t) => t.spend)))} each` : 'none yet')),
-      el('div', {}, el('p', { class: 'stat-label' }, 'Per day'), el('p', { class: 'stat-num' }, rupees.format(elapsed ? net / elapsed : 0)),
-        el('p', { class: 'stat-sub' }, current ? `over ${plural(elapsed, 'day')} so far` : `over ${plural(elapsed, 'day')}`)),
-      el('div', {}, el('p', { class: 'stat-label' }, 'Received'), el('p', { class: 'stat-num' }, rupees.format(received)),
-        el('p', { class: 'stat-sub' }, received ? 'not counted as spending' : 'nothing this month')));
+    /* 3 · categories, and how they moved against last month */
+    const head = s.cats.slice(0, s.cats.length > 6 ? 5 : 6);
+    const rest = s.cats.slice(head.length);
+    const ranks = [1, 0.8, 0.62, 0.46, 0.3, 0.14];
+    const slices = head.map((c, i) => ({ name: c.name, value: c.value, color: shade(ranks[i]), onPick: toTransactions({ category: c.name }) }));
+    if (rest.length) slices.push({ name: 'Everything else', value: rest.reduce((a, c) => a + c.value, 0), color: shade(ranks[5]), rest: rest.map((c) => c.name) });
+    const [c1, c2] = s.cats;
+    const catCard = card('s7', 'Where it went',
+      c2 ? [`${c1.name} and ${c2.name.toLowerCase()} took `, hl(`${pct(c1.value + c2.value, s.net)}%`), ' of it.'] : [`${c1.name} took `, hl(`${pct(c1.value, s.net)}%`), ' of it.'],
+      el('div', { class: 'stack' }, slices.map((d, i) => el(d.onPick ? 'button' : 'span', {
+        class: 'fill-x', type: d.onPick ? 'button' : null, style: `--b:${i};flex:${d.value};background:${d.color}`,
+        'data-tip': `${d.rest ? d.rest.join(', ') : d.name} · ${rupees.format(d.value)} · ${pct(d.value, s.net)}%`, 'aria-label': `${d.name} ${rupees.format(d.value)}`, onclick: d.onPick || null,
+      }))),
+      el('ul', { class: 'stack-legend' }, slices.map((d) => el('li', {}, el('i', { style: `background:${d.color}` }), d.name, el('small', {}, `${rupees.format(d.value)} · ${pct(d.value, s.net)}%`)))),
+      prev.payments.length ? el('div', { class: 'moves' }, el('p', { class: 'kicker' }, `Against ${prev.name}${s.isCurrent ? ' by this point' : ''}`),
+        el('ul', {}, s.cats.slice(0, 5).map((c) => {
+          const before = prev.perDay.filter((d) => !s.isCurrent || d.day <= s.elapsed).flatMap((d) => d.items).filter((t) => t.category === c.name && !t.income).reduce((a, t) => a + t.spend, 0);
+          const change = before > 0 ? Math.round(((c.value - before) / before) * 100) : null;
+          return el('li', {}, el('button', { class: 'link-btn', type: 'button', onclick: toTransactions({ category: c.name }) }, c.name),
+            el('span', { class: 'stat-sub' }, `${rupees.format(before)} → ${rupees.format(c.value)}`),
+            el('span', { class: `trend ${change > 0 ? 'up' : 'down'}` }, change == null ? 'new' : change === 0 ? 'same' : `${change > 0 ? '▲' : '▼'} ${Math.abs(change)}%`));
+        }))) : null);
 
-    // per day
-    const days = daysIn(month);
-    const perDay = Array.from({ length: days }, (_, i) => {
-      const key = `${month}-${String(i + 1).padStart(2, '0')}`;
-      const items = counted.filter((t) => t.date === key);
-      return { key, spend: Math.max(0, sumSpend(items)), count: items.filter((t) => t.type === 'debit' && t.spend > 0).length };
+    /* 4 · regulars */
+    const regs = s.payees.filter((p) => p.count >= 3).sort((a, b) => b.count - a.count || b.value - a.value);
+    const regCard = regs.length
+      ? card('s5', 'Who you pay', [`${regs[0].name} is your regular: `, hl(`${regs[0].count} times`), `, about ${rupees.format(regs[0].value / regs[0].count)} each.`],
+        hbars(regs.slice(0, 6).map((p) => ({ name: p.name, value: p.count, valueText: `×${p.count}`, meta: `${rupees.format(p.value)} in all · ${p.category}`, onPick: toTransactions({ payee: p.key }) })), regs[0].count))
+      : card('s5', 'Who you pay', `Your biggest payee was ${s.payees[0].name}, at ${rupees.format(s.payees[0].value)}.`,
+        hbars(s.payees.slice(0, 6).map((p) => ({ name: p.name, value: p.value, meta: `${plural(p.count, 'payment')} · ${p.category}`, onPick: toTransactions({ payee: p.key }) })), s.payees[0].value));
+
+    /* 5 · weekday × hour */
+    const cells = Array.from({ length: 7 }, () => Array.from({ length: 24 }, () => ({ value: 0, count: 0 })));
+    s.payments.forEach((t) => { const h = Number((t.time || '').slice(0, 2)); if (Number.isNaN(h)) return; const c = cells[spWeekday(t.date)][h]; c.value += t.spend; c.count += 1; });
+    const maxCell = Math.max(1, ...cells.flat().map((c) => c.value));
+    let peak = { v: 0, r: 0, h: 0 };
+    cells.forEach((row, r) => row.forEach((c, h) => { if (c.value > peak.v) peak = { v: c.value, r, h }; }));
+    const dayTotals = cells.map((row) => row.reduce((a, c) => a + c.value, 0));
+    const busiest = dayTotals.indexOf(Math.max(...dayTotals));
+    const W = 980; const lw = 44; const cw = (W - lw) / 24; const ch = 34; const H = ch * 7 + 26;
+    const punch = svg('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': 'Spending by weekday and hour' },
+      SP_WEEKDAYS.map((d, r) => svg('text', { class: 'tick', x: 0, y: r * ch + ch / 2 + 4 }, d)),
+      Array.from({ length: 8 }, (_, k) => svg('text', { class: 'tick', x: lw + k * 3 * cw + cw / 2, y: H - 4, 'text-anchor': 'middle' }, hourName(k * 3))),
+      cells.flatMap((row, r) => row.map((c, h) => {
+        const cx = lw + h * cw + cw / 2; const cy = r * ch + ch / 2;
+        if (!c.value) return svg('circle', { class: 'pc-empty', cx, cy, r: 1.6 });
+        return svg('g', { class: 'pcell', 'data-tip': `${SP_WEEKDAYS[r]} ${hourName(h)} · ${rupees.format(c.value)} · ${plural(c.count, 'payment')}` },
+          svg('circle', { class: 'hit', cx, cy, r: 15 }),
+          svg('circle', { class: 'pc', style: `--b:${r * 24 + h};fill:${shadeOf(c.value, maxCell)}`, cx, cy, r: 3 + Math.sqrt(c.value / maxCell) * 12 }));
+      })));
+    const punchCard = card('s12 punch', 'When you pay', ['You spend most on ', hl(`${SP_DAYNAMES[busiest]}s`), ', and your busiest hour is ', hl(`${SP_DAYNAMES[peak.r]} around ${hourName(peak.h)}`), '.'],
+      el('p', { class: 'finding-sm' }, 'Each circle is an hour of the week; bigger and deeper means more was spent.'), punch);
+
+    /* 6 · small payments, in ₹20 ranges */
+    const small = s.payments.filter((t) => t.spend < 100);
+    const smallTotal = small.reduce((a, t) => a + t.spend, 0);
+    const bins = Array.from({ length: 5 }, (_, i) => small.filter((t) => t.spend >= i * 20 && t.spend < (i + 1) * 20));
+    const fullest = bins.reduce((x, bin, i) => (bin.length > bins[x].length ? i : x), 0);
+    const range = (i) => `₹${i * 20}–${i * 20 + 19}`;
+    const smallCard = card('s5', 'Small payments', [plural(small.length, 'payment'), ' under ₹100 added up to ', hl(rupees.format(smallTotal)), '.'],
+      el('p', { class: 'finding-sm' }, small.length ? `Most were ${range(fullest)}, ${pct(smallTotal, s.net)}% of the month’s spending.` : 'None this month.'),
+      el('div', { class: 'rhist' }, bins.map((bin) => el('div', { class: 'rcol' }, bin.map((t, k) => el('i', {
+        class: 'pop', style: `--b:${k};background:${shadeOf(bin.length, Math.max(1, bins[fullest].length))}`, 'data-tip': `${t.payee} · ${rupees.format(t.spend)} · ${fmtShort.format(parseKey(t.date))}`,
+      }))))),
+      el('div', { class: 'rlabels' }, bins.map((bin, i) => el('span', {}, el('b', {}, String(bin.length)), range(i)))));
+
+    /* 7 · heaviest days */
+    const ranked = s.perDay.filter((d) => !d.future && d.spend > 0).sort((a, b) => b.spend - a.spend);
+    const largest = [...s.payments].sort((a, b) => b.spend - a.spend)[0];
+    const daily = el('div', { class: 'chart' });
+    const dayCard = card('s7', 'Day by day',
+      ranked[1] ? ['Your heaviest days were the ', hl(ordinal(ranked[0].day)), ' and the ', hl(ordinal(ranked[1].day)), '.'] : ['Your heaviest day was the ', hl(ordinal(ranked[0].day)), '.'],
+      el('p', { class: 'finding-sm' }, `The largest single payment was ${rupees.format(largest.spend)} to ${largest.payee}, on the ${ordinal(Number(largest.date.slice(8)))}${largest.refunded ? ` (after ${rupees.format(largest.refunded)} refunded)` : ''}.`),
+      daily);
+
+    /* 8 · the calendar, with the picked day beside it */
+    if (!spPicked || !spPicked.startsWith(s.m)) spPicked = (ranked[0] || s.perDay[0]).key;
+    const rank = new Map(s.cats.map((c, i) => [c.name, i]));
+    const shown = (d) => (spCategory ? Math.max(0, d.items.filter((t) => t.category === spCategory).reduce((a, t) => a + t.spend, 0)) : d.spend);
+    const max = Math.max(1, ...s.perDay.map(shown));
+    const offset = spWeekday(`${s.m}-01`);
+    const calCells = [];
+    for (let i = 0; i < offset; i += 1) calCells.push(el('span'));
+    s.perDay.forEach((d, i) => {
+      const value = shown(d);
+      const mix = new Map();
+      d.items.filter((t) => t.type === 'debit' && t.spend > 0).forEach((t) => mix.set(t.category, (mix.get(t.category) || 0) + t.spend));
+      calCells.push(el('button', {
+        class: `bday pop${value > 0 ? ' hot' : ''}${d.key === spPicked ? ' sel' : ''}${d.future ? ' future' : ''}${spCategory && !value ? ' dim' : ''}${d.key === todayKey() ? ' today' : ''}`,
+        type: 'button', style: `--b:${i};${value > 0 ? `background:${shadeOf(value, max)}` : ''}`,
+        'data-tip': `${fmtShort.format(parseKey(d.key))} · ${rupees.format(value)}`, 'aria-pressed': String(d.key === spPicked),
+        onclick: () => { spPicked = d.key; renderSpendingTab(); },
+      }, el('span', { class: 'n' }, String(d.day)),
+      el('span', { class: 'mix' }, [...mix.entries()].sort((x, y) => y[1] - x[1]).map(([c, v]) => el('i', { style: `flex:${v};background:rgba(11,18,48,${Math.max(0.25, 0.75 - (rank.get(c) || 0) * 0.1)})` }))),
+      el('span', { class: 'amt' }, value > 0 ? compact(value) : '')));
+      if ((offset + i) % 7 === 6 || i === s.days - 1) {
+        const from = Math.max(0, i - ((offset + i) % 7));
+        const wk = s.perDay.slice(from, i + 1).reduce((x, dd) => x + shown(dd), 0);
+        if (i === s.days - 1) for (let k = (offset + i) % 7; k < 6; k += 1) calCells.push(el('span'));
+        calCells.push(s.perDay[from].future ? el('span') : el('div', { class: 'wk' }, 'week', el('strong', {}, compact(wk))));
+      }
     });
-    const pickDay = (key) => () => { txFilter = { ...blankFilter(), date: key }; goFinance('transactions'); };
+    const spendDays = s.perDay.filter((d) => !d.future && d.spend > 0).length;
+    const calCard = card('s8 cal-card', 'The month', spCategory
+      ? [hl(spCategory), ` came up on ${plural(s.perDay.filter((d) => shown(d) > 0).length, 'day')}.`]
+      : ['You spent something on ', hl(`${spendDays} of ${s.elapsed}`), ' days.'],
+      el('div', { class: 'bigcal-week' }, SP_WEEKDAYS.map((d) => el('span', {}, d)), el('span', {}, 'Week')),
+      el('div', { class: 'bigcal' }, calCells),
+      el('div', { class: 'cchips' }, s.cats.slice(0, 8).map((c) => el('button', {
+        class: `cchip${spCategory === c.name ? ' on' : ''}`, type: 'button', 'aria-pressed': String(spCategory === c.name),
+        onclick: () => { spCategory = spCategory === c.name ? null : c.name; renderSpendingTab(); },
+      }, el('i', { style: `background:${shade([1, 0.8, 0.62, 0.46, 0.3, 0.14][Math.min(rank.get(c.name), 5)])}` }), c.name))));
+    const day = s.perDay.find((d) => d.key === spPicked);
+    const items = day.items.filter((t) => !spCategory || t.category === spCategory).sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+    const dayTotal = spCategory ? shown(day) : day.spend;
+    const pickedCard = card('s4 day-card', fmtLong.format(parseKey(day.key)),
+      items.length ? [hl(rupees.format(dayTotal)), ` across ${plural(items.filter((t) => t.type === 'debit').length, 'payment')}.`] : 'Nothing spent this day.',
+      el('ul', { class: 'day-list' }, items.map((t) => el('li', {},
+        el('span', {}, t.payee),
+        el('span', { class: t.type === 'credit' ? 'credit' : '' }, `${t.type === 'credit' ? '+' : ''}${rupees.format(t.amount)}`),
+        el('small', {}, [t.time, t.category, t.refunded ? `${rupees.format(t.refunded)} refunded` : null].filter(Boolean).join(' · '))))),
+      items.length ? el('button', { class: 'link-btn', type: 'button', style: 'margin-top:10px', onclick: toTransactions({ date: day.key }) }, 'Open in Transactions') : null);
 
-    const calendar = el('section', { class: 'panel s5' }, el('h3', { class: 'ptitle' }, 'Day by day', el('small', {}, 'tap a day to see its payments')));
-    const maxDay = Math.max(0, ...perDay.map((d) => d.spend));
-    const offset = (parseKey(`${month}-01`).getUTCDay() + 6) % 7;
-    calendar.append(
-      el('div', { class: 'hm-week', 'aria-hidden': 'true' }, ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => el('span', {}, d))),
-      el('div', { class: 'hm' },
-        Array.from({ length: offset }, () => el('span', { class: 'hm-blank' })),
-        perDay.map((d) => {
-          const level = d.spend > 0 ? Math.min(5, Math.max(1, Math.ceil(Math.sqrt(d.spend / maxDay) * 5))) : 0;
-          const future = d.key > todayKey();
-          const tip = `${fmtShort.format(parseKey(d.key))} · ${rupees.format(d.spend)}${d.count ? ` · ${plural(d.count, 'payment')}` : ''}`;
-          return el('button', {
-            class: `hm-day lv${level}${d.key === todayKey() ? ' today' : ''}${future ? ' future' : ''}`,
-            type: 'button', 'data-tip': tip, 'aria-label': tip, onclick: pickDay(d.key),
-          }, el('span', { class: 'd' }, String(Number(d.key.slice(8)))), el('span', { class: 'v' }, d.spend > 0 ? compact(d.spend) : ''));
-        })),
-      el('div', { class: 'hm-key', 'aria-hidden': 'true' }, 'Less', [0, 1, 2, 3, 4, 5].map((n) => el('i', { class: `lv${n}` })), 'More'));
+    tab.replaceChildren(el('div', { class: 'fin-grid' }, lede, gaugeCard, catCard, regCard, punchCard, smallCard, dayCard, calCard, pickedCard));
 
-    const barsHolder = el('div', { class: 'chart' });
-    const bars = el('section', { class: 'panel s7' }, el('h3', { class: 'ptitle' }, 'Spending by day', el('small', {}, elapsed ? `${rupees.format(net / elapsed)} a day on average` : '')), barsHolder);
-
-    // categories
-    const byCat = new Map();
-    for (const t of counted) {
-      if (t.income) continue;
-      const c = byCat.get(t.category) || { value: 0, count: 0 };
-      c.value += t.spend;
-      if (t.type === 'debit' && t.spend > 0) c.count += 1;
-      byCat.set(t.category, c);
-    }
-    const cats = [...byCat.entries()].filter(([, c]) => c.value > 0).sort((a, b) => b[1].value - a[1].value);
-    const categories = el('section', { class: 'open s12 cols' }, openHead('By category', 'tap one to see its payments'),
-      cats.length ? hbars(cats.map(([name, c]) => ({
-        name, value: c.value, meta: `${pct(c.value, net)}% · ${plural(c.count, 'payment')}`,
-        onPick: () => { txFilter = { ...blankFilter(), category: name }; goFinance('transactions'); },
-      })), cats[0][1].value) : el('p', { class: 'quiet' }, 'No spending this month.'));
-
-    // payees
-    const byPayee = new Map();
-    for (const t of payments) {
-      const p = byPayee.get(t.key) || { name: t.payee, category: t.category, value: 0, count: 0 };
-      p.value += t.spend;
-      p.count += 1;
-      byPayee.set(t.key, p);
-    }
-    const payeesAll = [...byPayee.entries()];
-    const pickPayee = (key) => () => { txFilter = { ...blankFilter(), payee: key }; goFinance('transactions'); };
-    const topAmount = [...payeesAll].sort((a, b) => b[1].value - a[1].value).slice(0, 6);
-    const regulars = payeesAll.filter(([, p]) => p.count >= 3).sort((a, b) => b[1].count - a[1].count || b[1].value - a[1].value).slice(0, 6);
-    const mostSpent = el('section', { class: 'open s4' }, openHead('Most spent with'),
-      topAmount.length
-        ? hbars(topAmount.map(([key, p]) => ({ name: p.name, value: p.value, meta: `${p.category} · ${plural(p.count, 'payment')}`, onPick: pickPayee(key) })), topAmount[0][1].value)
-        : el('p', { class: 'quiet' }, 'None yet.'));
-    const regularsSection = el('section', { class: 'open s4' }, openHead('Regulars'),
-      regulars.length
-        ? hbars(regulars.map(([key, p]) => ({ name: `${p.name} ×${p.count}`, value: p.value, meta: `about ${rupees.format(p.value / p.count)} each`, onPick: pickPayee(key) })), Math.max(...regulars.map(([, p]) => p.value)))
-        : el('p', { class: 'quiet' }, 'Payees paid three or more times show up here.'));
-
-    // time of day and weekday
-    const buckets = [['Morning', 5, 12], ['Afternoon', 12, 17], ['Evening', 17, 21], ['Night', 21, 29]];
-    const hourOf = (t) => { const h = Number((t.time || '12').slice(0, 2)); return h < 5 ? h + 24 : h; };
-    const times = buckets.map(([name, from, to]) => {
-      const items = payments.filter((t) => hourOf(t) >= from && hourOf(t) < to);
-      return { name, value: items.reduce((s, t) => s + t.spend, 0), count: items.length };
-    });
-    const timeMax = Math.max(...times.map((t) => t.value));
-    const timeOfDay = el('section', { class: 'panel s3' }, el('h3', { class: 'ptitle' }, 'Time of day'),
-      hbars(times.map((t) => ({ name: t.name, value: t.value, meta: plural(t.count, 'payment') })), timeMax));
-
-    const weekHolder = el('div', { class: 'chart' });
-    const weekdays = el('section', { class: 'panel s3' }, el('h3', { class: 'ptitle' }, 'By weekday'), weekHolder);
-
-    const trendHolder = el('div', { class: 'chart' });
-    const trendMonths = finData().months.filter((m) => m <= month).slice(-6);
-    const trend = el('section', { class: 'panel s3' }, el('h3', { class: 'ptitle' }, 'Month by month'),
-      trendMonths.length >= 2 ? trendHolder : el('p', { class: 'quiet' }, 'Shows once there’s more than one month of payments.'));
-
-    // small and large payments
-    const small = payments.filter((t) => t.spend < 100);
-    const smallTotal = small.reduce((s, t) => s + t.spend, 0);
-    const smalls = el('section', { class: 'panel s3' }, el('h3', { class: 'ptitle' }, 'Small payments'),
-      el('p', { class: 'small-note' }, el('strong', {}, rupees.format(smallTotal)), el('br'),
-        `${plural(small.length, 'payment')} under ₹100, ${pct(smallTotal, net)}% of what you spent this month.`),
-      // the amounts that keep coming up
-      (() => {
-        const counts = new Map();
-        small.forEach((t) => counts.set(Math.round(t.spend), (counts.get(Math.round(t.spend)) || 0) + 1));
-        const common = [...counts.entries()].filter(([, n]) => n > 1).sort((a, b) => b[1] - a[1] || a[0] - b[0]).slice(0, 4);
-        return common.length
-          ? el('div', { style: 'margin-top:16px' }, el('p', { class: 'stat-label' }, 'Most common amounts'),
-            hbars(common.map(([amount, n]) => ({ name: `${rupees.format(amount)} × ${n}`, value: amount * n })), Math.max(...common.map(([a, n]) => a * n))))
-          : null;
-      })());
-    const largest = [...payments].sort((a, b) => b.spend - a.spend).slice(0, 5);
-    const biggest = el('section', { class: 'open s4' }, openHead('Largest payments'),
-      largest.length ? hbars(largest.map((t) => ({
-        name: t.payee, value: t.spend, meta: `${fmtShort.format(parseKey(t.date))} · ${t.category}${t.refunded ? ` · after ${rupees.format(t.refunded)} refunded` : ''}`,
-        onPick: () => { txFilter = { ...blankFilter(), payee: t.key }; openTx.add(t.id); goFinance('transactions'); },
-      })), largest[0].spend) : el('p', { class: 'quiet' }, 'None yet.'));
-
-    tab.replaceChildren(el('div', { class: 'fin-grid' }, hero, calendar, bars, categories, mostSpent, regularsSection, biggest, timeOfDay, weekdays, trend, smalls));
-
-    // charts are measured after they are in the page
-    const today = todayKey();
-    barChart(barsHolder, perDay.map((d, i) => ({
-      label: String(i + 1), value: d.key > today ? 0 : d.spend, now: d.key === today,
-      tip: `${fmtShort.format(parseKey(d.key))} · ${rupees.format(d.spend)}`, onPick: d.key > today ? null : pickDay(d.key),
-    })), { labelEvery: 5, average: elapsed ? net / elapsed : null, ariaLabel: `Spending per day in ${monthName}` });
-
-    const weekTotals = Array(7).fill(0);
-    payments.forEach((t) => { weekTotals[(parseKey(t.date).getUTCDay() + 6) % 7] += t.spend; });
-    barChart(weekHolder, ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d, i) => ({
-      label: d, value: weekTotals[i], tip: `${d} · ${rupees.format(weekTotals[i])}`,
-    })), { height: 180, ariaLabel: `Spending by weekday in ${monthName}` });
-
-    if (trendMonths.length >= 2) {
-      barChart(trendHolder, trendMonths.map((m) => {
-        const value = Math.max(0, sumSpend(monthOf(m)));
-        return {
-          label: fmtMonthShort.format(parseKey(`${m}-01`)), value, now: m === month,
-          tip: `${fmtMonthYear.format(parseKey(`${m}-01`))} · ${rupees.format(value)}`,
-          onPick: () => { finMonth = m; renderFinance(); },
-        };
-      }), { height: 180, ariaLabel: 'Spending per month' });
-    }
+    // charts are measured once they're in the page
+    lineChart(cum, [
+      prev.payments.length ? { values: runningTotal(prev), cls: 'prev', dashed: true } : { values: [] },
+      { values: runningTotal(s), cls: 'actual', area: true, dot: true },
+    ], { height: 190, days: Math.max(s.days, prev.days) });
+    const notes = ranked.slice(0, 2).map((d) => d.key);
+    barChart(daily, s.perDay.map((d) => ({
+      label: String(d.day), value: d.future ? 0 : d.spend, now: d.key === todayKey(),
+      note: notes.includes(d.key) ? compact(d.spend) : null,
+      tip: `${fmtShort.format(parseKey(d.key))} · ${rupees.format(d.spend)}`, onPick: d.future ? null : () => { spPicked = d.key; renderSpendingTab(); },
+    })), { labelEvery: 5, average: avg || null, ariaLabel: `Spending per day in ${s.name}` });
   }
 
   function median(values) {
@@ -2599,14 +3032,14 @@
         el('button', { class: 'btn small', type: 'button', onclick: () => { editingBudget = true; renderBudgetTab(); } }, icon('edit'), 'Edit')),
       b.total ? budgetRow('Everything', spent, Number(b.total), finMonth) : el('p', { class: 'quiet' }, 'No overall budget set.'),
       catLimits.map(([c, v]) => budgetRow(c, Math.max(0, byCat.get(c) || 0), Number(v), finMonth))),
-      el('section', { class: 'open s5' }, openHead('Without a budget'),
+      el('section', { class: 'panel s5' }, el('h3', { class: 'ptitle' }, 'Without a budget'),
         unbudgeted.length ? hbars(unbudgeted.map(([c, v]) => ({ name: c, value: v })), unbudgeted[0][1]) : el('p', { class: 'quiet' }, 'Every category you spent on has a budget.'))));
   }
 
   function budgetForm(b) {
     const total = el('input', { type: 'number', min: '0', step: '100', inputmode: 'numeric', value: b?.total || '', placeholder: 'e.g. 30000' });
     const inputs = CATEGORIES.map((c) => [c, el('input', { type: 'number', min: '0', step: '100', inputmode: 'numeric', value: b?.categories?.[c] || '', placeholder: 'No limit' })]);
-    const form = el('form', { class: 'panel bud-form' },
+    const form = el('form', { class: 'panel bud-form no-lift' },
       el('h3', { class: 'ptitle' }, b ? 'Edit your budget' : 'Set a monthly budget'),
       el('p', { class: 'quiet', style: 'padding-top:0' }, 'It applies to every month. Leave a category empty to not budget it.'),
       el('div', { class: 'grid2' }, el('label', {}, el('span', {}, 'Everything (₹ a month)'), total)),
