@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0a1128">
 <title>Potluri — Tracker</title>
 <link rel="icon" href="tracker-assets/eye.png">
-<link rel="preload" as="image" href="tracker-assets/bg.webp">
+<link rel="preload" as="image" href="tracker-assets/bg-top.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&display=swap" rel="stylesheet">
@@ -44,7 +44,7 @@
   [hidden] { display: none !important; }
 
   html {
-    background: var(--ground) url('tracker-assets/bg.webp') center top / cover no-repeat;
+    background: var(--ground);
     color-scheme: dark;
     scroll-behavior: smooth;
     scroll-padding-top: 84px;
@@ -63,6 +63,23 @@
     font-variant-numeric: lining-nums tabular-nums;
     -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* parallax: the photograph stays fixed to the window while the page scrolls over it,
+     so pages of different lengths never resize or move it */
+  body {
+    background-color: var(--ground);
+    background-image: url('tracker-assets/bg-top.webp');
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  /* phones and tablets ignore background-attachment: fixed (iOS stretches the photo instead),
+     so there the same effect comes from a fixed layer behind the page */
+  @media (hover: none) and (pointer: coarse) {
+    body { background: none; }   /* a body colour would paint over the layer below */
+    body::before { content: ''; position: fixed; inset: 0 0 auto 0; z-index: -1; height: 100lvh; pointer-events: none; background: var(--ground) url('tracker-assets/bg-top.webp') center / cover no-repeat; }
   }
 
   ::selection { background: var(--ember); color: var(--on-ember); }
@@ -142,7 +159,7 @@
   /* ---------- Masthead (tracker's: in the page flow, rule beneath) ---------- */
   .bar { display: flex; flex-wrap: wrap; align-items: center; column-gap: 14px; max-width: 1366px; margin: 0 auto; padding: 40px var(--pad) 0; }
   .bar::after { content: ''; flex-basis: 100%; margin-top: 6px; border-bottom: 1px solid var(--line); }
-  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; border-radius: 999px; }
+  .brand { display: flex; align-items: center; gap: 12px; margin-right: auto; text-decoration: none; border-radius: 999px; }
   .brand img { width: 52px; height: 52px; border-radius: 50%; transition: transform 0.6s var(--ease); }
   .brand:hover img { transform: rotate(40deg); }
   .brand span { font-family: var(--serif); font-size: 21px; letter-spacing: 0.02em; text-transform: uppercase; }
@@ -351,11 +368,16 @@
   .js .reveal.in { opacity: 1; transform: none; transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
 
   /* ---------- Views: Tracker / Finance ---------- */
-  .views { display: flex; gap: 4px; margin: 0 auto 0 22px; }
-  .views a { padding: 7px 16px; border-radius: 999px; font-size: 18px; text-decoration: none; color: var(--ink-2); transition: background-color 0.18s, color 0.18s; }
+  .views { display: flex; gap: 6px; }
+  .views a { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: var(--ink-2); transition: background-color 0.18s, color 0.18s, box-shadow 0.18s; }
+  .views a .ic { width: 21px; height: 21px; }
   .views a:hover { color: var(--ink); background: var(--raise-2); }
   .views a[aria-current="page"] { color: var(--ink); background: var(--raise-2); box-shadow: inset 0 0 0 1px var(--rule-2); }
-  body[data-view="finance"] .bar .btn.primary, body[data-view="finance"] .fab { display: none; }
+  .add-circle { display: grid; place-items: center; width: 44px; height: 44px; margin-right: 4px; padding: 0; border: 0; border-radius: 50%; background: var(--ember); color: var(--on-ember); transition: background-color 0.18s, transform 0.18s var(--ease); }
+  .add-circle .ic { width: 22px; height: 22px; stroke-width: 1.9; }
+  .add-circle:hover { background: var(--ember-hi); }
+  .add-circle:active { transform: scale(0.93); }
+  body[data-view="finance"] .fab { display: none; }
 
   /* Budget and spending card on the tracker */
   .spend { min-height: 206px; cursor: pointer; transition: box-shadow 0.2s, transform 0.2s var(--ease); }
@@ -376,7 +398,7 @@
 
   /* ---------- Finance view ---------- */
   .fin-head { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; margin-bottom: 22px; }
-  .fin-head h1 { font-family: var(--serif); font-size: 30px; line-height: 1; }
+  .fin-head h1 { font-family: var(--serif); font-size: 30px; font-style: italic; line-height: 1; }
   .fin-tabs { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--panel); box-shadow: var(--shadow); }
   .fin-tabs a { padding: 8px 18px; border-radius: 999px; font-size: 16px; text-decoration: none; color: var(--ink-2); transition: background-color 0.18s, color 0.18s; }
   .fin-tabs a:hover { color: var(--ink); }
@@ -385,9 +407,17 @@
   .fin-month h2 { min-width: 9.5em; font-family: var(--serif); font-size: 21px; text-align: center; }
   .fin-month .icon-btn:disabled { opacity: 0.3; cursor: default; background: none; }
 
-  .fin-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 20px; align-items: start; }
+  /* boxes in a row share one height; the charts grow to fill it */
+  .fin-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 20px; align-items: stretch; }
+  .chart { flex: 1; min-height: 180px; }
+  /* open sections, like Personal Tasks: a ruled heading straight on the photo, no box */
+  .open { display: flex; flex-direction: column; }
+  .open .head h3 { font-family: var(--serif); font-size: 21px; font-weight: 400; line-height: 0.95; letter-spacing: 0.01em; }
+  .open .head h3:not(:has(+ .sub)) { margin-right: auto; }
+  .open .two { margin-top: 2px; }
   .fin-grid > * { min-width: 0; }
-  .s12 { grid-column: span 12; } .s7 { grid-column: span 7; } .s6 { grid-column: span 6; } .s5 { grid-column: span 5; } .s4 { grid-column: span 4; }
+  .s12 { grid-column: span 12; } .s7 { grid-column: span 7; } .s6 { grid-column: span 6; } .s5 { grid-column: span 5; } .s4 { grid-column: span 4; } .s3 { grid-column: span 3; }
+  .cols .hrows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 40px; }
   .ptitle { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 14px; font-family: var(--serif); font-size: 21px; line-height: 1.15; }
   .ptitle small { font-size: 14px; color: var(--ink-3); }
 
@@ -416,7 +446,8 @@
   .lv5 { background: var(--ember); color: var(--on-ember); }
   .lv4 .d, .lv5 .d { color: rgba(11, 18, 48, 0.7); }
   .hm-key { display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 10px; font-size: 13px; color: var(--ink-3); }
-  .hm-key i { width: 14px; height: 14px; border-radius: 3px; background: var(--raise); }
+  .hm-key i { width: 14px; height: 14px; border-radius: 3px; }
+  .hm-key i.lv0 { background: var(--raise); }   /* the legend squares take their shade from lv0-lv5 */
 
   .chart svg { display: block; width: 100%; height: auto; overflow: visible; }
   .chart .tick { font-family: var(--sans); font-size: 11px; fill: var(--ink-3); }
@@ -493,28 +524,24 @@
   .chart-tip { position: fixed; z-index: 70; padding: 6px 10px; border-radius: 8px; background: var(--ink); color: var(--on-ember); font-size: 14px; white-space: nowrap; pointer-events: none; box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.8); transform: translate(-50%, calc(-100% - 8px)); }
 
   @media (max-width: 1100px) {
-    .s7, .s5, .s4 { grid-column: span 6; }
+    .s7, .s5, .s3 { grid-column: span 6; }
     .hero { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .hero > div:nth-child(3) { border-left: 0; }
     .hero > div:nth-child(n+3) { border-top: 1px solid var(--rule); }
   }
   @media (max-width: 719px) {
-    .views { margin-left: 10px; }
-    .views a { padding: 6px 12px; font-size: 16px; }
     .fin-tabs { order: 3; width: 100%; }
     .fin-tabs a { flex: 1; text-align: center; padding: 8px 6px; }
     .fin-month { margin-left: auto; }
     .fin-month h2 { min-width: 0; font-size: 18px; }
     .fin-grid { gap: 14px; }
-    .s12, .s7, .s6, .s5, .s4 { grid-column: span 12; }
+    .s12, .s7, .s6, .s5, .s4, .s3 { grid-column: span 12; }
+    .cols .hrows { grid-template-columns: minmax(0, 1fr); }
     .hero > div { padding: 16px; }
     .hero-num { font-size: 40px; }
     .stat-num { font-size: 24px; }
     .two, .tx-edit { grid-template-columns: minmax(0, 1fr); }
     .hm-day { min-height: 44px; padding: 4px; font-size: 11px; }
-  }
-  @media (max-width: 420px) {
-    .brand span { display: none; }
   }
 
   /* ---------- Sign-in page (shown instead of the tracker until signed in) ---------- */
@@ -652,7 +679,7 @@
     :root { --pad: 16px; }
     .bar { padding-top: 24px; }
     .row-2 { grid-template-columns: minmax(0, 1fr); gap: 28px; }
-    .bar .btn { display: none; }
+    .bar .add-circle { display: none; }
     .fab { display: grid; }
     .brand img { width: 44px; height: 44px; }
     .panel { padding: 16px 16px 18px; }
@@ -712,6 +739,8 @@
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
     <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-overview" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+    <symbol id="i-finance" viewBox="0 0 24 24"><path d="M7 5h10M7 9.5h10M9.5 5c3 0 4.5 1.6 4.5 3.9S12.5 13 9.5 13H7l7.5 7"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
     <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
     <symbol id="i-left" viewBox="0 0 24 24"><path d="M14.5 6l-6 6 6 6"/></symbol>
@@ -719,8 +748,6 @@
     <symbol id="i-pin" viewBox="0 0 24 24"><path d="M9 4h6l-1 5.5 3.5 4h-11l3.5-4zM12 13.5V20"/></symbol>
     <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16zM13 7l4 4"/></symbol>
     <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13M10 11v5M14 11v5"/></symbol>
-    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11M7.5 11l4.5 4.5 4.5-4.5M5 20h14"/></symbol>
-    <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 16V5M7.5 9L12 4.5 16.5 9M5 20h14"/></symbol>
     <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></symbol>
     <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.500 10.500z"/></symbol>
     <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18.500h10a4 4 0 0 0 .6-7.950A5.500 5.500 0 0 0 7.100 9.600 4.500 4.500 0 0 0 7 18.500z"/></symbol>
@@ -736,13 +763,13 @@
     <img src="tracker-assets/eye.png" alt="" width="52" height="52">
     <span>Potluri</span>
   </a>
-  <nav class="views" aria-label="Sections">
-    <a href="#tracker" data-view="tracker">Tracker</a>
-    <a href="#finance" data-view="finance">Finance</a>
-  </nav>
-  <button class="btn primary" type="button" data-add>
-    <svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg>Add
+  <button class="add-circle" type="button" data-add aria-label="Add" title="Add">
+    <svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg>
   </button>
+  <nav class="views" aria-label="Sections">
+    <a href="#overview" data-view="tracker" aria-label="Overview" title="Overview"><svg class="ic" aria-hidden="true"><use href="#i-overview"/></svg></a>
+    <a href="#finance" data-view="finance" aria-label="Finance" title="Finance"><svg class="ic" aria-hidden="true"><use href="#i-finance"/></svg></a>
+  </nav>
 </header>
 
 <main class="page" id="tracker-view">
@@ -929,11 +956,8 @@
 </main>
 
 <footer class="foot">
-  <p id="storage-note">Saved in this browser only. Export a backup before clearing site data.</p>
+  <p id="storage-note">Saved in this browser only.</p>
   <button class="btn small" type="button" id="signout-btn" hidden>Sign out</button>
-  <button class="btn small" type="button" id="export-btn"><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg>Export backup</button>
-  <button class="btn small" type="button" id="import-btn"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg>Import backup</button>
-  <input type="file" id="import-file" accept="application/json,.json" hidden>
 </footer>
 
 <button class="fab" type="button" data-add aria-label="Add"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
@@ -1966,9 +1990,6 @@
   });
 
   /* =====================================================================
-     Backup
-     ===================================================================== */
-  /* =====================================================================
      Finance
      Transactions come from tracker-scripts/axis-alerts.gs. On top of them the page keeps:
        payees  { id: payee key, name, category }              a name and category for every payment to that payee
@@ -2071,6 +2092,30 @@
         spend: excluded ? 0 : t.type === 'debit' ? amount : refund ? -amount : 0,
       };
     });
+    // a refund comes off the payment it refunds (same payee, the latest earlier payments first),
+    // so every chart and the calendar show what was really spent, on the day it was spent
+    const byPayee = new Map();
+    for (const t of list) {
+      if (t.excluded || !(t.type === 'debit' || t.refund)) continue;
+      if (!byPayee.has(t.key)) byPayee.set(t.key, []);
+      byPayee.get(t.key).push(t);
+    }
+    for (const items of byPayee.values()) {
+      const debits = items.filter((t) => t.type === 'debit').sort((a, b) => a.createdAt - b.createdAt);
+      for (const refund of items.filter((t) => t.refund).sort((a, b) => a.createdAt - b.createdAt)) {
+        let left = refund.amount;
+        for (const debit of debits.filter((d) => d.createdAt <= refund.createdAt).reverse()) {
+          if (left <= 0.005) break;
+          const take = Math.min(left, debit.spend);
+          if (take <= 0) continue;
+          debit.spend = Math.round((debit.spend - take) * 100) / 100;
+          debit.refunded = Math.round(((debit.refunded || 0) + take) * 100) / 100;
+          left -= take;
+          refund.refundFor = debit.date;
+        }
+        refund.spend = left > 0.005 ? -Math.round(left * 100) / 100 : 0;   // only a refund with nothing to match lowers its own day
+      }
+    }
     const months = [...new Set(list.map((t) => (t.date || '').slice(0, 7)).filter(Boolean))].sort();
     finCache = { list, months, rules, meta };
     return finCache;
@@ -2098,7 +2143,7 @@
   function route() {
     const [name, tab] = location.hash.replace(/^#/, '').split('/');
     const before = view;
-    view = name === 'finance' ? 'finance' : 'tracker';
+    view = name === 'finance' ? 'finance' : 'tracker';   // #overview (or anything else) is the tracker
     if (view === 'finance') finTab = FIN_TABS.includes(tab) ? tab : 'spending';
     document.body.dataset.view = view;
     $('tracker-view').hidden = view !== 'tracker';
@@ -2140,6 +2185,8 @@
     return hours < 24 ? `${hours} h ago` : `on ${fmtStamp.format(new Date(ms))}`;
   }
 
+  const openHead = (title, sub) => el('div', { class: 'head ruled' }, el('h3', {}, title), sub ? el('span', { class: 'sub' }, sub) : null);
+
   function connectPrompt() {
     return el('div', { class: 'panel' }, emptyEl('Connect your Axis Bank alert emails and your spending shows up here.', 'Connect Gmail', openFinanceSetup));
   }
@@ -2160,7 +2207,8 @@
   }
 
   // one series of vertical bars: [{ label, value, tip, now, onPick }]
-  function barChart(holder, data, { height = 220, labelEvery = 1, average = null, ariaLabel = '' } = {}) {
+  function barChart(holder, data, { height: minHeight = 220, labelEvery = 1, average = null, ariaLabel = '' } = {}) {
+    const height = Math.max(minHeight, Math.floor(holder.clientHeight || 0));
     const width = Math.max(280, Math.round(holder.clientWidth || 600));
     const pad = { l: 46, r: 8, t: 16, b: 26 };
     const innerW = width - pad.l - pad.r;
@@ -2222,8 +2270,9 @@
     const month = finMonth;
     const list = monthOf(month);
     const counted = list.filter((t) => !t.excluded);
-    const payments = counted.filter((t) => t.type === 'debit');
-    const paid = payments.reduce((s, t) => s + t.amount, 0);
+    const paid = counted.filter((t) => t.type === 'debit').reduce((s, t) => s + t.amount, 0);
+    // payments after refunds: a fully refunded one drops out, a partly refunded one shows what's left
+    const payments = counted.filter((t) => t.type === 'debit' && t.spend > 0);
     const refunded = counted.filter((t) => t.refund).reduce((s, t) => s + t.amount, 0);
     const received = counted.filter((t) => t.income).reduce((s, t) => s + t.amount, 0);
     const net = paid - refunded;
@@ -2248,10 +2297,10 @@
       el('div', {},
         el('p', { class: 'stat-label' }, `Spent in ${monthName}${current ? ' so far' : ''}`),
         el('p', { class: 'hero-num' }, rupees.format(net)),
-        refunded ? el('p', { class: 'stat-sub' }, `${rupees.format(paid)} paid, ${rupees.format(refunded)} refunded`) : null,
+        refunded ? el('p', { class: 'stat-sub' }, `${rupees.format(paid)} paid, ${rupees.format(refunded)} credited`) : null,
         compare ? el('p', { class: 'stat-sub' + (/more/.test(compare) ? ' more' : '') }, compare) : null),
       el('div', {}, el('p', { class: 'stat-label' }, 'Payments'), el('p', { class: 'stat-num' }, String(payments.length)),
-        el('p', { class: 'stat-sub' }, payments.length ? `typically ${rupees.format(median(payments.map((t) => t.amount)))} each` : 'none yet')),
+        el('p', { class: 'stat-sub' }, payments.length ? `typically ${rupees.format(median(payments.map((t) => t.spend)))} each` : 'none yet')),
       el('div', {}, el('p', { class: 'stat-label' }, 'Per day'), el('p', { class: 'stat-num' }, rupees.format(elapsed ? net / elapsed : 0)),
         el('p', { class: 'stat-sub' }, current ? `over ${plural(elapsed, 'day')} so far` : `over ${plural(elapsed, 'day')}`)),
       el('div', {}, el('p', { class: 'stat-label' }, 'Received'), el('p', { class: 'stat-num' }, rupees.format(received)),
@@ -2262,7 +2311,7 @@
     const perDay = Array.from({ length: days }, (_, i) => {
       const key = `${month}-${String(i + 1).padStart(2, '0')}`;
       const items = counted.filter((t) => t.date === key);
-      return { key, spend: Math.max(0, sumSpend(items)), count: items.filter((t) => t.type === 'debit').length };
+      return { key, spend: Math.max(0, sumSpend(items)), count: items.filter((t) => t.type === 'debit' && t.spend > 0).length };
     });
     const pickDay = (key) => () => { txFilter = { ...blankFilter(), date: key }; goFinance('transactions'); };
 
@@ -2293,11 +2342,11 @@
       if (t.income) continue;
       const c = byCat.get(t.category) || { value: 0, count: 0 };
       c.value += t.spend;
-      if (t.type === 'debit') c.count += 1;
+      if (t.type === 'debit' && t.spend > 0) c.count += 1;
       byCat.set(t.category, c);
     }
     const cats = [...byCat.entries()].filter(([, c]) => c.value > 0).sort((a, b) => b[1].value - a[1].value);
-    const categories = el('section', { class: 'panel s7' }, el('h3', { class: 'ptitle' }, 'By category', el('small', {}, 'tap to see the payments')),
+    const categories = el('section', { class: 'open s12 cols' }, openHead('By category', 'tap one to see its payments'),
       cats.length ? hbars(cats.map(([name, c]) => ({
         name, value: c.value, meta: `${pct(c.value, net)}% · ${plural(c.count, 'payment')}`,
         onPick: () => { txFilter = { ...blankFilter(), category: name }; goFinance('transactions'); },
@@ -2305,10 +2354,9 @@
 
     // payees
     const byPayee = new Map();
-    for (const t of counted) {
-      if (t.type !== 'debit') continue;
+    for (const t of payments) {
       const p = byPayee.get(t.key) || { name: t.payee, category: t.category, value: 0, count: 0 };
-      p.value += t.amount;
+      p.value += t.spend;
       p.count += 1;
       byPayee.set(t.key, p);
     }
@@ -2316,48 +2364,58 @@
     const pickPayee = (key) => () => { txFilter = { ...blankFilter(), payee: key }; goFinance('transactions'); };
     const topAmount = [...payeesAll].sort((a, b) => b[1].value - a[1].value).slice(0, 6);
     const regulars = payeesAll.filter(([, p]) => p.count >= 3).sort((a, b) => b[1].count - a[1].count || b[1].value - a[1].value).slice(0, 6);
-    const payees = el('section', { class: 'panel s5' }, el('h3', { class: 'ptitle' }, 'Payees'),
-      el('div', { class: 'two' },
-        el('div', {}, el('h4', {}, 'Most spent with'), topAmount.length
-          ? hbars(topAmount.map(([key, p]) => ({ name: p.name, value: p.value, meta: `${p.category} · ${plural(p.count, 'payment')}`, onPick: pickPayee(key) })), topAmount[0][1].value)
-          : el('p', { class: 'quiet' }, 'None yet.')),
-        el('div', {}, el('h4', {}, 'Regulars'), regulars.length
-          ? hbars(regulars.map(([key, p]) => ({ name: `${p.name} ×${p.count}`, value: p.value, meta: `about ${rupees.format(p.value / p.count)} each`, onPick: pickPayee(key) })), Math.max(...regulars.map(([, p]) => p.value)))
-          : el('p', { class: 'quiet' }, 'Payees paid three or more times show up here.'))));
+    const mostSpent = el('section', { class: 'open s4' }, openHead('Most spent with'),
+      topAmount.length
+        ? hbars(topAmount.map(([key, p]) => ({ name: p.name, value: p.value, meta: `${p.category} · ${plural(p.count, 'payment')}`, onPick: pickPayee(key) })), topAmount[0][1].value)
+        : el('p', { class: 'quiet' }, 'None yet.'));
+    const regularsSection = el('section', { class: 'open s4' }, openHead('Regulars'),
+      regulars.length
+        ? hbars(regulars.map(([key, p]) => ({ name: `${p.name} ×${p.count}`, value: p.value, meta: `about ${rupees.format(p.value / p.count)} each`, onPick: pickPayee(key) })), Math.max(...regulars.map(([, p]) => p.value)))
+        : el('p', { class: 'quiet' }, 'Payees paid three or more times show up here.'));
 
     // time of day and weekday
     const buckets = [['Morning', 5, 12], ['Afternoon', 12, 17], ['Evening', 17, 21], ['Night', 21, 29]];
     const hourOf = (t) => { const h = Number((t.time || '12').slice(0, 2)); return h < 5 ? h + 24 : h; };
     const times = buckets.map(([name, from, to]) => {
       const items = payments.filter((t) => hourOf(t) >= from && hourOf(t) < to);
-      return { name, value: items.reduce((s, t) => s + t.amount, 0), count: items.length };
+      return { name, value: items.reduce((s, t) => s + t.spend, 0), count: items.length };
     });
     const timeMax = Math.max(...times.map((t) => t.value));
-    const timeOfDay = el('section', { class: 'panel s4' }, el('h3', { class: 'ptitle' }, 'Time of day'),
+    const timeOfDay = el('section', { class: 'panel s3' }, el('h3', { class: 'ptitle' }, 'Time of day'),
       hbars(times.map((t) => ({ name: t.name, value: t.value, meta: plural(t.count, 'payment') })), timeMax));
 
     const weekHolder = el('div', { class: 'chart' });
-    const weekdays = el('section', { class: 'panel s4' }, el('h3', { class: 'ptitle' }, 'By weekday'), weekHolder);
+    const weekdays = el('section', { class: 'panel s3' }, el('h3', { class: 'ptitle' }, 'By weekday'), weekHolder);
 
     const trendHolder = el('div', { class: 'chart' });
     const trendMonths = finData().months.filter((m) => m <= month).slice(-6);
-    const trend = el('section', { class: 'panel s4' }, el('h3', { class: 'ptitle' }, 'Month by month'),
+    const trend = el('section', { class: 'panel s3' }, el('h3', { class: 'ptitle' }, 'Month by month'),
       trendMonths.length >= 2 ? trendHolder : el('p', { class: 'quiet' }, 'Shows once there’s more than one month of payments.'));
 
     // small and large payments
-    const small = payments.filter((t) => t.amount < 100);
-    const smallTotal = small.reduce((s, t) => s + t.amount, 0);
-    const smalls = el('section', { class: 'panel s6' }, el('h3', { class: 'ptitle' }, 'Small payments'),
+    const small = payments.filter((t) => t.spend < 100);
+    const smallTotal = small.reduce((s, t) => s + t.spend, 0);
+    const smalls = el('section', { class: 'panel s3' }, el('h3', { class: 'ptitle' }, 'Small payments'),
       el('p', { class: 'small-note' }, el('strong', {}, rupees.format(smallTotal)), el('br'),
-        `${plural(small.length, 'payment')} under ₹100, ${pct(smallTotal, paid)}% of what you paid this month.`));
-    const largest = [...payments].sort((a, b) => b.amount - a.amount).slice(0, 5);
-    const biggest = el('section', { class: 'panel s6' }, el('h3', { class: 'ptitle' }, 'Largest payments'),
+        `${plural(small.length, 'payment')} under ₹100, ${pct(smallTotal, net)}% of what you spent this month.`),
+      // the amounts that keep coming up
+      (() => {
+        const counts = new Map();
+        small.forEach((t) => counts.set(Math.round(t.spend), (counts.get(Math.round(t.spend)) || 0) + 1));
+        const common = [...counts.entries()].filter(([, n]) => n > 1).sort((a, b) => b[1] - a[1] || a[0] - b[0]).slice(0, 4);
+        return common.length
+          ? el('div', { style: 'margin-top:16px' }, el('p', { class: 'stat-label' }, 'Most common amounts'),
+            hbars(common.map(([amount, n]) => ({ name: `${rupees.format(amount)} × ${n}`, value: amount * n })), Math.max(...common.map(([a, n]) => a * n))))
+          : null;
+      })());
+    const largest = [...payments].sort((a, b) => b.spend - a.spend).slice(0, 5);
+    const biggest = el('section', { class: 'open s4' }, openHead('Largest payments'),
       largest.length ? hbars(largest.map((t) => ({
-        name: t.payee, value: t.amount, meta: `${fmtShort.format(parseKey(t.date))} · ${t.category}`,
+        name: t.payee, value: t.spend, meta: `${fmtShort.format(parseKey(t.date))} · ${t.category}${t.refunded ? ` · after ${rupees.format(t.refunded)} refunded` : ''}`,
         onPick: () => { txFilter = { ...blankFilter(), payee: t.key }; openTx.add(t.id); goFinance('transactions'); },
-      })), largest[0].amount) : el('p', { class: 'quiet' }, 'None yet.'));
+      })), largest[0].spend) : el('p', { class: 'quiet' }, 'None yet.'));
 
-    tab.replaceChildren(el('div', { class: 'fin-grid' }, hero, calendar, bars, categories, payees, timeOfDay, weekdays, trend, smalls, biggest));
+    tab.replaceChildren(el('div', { class: 'fin-grid' }, hero, calendar, bars, categories, mostSpent, regularsSection, biggest, timeOfDay, weekdays, trend, smalls));
 
     // charts are measured after they are in the page
     const today = todayKey();
@@ -2367,7 +2425,7 @@
     })), { labelEvery: 5, average: elapsed ? net / elapsed : null, ariaLabel: `Spending per day in ${monthName}` });
 
     const weekTotals = Array(7).fill(0);
-    payments.forEach((t) => { weekTotals[(parseKey(t.date).getUTCDay() + 6) % 7] += t.amount; });
+    payments.forEach((t) => { weekTotals[(parseKey(t.date).getUTCDay() + 6) % 7] += t.spend; });
     barChart(weekHolder, ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d, i) => ({
       label: d, value: weekTotals[i], tip: `${d} · ${rupees.format(weekTotals[i])}`,
     })), { height: 180, ariaLabel: `Spending by weekday in ${monthName}` });
@@ -2447,7 +2505,8 @@
   }
 
   function txRow(t) {
-    const meta = [t.category, t.refund ? 'Refund' : null, t.channel, t.account ? `XX${t.account}` : null,
+    const meta = [t.category, t.refund ? (t.refundFor ? `Refund for ${fmtShort.format(parseKey(t.refundFor))}` : 'Refund') : null,
+      t.refunded ? `${rupees.format(t.refunded)} refunded, ${rupees.format(t.spend)} net` : null, t.channel, t.account ? `XX${t.account}` : null,
       txFilter.sort === 'largest' ? fmtShort.format(parseKey(t.date)) : null, t.time, t.excluded ? 'Not counted' : null].filter(Boolean).join(' · ');
     const sign = t.type === 'credit' ? '+' : t.type === 'debit' ? '−' : '';
     const row = el('details', { class: 'tx' + (t.excluded ? ' excluded' : ''), open: openTx.has(t.id) },
@@ -2540,7 +2599,7 @@
         el('button', { class: 'btn small', type: 'button', onclick: () => { editingBudget = true; renderBudgetTab(); } }, icon('edit'), 'Edit')),
       b.total ? budgetRow('Everything', spent, Number(b.total), finMonth) : el('p', { class: 'quiet' }, 'No overall budget set.'),
       catLimits.map(([c, v]) => budgetRow(c, Math.max(0, byCat.get(c) || 0), Number(v), finMonth))),
-      el('section', { class: 'panel s5' }, el('h3', { class: 'ptitle' }, 'Without a budget'),
+      el('section', { class: 'open s5' }, openHead('Without a budget'),
         unbudgeted.length ? hbars(unbudgeted.map(([c, v]) => ({ name: c, value: v })), unbudgeted[0][1]) : el('p', { class: 'quiet' }, 'Every category you spent on has a budget.'))));
   }
 
@@ -2644,38 +2703,9 @@
     }
   }));
 
+  // what the first sign-in copies from this browser into the account
   const BACKED_UP = ['tasks', 'projects', 'goals', 'notes', 'payees', 'txmeta', 'budgets'];
 
-  $('export-btn').addEventListener('click', () => {
-    const payload = { app: 'potluri-tracker', version: 1, exportedAt: new Date().toISOString(),
-      data: Object.fromEntries(BACKED_UP.map((c) => [c, state[c]])) };
-    const url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }));
-    el('a', { href: url, download: `potluri-tracker-${todayKey()}.json` }).click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  });
-
-  $('import-btn').addEventListener('click', () => $('import-file').click());
-  $('import-file').addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    e.target.value = '';
-    if (!file) return;
-    try {
-      const payload = JSON.parse(await file.text());
-      if (payload.app !== 'potluri-tracker' || typeof payload.data !== 'object') throw new Error('Not a tracker backup');
-      let count = 0;
-      for (const collection of BACKED_UP) {
-        for (const doc of payload.data[collection] || []) {
-          if (!doc || typeof doc.id !== 'string') continue;
-          await store.set(collection, doc.id, doc);
-          count += 1;
-        }
-      }
-      toast(`Imported ${plural(count, 'item')}. Existing items with the same id were replaced.`);
-    } catch (err) {
-      console.error('Import failed:', err);
-      toast('That file isn’t a tracker backup. Choose a file made with Export backup.');
-    }
-  });
 
   if (!CONFIG.firebase) document.body.classList.remove('locked');
   store.onAccount((user) => {
