@@ -11,7 +11,7 @@
  */
 const SETTINGS = {
   databaseURL: 'https://chinmayiip-default-rtdb.asia-southeast1.firebasedatabase.app',
-  uid: 'PASTE_YOUR_ACCOUNT_ID',
+  uid: 'U01RAE1pncTIIDzpOxIZHeFilAK2',
   sender: 'alerts@axis.bank.in',
   backfillDays: 120,          // how far back the first run looks
   timeZone: 'Asia/Kolkata',
@@ -171,6 +171,10 @@ function detectType(all) {
 }
 
 function detectChannel(all) {
+  // the transaction details win: alert footers often mention cards the payment didn't use
+  if (/Transaction\s+Info\s*:\s*UPI|\bUPI\//i.test(all)) return 'UPI';
+  const transferInfo = all.match(/\b(NEFT|IMPS|RTGS)\//);
+  if (transferInfo) return transferInfo[1];
   if (/credit\s+card/i.test(all)) return 'Credit card';
   if (/debit\s+card/i.test(all)) return 'Debit card';
   if (/\bUPI\b/.test(all)) return 'UPI';
@@ -184,7 +188,7 @@ const CODES = /^(UPI|P2M|P2A|IMPS|NEFT|RTGS|ATM|ATM-WDL|POS|ECOM|MB|IB|BIL|ONL|I
 function describe(text) {
   const info = text.match(/(?:Transaction\s+Info|Info)\s*[:\-]\s*([^\n]+)/i);
   if (info) {
-    const value = info[1].split(/\s{2,}|Not you|Avl\.?\s*Bal|Available/i)[0].trim();
+    const value = info[1].split(/\s{2,}|Not you|If this|Feel free|Avl\.?\s*Bal|Available/i)[0].trim();
     if (value.includes('/')) {
       const segments = value.split('/').map((s) => s.trim()).filter((s) => /[A-Za-z]{3,}/.test(s) && !CODES.test(s));
       // prefer a name over a reference number like AXISN123456
@@ -192,6 +196,12 @@ function describe(text) {
       if (name) return tidy(name);
     }
     return tidy(value);
+  }
+  // "credited ... by NEFT/HDFC0123/ELEC": the name is the last plain-word part
+  const transfer = text.match(/\bby\s+((?:NEFT|IMPS|RTGS)\/\S+)/i);
+  if (transfer) {
+    const parts = transfer[1].split('/').map((s) => s.replace(/[^A-Za-z0-9 &]/g, '')).filter((s) => /[A-Za-z]{3,}/.test(s) && !/\d/.test(s) && !CODES.test(s));
+    if (parts.length) return tidy(parts[parts.length - 1]);
   }
   const merchant = text.match(/Merchant(?:\s+Name)?\s*[:\-]\s*([^\n]+)/i);
   if (merchant) return tidy(merchant[1]);

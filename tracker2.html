@@ -142,7 +142,7 @@
   /* ---------- Masthead (tracker's: in the page flow, rule beneath) ---------- */
   .bar { display: flex; flex-wrap: wrap; align-items: center; column-gap: 14px; max-width: 1366px; margin: 0 auto; padding: 40px var(--pad) 0; }
   .bar::after { content: ''; flex-basis: 100%; margin-top: 6px; border-bottom: 1px solid var(--line); }
-  .brand { display: flex; align-items: center; gap: 12px; margin-right: auto; text-decoration: none; border-radius: 999px; }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; border-radius: 999px; }
   .brand img { width: 52px; height: 52px; border-radius: 50%; transition: transform 0.6s var(--ease); }
   .brand:hover img { transform: rotate(40deg); }
   .brand span { font-family: var(--serif); font-size: 21px; letter-spacing: 0.02em; text-transform: uppercase; }
@@ -350,8 +350,16 @@
   .js .reveal { opacity: 0; transform: translateY(22px); }
   .js .reveal.in { opacity: 1; transform: none; transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
 
-  /* ---------- Finance: spending card and sheets ---------- */
-  .spend { min-height: 206px; }
+  /* ---------- Views: Tracker / Finance ---------- */
+  .views { display: flex; gap: 4px; margin: 0 auto 0 22px; }
+  .views a { padding: 7px 16px; border-radius: 999px; font-size: 18px; text-decoration: none; color: var(--ink-2); transition: background-color 0.18s, color 0.18s; }
+  .views a:hover { color: var(--ink); background: var(--raise-2); }
+  .views a[aria-current="page"] { color: var(--ink); background: var(--raise-2); box-shadow: inset 0 0 0 1px var(--rule-2); }
+  body[data-view="finance"] .bar .btn.primary, body[data-view="finance"] .fab { display: none; }
+
+  /* Budget and spending card on the tracker */
+  .spend { min-height: 206px; cursor: pointer; transition: box-shadow 0.2s, transform 0.2s var(--ease); }
+  .spend:hover { box-shadow: inset 0 0 0 1px var(--rule-2), var(--shadow-lift); transform: translateY(-2px); }
   .spend h2 { font-family: var(--serif); font-size: 21px; line-height: 0.95; letter-spacing: 0.01em; }
   .spend .when { margin-top: 14px; font-size: 14px; color: var(--ink-3); }
   .spend .total { margin-top: 2px; font-family: var(--serif); font-size: 30px; line-height: 1.1; }
@@ -361,16 +369,98 @@
   .spend-recent li { display: flex; justify-content: space-between; gap: 8px; padding: 3px 0; font-size: 14px; }
   .spend-recent span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink-2); }
   .spend-recent span:last-child { flex: none; }
+  .spend .mini-track { height: 5px; margin: 10px 0 4px; border-radius: 3px; background: var(--rule); overflow: hidden; }
+  .spend .mini-track i { display: block; height: 100%; border-radius: 3px; background: var(--ember); }
+  .spend .mini-track.over i { background: var(--danger); }
   .credit { color: var(--ember); }
 
-  dialog.wide { width: min(600px, calc(100vw - 32px)); }
-  .fin-nav { display: flex; align-items: center; gap: 4px; margin: -4px 0 10px; }
-  .fin-nav h3 { margin-right: auto; font-family: var(--serif); font-size: 21px; }
-  .fin-totals { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px; }
-  .fin-totals div { padding: 14px 16px; border-radius: 12px; background: var(--raise); }
-  .fin-totals span { display: block; font-size: 14px; color: var(--ink-3); }
-  .fin-totals strong { display: block; margin-top: 2px; font-family: var(--serif); font-weight: 400; font-size: 26px; }
-  .fin-day { margin: 14px 0 4px; font-size: 14px; color: var(--ink-3); }
+  /* ---------- Finance view ---------- */
+  .fin-head { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; margin-bottom: 22px; }
+  .fin-head h1 { font-family: var(--serif); font-size: 30px; line-height: 1; }
+  .fin-tabs { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--panel); box-shadow: var(--shadow); }
+  .fin-tabs a { padding: 8px 18px; border-radius: 999px; font-size: 16px; text-decoration: none; color: var(--ink-2); transition: background-color 0.18s, color 0.18s; }
+  .fin-tabs a:hover { color: var(--ink); }
+  .fin-tabs a[aria-selected="true"] { background: var(--ember); color: var(--on-ember); }
+  .fin-month { display: flex; align-items: center; gap: 2px; margin-left: auto; }
+  .fin-month h2 { min-width: 9.5em; font-family: var(--serif); font-size: 21px; text-align: center; }
+  .fin-month .icon-btn:disabled { opacity: 0.3; cursor: default; background: none; }
+
+  .fin-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 20px; align-items: start; }
+  .fin-grid > * { min-width: 0; }
+  .s12 { grid-column: span 12; } .s7 { grid-column: span 7; } .s6 { grid-column: span 6; } .s5 { grid-column: span 5; } .s4 { grid-column: span 4; }
+  .ptitle { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 14px; font-family: var(--serif); font-size: 21px; line-height: 1.15; }
+  .ptitle small { font-size: 14px; color: var(--ink-3); }
+
+  .hero { display: grid; grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr)); padding: 0; }
+  .hero > div { padding: 22px 24px 24px; min-width: 0; }
+  .hero > div + div { border-left: 1px solid var(--rule); }
+  .stat-label { font-size: 15px; color: var(--ink-3); }
+  .hero-num { margin-top: 6px; font-family: var(--serif); font-size: 52px; line-height: 1; }
+  .stat-num { margin-top: 8px; font-family: var(--serif); font-size: 30px; line-height: 1.05; }
+  .stat-sub { margin-top: 8px; font-size: 14px; color: var(--ink-2); }
+  .stat-sub.more { color: var(--danger); }
+
+  .hm-week, .hm { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+  .hm-week { margin-bottom: 6px; font-size: 13px; text-align: center; color: var(--ink-3); }
+  .hm-day { display: flex; flex-direction: column; justify-content: space-between; min-height: 50px; padding: 5px 6px; border: 0; border-radius: 8px; background: var(--raise); color: var(--ink); text-align: left; font-size: 13px; line-height: 1.1; transition: box-shadow 0.15s; }
+  .hm-day .d { color: var(--ink-3); }
+  .hm-day .v { align-self: flex-end; }
+  .hm-day:hover { box-shadow: inset 0 0 0 1.5px var(--ember-hi); }
+  .hm-day.today { box-shadow: inset 0 0 0 1.5px var(--ink); }
+  .hm-day.future { opacity: 0.45; }
+  .hm-blank { visibility: hidden; }
+  .lv1 { background: rgba(233, 162, 108, 0.16); }
+  .lv2 { background: rgba(233, 162, 108, 0.3); }
+  .lv3 { background: rgba(233, 162, 108, 0.48); }
+  .lv4 { background: rgba(233, 162, 108, 0.72); color: var(--on-ember); }
+  .lv5 { background: var(--ember); color: var(--on-ember); }
+  .lv4 .d, .lv5 .d { color: rgba(11, 18, 48, 0.7); }
+  .hm-key { display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 10px; font-size: 13px; color: var(--ink-3); }
+  .hm-key i { width: 14px; height: 14px; border-radius: 3px; background: var(--raise); }
+
+  .chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .chart .tick { font-family: var(--sans); font-size: 11px; fill: var(--ink-3); }
+  .chart .grid-line { stroke: var(--rule); stroke-width: 1; }
+  .chart .avg-line { stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 4 4; }
+  .chart .avg-label { font-family: var(--sans); font-size: 12px; fill: var(--ink-2); }
+  .chart .bar { fill: var(--ember); transition: fill 0.15s; }
+  .chart .bar.now { fill: var(--ember-hi); }
+  .chart .bar-g { cursor: pointer; }
+  .chart .bar-g:hover .bar { fill: var(--ember-hi); }
+  .chart .hit { fill: transparent; }
+
+  .hrows { display: flex; flex-direction: column; gap: 2px; margin: 0 -8px; }
+  .hrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; padding: 8px; border: 0; border-radius: 8px; background: none; text-align: left; font-size: 16px; transition: background-color 0.15s; }
+  button.hrow:hover { background: var(--raise); }
+  .hrow .hname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hrow .hval { text-align: right; white-space: nowrap; }
+  .htrack { grid-column: 1 / -1; height: 6px; border-radius: 3px; background: var(--rule); overflow: hidden; }
+  .hfill { display: block; height: 100%; border-radius: 3px; background: var(--ember); }
+  .over .hfill { background: var(--danger); }
+  .hmeta { grid-column: 1 / -1; font-size: 13px; color: var(--ink-3); }
+  .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 24px; }
+  .two h4 { margin: 0 0 6px; font-size: 15px; font-weight: 400; color: var(--ink-3); }
+  .small-note { font-size: 16px; line-height: 1.45; color: var(--ink-2); }
+  .small-note strong { font-family: var(--serif); font-weight: 400; font-size: 26px; color: var(--ink); }
+
+  .tx-tools { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+  .tx-tools input, .tx-tools select, .tx-edit input[type="text"], .tx-edit select, .bud-form input {
+    min-height: 42px;
+    padding: 0 12px;
+    font-size: 16px;
+    color: var(--ink);
+    background: rgba(240, 232, 217, 0.05);
+    border: 0;
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 1px var(--rule-2);
+  }
+  .tx-tools input:focus, .tx-tools select:focus, .tx-edit input:focus, .tx-edit select:focus, .bud-form input:focus { outline: none; box-shadow: inset 0 0 0 2px var(--ember); }
+  .tx-tools select option, .tx-edit select option { background: var(--sheet); color: var(--ink); }
+  .tx-tools input[type="search"] { flex: 1 1 240px; }
+  .tx-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 6px; font-size: 15px; color: var(--ink-2); }
+  .chip-filter { display: inline-flex; align-items: center; gap: 4px; padding: 2px 4px 2px 12px; border-radius: 999px; background: var(--raise-2); font-size: 14px; color: var(--ink); }
+  .chip-filter .icon-btn { width: 28px; height: 28px; }
+  .chip-filter .icon-btn .ic { width: 14px; height: 14px; }
   .tx { border-top: 1px solid var(--rule); }
   .tx summary { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: baseline; padding: 10px 4px; cursor: pointer; list-style: none; border-radius: var(--r-sm); transition: background-color 0.15s; }
   .tx summary::-webkit-details-marker { display: none; }
@@ -378,17 +468,54 @@
   .tx-name { display: block; overflow-wrap: anywhere; }
   .tx-meta { display: block; margin-top: 2px; font-size: 13px; color: var(--ink-3); }
   .tx-amount { white-space: nowrap; }
-  .tx.review .tx-name { color: var(--danger); }
+  .tx.excluded .tx-amount, .tx.excluded .tx-name { color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--rule-2); }
   .tx-excerpt { margin: 0 4px 12px; padding: 10px 12px; font-size: 14px; line-height: 1.45; color: var(--ink-2); background: var(--raise); border-radius: 8px; overflow-wrap: anywhere; }
-  .fin-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-top: 18px; font-size: 14px; color: var(--ink-3); }
+  .tx-edit { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; margin: 0 4px 16px; }
+  .tx-edit label > span { display: block; margin-bottom: 4px; font-size: 14px; color: var(--ink-3); }
+  .tx-edit select, .tx-edit input[type="text"] { width: 100%; }
+  .tx-edit .toggle { margin: 0; min-height: 0; font-size: 15px; }
+  .fin-day { margin: 16px 0 4px; font-size: 14px; color: var(--ink-3); }
 
-  .steps { margin: 0 0 18px; padding-left: 22px; }
-  .steps li { margin-bottom: 14px; padding-left: 4px; line-height: 1.45; }
-  .steps li::marker { color: var(--ember); }
-  .steps .btn { margin-top: 8px; }
-  .steps code, .uid { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; }
-  .uid { display: inline-block; margin-top: 6px; padding: 4px 8px; border-radius: 6px; background: var(--raise-2); overflow-wrap: anywhere; }
-  .steps a { color: var(--ember); }
+  .bud-row { padding: 14px 0; border-top: 1px solid var(--rule); }
+  .bud-row:first-child { padding-top: 0; border-top: 0; }
+  .bud-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .bud-top strong { font-family: var(--serif); font-weight: 400; font-size: 21px; }
+  .bud-track { height: 10px; margin: 10px 0 8px; border-radius: 5px; background: var(--rule); overflow: hidden; }
+  .bud-track i { display: block; height: 100%; border-radius: 5px; background: var(--ember); transition: width 0.4s var(--ease); }
+  .over .bud-track i { background: var(--danger); }
+  .bud-note { font-size: 15px; color: var(--ink-2); }
+  .over .bud-note { color: var(--danger); }
+  .bud-form .grid2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px 16px; margin: 6px 0 18px; }
+  .bud-form label > span { display: block; margin-bottom: 4px; font-size: 14px; color: var(--ink-3); }
+  .bud-form input { width: 100%; }
+  .fin-sync { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 20px; font-size: 14px; color: var(--ink-2); }
+
+  .chart-tip { position: fixed; z-index: 70; padding: 6px 10px; border-radius: 8px; background: var(--ink); color: var(--on-ember); font-size: 14px; white-space: nowrap; pointer-events: none; box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.8); transform: translate(-50%, calc(-100% - 8px)); }
+
+  @media (max-width: 1100px) {
+    .s7, .s5, .s4 { grid-column: span 6; }
+    .hero { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .hero > div:nth-child(3) { border-left: 0; }
+    .hero > div:nth-child(n+3) { border-top: 1px solid var(--rule); }
+  }
+  @media (max-width: 719px) {
+    .views { margin-left: 10px; }
+    .views a { padding: 6px 12px; font-size: 16px; }
+    .fin-tabs { order: 3; width: 100%; }
+    .fin-tabs a { flex: 1; text-align: center; padding: 8px 6px; }
+    .fin-month { margin-left: auto; }
+    .fin-month h2 { min-width: 0; font-size: 18px; }
+    .fin-grid { gap: 14px; }
+    .s12, .s7, .s6, .s5, .s4 { grid-column: span 12; }
+    .hero > div { padding: 16px; }
+    .hero-num { font-size: 40px; }
+    .stat-num { font-size: 24px; }
+    .two, .tx-edit { grid-template-columns: minmax(0, 1fr); }
+    .hm-day { min-height: 44px; padding: 4px; font-size: 11px; }
+  }
+  @media (max-width: 420px) {
+    .brand span { display: none; }
+  }
 
   /* ---------- Sign-in page (shown instead of the tracker until signed in) ---------- */
   body.locked .bar, body.locked .page, body.locked .foot, body.locked .fab { display: none; }
@@ -609,12 +736,16 @@
     <img src="tracker-assets/eye.png" alt="" width="52" height="52">
     <span>Potluri</span>
   </a>
+  <nav class="views" aria-label="Sections">
+    <a href="#tracker" data-view="tracker">Tracker</a>
+    <a href="#finance" data-view="finance">Finance</a>
+  </nav>
   <button class="btn primary" type="button" data-add>
     <svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg>Add
   </button>
 </header>
 
-<main class="page">
+<main class="page" id="tracker-view">
   <div class="grid">
 
     <div class="side side-left">
@@ -738,7 +869,7 @@
 
     <!-- Finance is not designed yet: placeholders only -->
     <section class="a-finance" aria-label="Finance">
-      <div class="panel spend" id="spend-card"></div>
+      <div class="panel spend" id="spend-card" tabindex="0" role="link" aria-label="Open finance"></div>
       <div class="panel placeholder"><h2>Current investments</h2><p>Coming later</p></div>
       <div class="panel placeholder"><h2>Finance goals</h2><p>Coming later</p></div>
     </section>
@@ -750,6 +881,51 @@
     </div>
 
   </div>
+</main>
+
+<!-- Finance view -->
+<main class="page fin-page" id="finance-view" hidden>
+  <div class="fin-head">
+    <h1>Finance</h1>
+    <nav class="fin-tabs" role="tablist" aria-label="Finance">
+      <a href="#finance/spending" role="tab" data-tab="spending">Spending</a>
+      <a href="#finance/transactions" role="tab" data-tab="transactions">Transactions</a>
+      <a href="#finance/budget" role="tab" data-tab="budget">Budget</a>
+    </nav>
+    <div class="fin-month">
+      <button class="icon-btn" type="button" id="fm-prev" aria-label="Previous month"><svg class="ic" aria-hidden="true"><use href="#i-left"/></svg></button>
+      <h2 id="fm-label" aria-live="polite"></h2>
+      <button class="icon-btn" type="button" id="fm-next" aria-label="Next month"><svg class="ic" aria-hidden="true"><use href="#i-right"/></svg></button>
+    </div>
+  </div>
+
+  <section id="tab-spending" role="tabpanel" aria-label="Spending"></section>
+
+  <section id="tab-transactions" role="tabpanel" aria-label="Transactions" hidden>
+    <div class="panel">
+      <div class="tx-tools">
+        <input type="search" id="tx-q" placeholder="Search payee or details" aria-label="Search transactions" autocomplete="off">
+        <select id="tx-type" aria-label="Spent or received">
+          <option value="all">Spent and received</option>
+          <option value="debit">Spent</option>
+          <option value="credit">Received</option>
+        </select>
+        <select id="tx-cat" aria-label="Category"></select>
+        <select id="tx-payee" aria-label="Payee"></select>
+        <select id="tx-sort" aria-label="Sort">
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+          <option value="largest">Largest first</option>
+        </select>
+      </div>
+      <div class="tx-summary" id="tx-summary"></div>
+      <div id="tx-list"></div>
+    </div>
+  </section>
+
+  <section id="tab-budget" role="tabpanel" aria-label="Budget" hidden></section>
+
+  <p class="fin-sync"><span id="fin-sync"></span><button class="link-btn" type="button" id="fin-setup-link">Gmail connection</button></p>
 </main>
 
 <footer class="foot">
@@ -859,30 +1035,6 @@
   </form>
 </dialog>
 
-<!-- All transactions for a month -->
-<dialog class="sheet wide" id="fin-sheet" aria-labelledby="fin-h">
-  <div class="sheet-body">
-    <div class="sheet-head">
-      <h2 id="fin-h">Budget and spending</h2>
-      <button class="icon-btn" type="button" data-close aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
-    </div>
-    <div class="fin-nav">
-      <h3 id="fin-month"></h3>
-      <button class="icon-btn" type="button" id="fin-prev" aria-label="Previous month"><svg class="ic" aria-hidden="true"><use href="#i-left"/></svg></button>
-      <button class="icon-btn" type="button" id="fin-next" aria-label="Next month"><svg class="ic" aria-hidden="true"><use href="#i-right"/></svg></button>
-    </div>
-    <div class="fin-totals">
-      <div><span>Spent</span><strong id="fin-spent"></strong></div>
-      <div><span>Received</span><strong id="fin-received"></strong></div>
-    </div>
-    <div id="fin-list"></div>
-    <div class="fin-foot">
-      <span id="fin-sync"></span>
-      <button class="link-btn" type="button" id="fin-setup-link">Gmail connection</button>
-    </div>
-  </div>
-</dialog>
-
 <!-- Connecting the Axis Bank alerts -->
 <dialog class="sheet wide" id="fin-setup" aria-labelledby="fin-setup-h">
   <div class="sheet-body">
@@ -905,6 +1057,7 @@
   </div>
 </dialog>
 
+<div class="chart-tip" id="chart-tip" role="tooltip" hidden></div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden><span id="toast-text"></span><button type="button" id="toast-action"></button></div>
 
 <script>
@@ -964,7 +1117,7 @@
      status: 'todo' | 'doing' | 'done' | null      date: 'YYYY-MM-DD' | null
      The app only ever calls the five methods below.
      ===================================================================== */
-  const COLLECTIONS = ['tasks', 'projects', 'goals', 'notes', 'meta', 'transactions'];
+  const COLLECTIONS = ['tasks', 'projects', 'goals', 'notes', 'meta', 'transactions', 'payees', 'txmeta', 'budgets'];
 
   function createLocalStore() {
     const PREFIX = 'tracker:';
@@ -1168,7 +1321,7 @@
   }
 
   const store = CONFIG.firebase ? createFirebaseStore(CONFIG.firebase) : createLocalStore();
-  const state = { tasks: [], projects: [], goals: [], notes: [], meta: [], transactions: [] };
+  const state = { tasks: [], projects: [], goals: [], notes: [], meta: [], transactions: [], payees: [], txmeta: [], budgets: [] };
 
   /* =====================================================================
      Dates (everything is reckoned in Hyderabad time)
@@ -1599,8 +1752,9 @@
     renderProjects();
     renderCalendar();
     renderNotes();
+    finCache = null;
     renderSpending();
-    if ($('fin-sheet').open) renderFinanceSheet();
+    renderFinance();
 
     if (hasRendered && !reduceMotion) {
       document.querySelectorAll('[data-flip]').forEach((node) => {
@@ -1815,26 +1969,604 @@
      Backup
      ===================================================================== */
   /* =====================================================================
-     Finance: spending from Axis Bank alerts
+     Finance
+     Transactions come from tracker-scripts/axis-alerts.gs. On top of them the page keeps:
+       payees  { id: payee key, name, category }              a name and category for every payment to that payee
+       txmeta  { id: transaction id, category, excluded }      one transaction's own choices (win over the payee's)
+       budgets { id: 'default', total, categories: { [category]: amount } }   one budget for every month
+     Everything below is recomputed from those whenever the data changes, so charts stay live.
      ===================================================================== */
   const rupees = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
   const rupeesExact = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const compact = (n) => {
+    const v = Math.abs(n);
+    const text = v >= 100000 ? `${+(v / 100000).toFixed(1)}L` : v >= 1000 ? `${+(v / 1000).toFixed(1)}k` : `${Math.round(v)}`;
+    return `${n < 0 ? '−' : ''}₹${text}`;
+  };
   const fmtMonthYear = utcFmt({ month: 'long', year: 'numeric' });
-  let finMonth = todayKey().slice(0, 7);
+  const fmtMonthShort = utcFmt({ month: 'short' });
+  const fmtWeekdayShort = utcFmt({ weekday: 'short' });
 
-  const monthTx = (month) => state.transactions.filter((t) => (t.date || '').startsWith(month));
-  const total = (list, type) => list.filter((t) => t.type === type).reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
-  const txName = (t) => (t.needsReview ? 'Couldn’t read this alert' : t.description || (t.type === 'credit' ? 'Money in' : 'Payment'));
-  const txAmount = (t, exact) => `${t.type === 'credit' ? '+' : t.type === 'debit' ? '−' : ''}${(exact ? rupeesExact : rupees).format(Number(t.amount) || 0)}`;
+  const CATEGORIES = ['Groceries', 'Food delivery', 'Eating out & snacks', 'Rides', 'Shopping', 'Health', 'Home services',
+    'Bills & recharges', 'Local shops', 'People', 'Family', 'Other'];
+  const INCOME = 'Income';
+
+  // payees the bank names in many ways; the bank also cuts names at 19 characters
+  const KNOWN_PAYEES = [
+    [/^ROPPEN/, 'Rapido', 'Rides'],
+    [/^UBER/, 'Uber', 'Rides'],
+    [/^OLA\b|^ANI TECHNOLOGIES/, 'Ola', 'Rides'],
+    [/INSTAMART/, 'Swiggy Instamart', 'Groceries'],
+    [/^SWIGGY/, 'Swiggy', 'Food delivery'],
+    [/^ZOMATO|^ETERNAL/, 'Zomato', 'Food delivery'],
+    [/^BLINKIT/, 'Blinkit', 'Groceries'],
+    [/^ZEPTO/, 'Zepto', 'Groceries'],
+    [/^RATNADEEP/, 'Ratnadeep', 'Groceries'],
+    [/^NATURALFRESH/, 'Natural Fresh Batters', 'Groceries'],
+    [/^BIGBASKET|^INNOVATIVE RETAIL/, 'BigBasket', 'Groceries'],
+    [/^MERCELYS/, 'Mercely’s Ice Cream', 'Eating out & snacks'],
+    [/PANSHOP|PAN SHOP/, null, 'Eating out & snacks'],
+    [/^NYKAA/, 'Nykaa', 'Shopping'],
+    [/^AMAZON/, 'Amazon', 'Shopping'],
+    [/^FLIPKART/, 'Flipkart', 'Shopping'],
+    [/^MYNTRA/, 'Myntra', 'Shopping'],
+    [/\bMEDI(?:CAL|CALS)?\b|PHARMA|APOLLO/, null, 'Health'],
+    [/^URBAN COMPANY/, 'Urban Company', 'Home services'],
+    [/AIRTEL|\bJIO\b|VODAFONE|ELECTRICITY|TSSPDCL|FIBERNET/, null, 'Bills & recharges'],
+    [/^MOHD MUSTAFA$/, 'Mohammed Mustafa', null],
+  ];
+
+  const titleCase = (s) => s.toLowerCase().replace(/(^|[\s.&'-])([a-z])/g, (_, a, b) => a + b.toUpperCase());
+  const payeeKey = (s) => s.toUpperCase().replace(/[^A-Z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'UNKNOWN';
+
+  function rawPayee(t) {
+    // transfers like "credited ... by NEFT/HDFC0123/ELEC": name them from the transfer details
+    const transfer = (t.excerpt || '').match(/\bby\s+((?:NEFT|IMPS|RTGS)\/\S+)/i);
+    if (transfer) {
+      const parts = transfer[1].split('/').map((s) => s.replace(/[^A-Za-z0-9 &]/g, '')).filter((s) => /[A-Za-z]{3,}/.test(s) && !/\d/.test(s) && !/^(NEFT|IMPS|RTGS)$/i.test(s));
+      if (parts.length) return parts[parts.length - 1];
+    }
+    return t.description || (t.type === 'credit' ? 'Money in' : 'Payment');
+  }
+  const upiKind = (t) => ((t.excerpt || '').match(/UPI\/(P2M|P2A)\//i) || [])[1]?.toUpperCase() || null;
+  function channelOf(t) {
+    const excerpt = t.excerpt || '';
+    if (/\bUPI\//i.test(excerpt)) return 'UPI';
+    const transfer = excerpt.match(/\b(NEFT|IMPS|RTGS)\//);
+    return transfer ? transfer[1] : (t.channel || 'Account');
+  }
+
+  let finCache = null;   // cleared on every render, rebuilt on first use
+
+  function finData() {
+    if (finCache) return finCache;
+    const rules = new Map(state.payees.map((p) => [p.id, p]));
+    const meta = new Map(state.txmeta.map((m) => [m.id, m]));
+    const list = state.transactions.map((t) => {
+      const raw = rawPayee(t).toUpperCase().replace(/\s+/g, ' ').trim();
+      const known = KNOWN_PAYEES.find(([re]) => re.test(raw));
+      const key = payeeKey(known?.[1] || raw);
+      const rule = rules.get(key);
+      const own = meta.get(t.id);
+      const kind = upiKind(t);
+      const amount = Number(t.amount) || 0;
+      const refund = t.type === 'credit' && /\brefu|refund|revers/i.test(t.excerpt || '');
+      const income = t.type === 'credit' && !refund;
+      const auto = income ? INCOME
+        : known?.[2] || (/\bPOTLURI\b/.test(raw) ? 'Family' : kind === 'P2A' ? 'People' : kind === 'P2M' ? 'Local shops' : 'Other');
+      const category = own?.category || (income ? INCOME : rule?.category) || auto;
+      const excluded = Boolean(own?.excluded);
+      return {
+        ...t,
+        amount,
+        key,
+        payee: rule?.name || known?.[1] || titleCase(raw),
+        category,
+        kind,
+        channel: channelOf(t),
+        refund,
+        income,
+        excluded,
+        // what it does to spending: payments add, refunds take away, other money in doesn't count
+        spend: excluded ? 0 : t.type === 'debit' ? amount : refund ? -amount : 0,
+      };
+    });
+    const months = [...new Set(list.map((t) => (t.date || '').slice(0, 7)).filter(Boolean))].sort();
+    finCache = { list, months, rules, meta };
+    return finCache;
+  }
+
+  const monthOf = (month) => finData().list.filter((t) => (t.date || '').startsWith(month));
+  const sumSpend = (list) => list.reduce((sum, t) => sum + t.spend, 0);
+  const daysIn = (month) => { const [y, m] = month.split('-').map(Number); return new Date(Date.UTC(y, m, 0)).getUTCDate(); };
+  const addMonths = (month, delta) => { const [y, m] = month.split('-').map(Number); return toKey(new Date(Date.UTC(y, m - 1 + delta, 1))).slice(0, 7); };
+  const thisMonth = () => todayKey().slice(0, 7);
+  function daysElapsed(month) {
+    if (month < thisMonth()) return daysIn(month);
+    if (month > thisMonth()) return 0;
+    return Number(todayKey().slice(8));
+  }
+  const pct = (part, whole) => (whole > 0 ? Math.round((part / whole) * 100) : 0);
+  const budget = () => state.budgets.find((b) => b.id === 'default') || null;
+
+  /* ---------- Views and tabs (#tracker, #finance/spending|transactions|budget) ---------- */
+  let view = 'tracker';
+  let finTab = 'spending';
+  let finMonth = thisMonth();
+  const FIN_TABS = ['spending', 'transactions', 'budget'];
+
+  function route() {
+    const [name, tab] = location.hash.replace(/^#/, '').split('/');
+    const before = view;
+    view = name === 'finance' ? 'finance' : 'tracker';
+    if (view === 'finance') finTab = FIN_TABS.includes(tab) ? tab : 'spending';
+    document.body.dataset.view = view;
+    $('tracker-view').hidden = view !== 'tracker';
+    $('finance-view').hidden = view !== 'finance';
+    document.querySelectorAll('.views a').forEach((a) => a.setAttribute('aria-current', a.dataset.view === view ? 'page' : 'false'));
+    document.querySelectorAll('.fin-tabs a').forEach((a) => a.setAttribute('aria-selected', String(a.dataset.tab === finTab)));
+    FIN_TABS.forEach((t) => { $(`tab-${t}`).hidden = t !== finTab; });
+    if (view === 'finance') renderFinance();
+    if (before !== view) window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', route);
+
+  const goFinance = (tab = 'spending') => { location.hash = `#finance/${tab}`; };
+
+  $('fm-prev').addEventListener('click', () => { finMonth = addMonths(finMonth, -1); txFilter.date = ''; renderFinance(); });
+  $('fm-next').addEventListener('click', () => { finMonth = addMonths(finMonth, 1); txFilter.date = ''; renderFinance(); });
+
+  function renderFinance() {
+    if (view !== 'finance') return;
+    const { months } = finData();
+    const first = months[0] || thisMonth();
+    $('fm-label').textContent = fmtMonthYear.format(parseKey(`${finMonth}-01`));
+    $('fm-prev').disabled = finMonth <= first;
+    $('fm-next').disabled = finMonth >= thisMonth();
+    const sync = state.meta.find((m) => m.id === 'finance');
+    $('fin-sync').textContent = sync
+      ? `Checked Gmail ${ago(sync.lastSync)}${sync.caughtUp === false ? ', still bringing in older alerts' : ''}.`
+      : 'Gmail isn’t connected yet.';
+    if (finTab === 'spending') renderSpendingTab();
+    if (finTab === 'transactions') renderTransactionsTab();
+    if (finTab === 'budget') renderBudgetTab();
+  }
 
   function ago(ms) {
     const minutes = Math.round((Date.now() - ms) / 60000);
     if (minutes < 1) return 'just now';
     if (minutes < 60) return `${minutes} min ago`;
     const hours = Math.round(minutes / 60);
-    return hours < 24 ? `${hours} h ago` : fmtStamp.format(new Date(ms));
+    return hours < 24 ? `${hours} h ago` : `on ${fmtStamp.format(new Date(ms))}`;
   }
 
+  function connectPrompt() {
+    return el('div', { class: 'panel' }, emptyEl('Connect your Axis Bank alert emails and your spending shows up here.', 'Connect Gmail', openFinanceSetup));
+  }
+
+  /* ---------- Charts: drawn as SVG from the data on every render ---------- */
+  function svg(tag, attrs = {}, ...children) {
+    const node = document.createElementNS(SVG_NS, tag);
+    for (const [key, value] of Object.entries(attrs)) if (value != null) node.setAttribute(key, value);
+    node.append(...children.flat().filter((c) => c != null));
+    return node;
+  }
+
+  function niceStep(max, count = 3) {
+    const raw = Math.max(max, 1) / count;
+    const pow = 10 ** Math.floor(Math.log10(raw));
+    const f = raw / pow;
+    return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * pow;
+  }
+
+  // one series of vertical bars: [{ label, value, tip, now, onPick }]
+  function barChart(holder, data, { height = 220, labelEvery = 1, average = null, ariaLabel = '' } = {}) {
+    const width = Math.max(280, Math.round(holder.clientWidth || 600));
+    const pad = { l: 46, r: 8, t: 16, b: 26 };
+    const innerW = width - pad.l - pad.r;
+    const innerH = height - pad.t - pad.b;
+    const max = Math.max(0, ...data.map((d) => d.value), average || 0);
+    const step = niceStep(max);
+    const top = Math.max(step, Math.ceil(max / step) * step);
+    const y = (v) => pad.t + innerH - (Math.max(0, v) / top) * innerH;
+    const band = innerW / Math.max(data.length, 1);
+    const gap = Math.max(2, band * 0.22);
+    const barW = Math.max(2, band - gap);
+
+    const nodes = [];
+    for (let v = 0; v <= top + 0.001; v += step) {
+      nodes.push(svg('line', { class: 'grid-line', x1: pad.l, x2: width - pad.r, y1: y(v), y2: y(v) }),
+        svg('text', { class: 'tick', x: pad.l - 8, y: y(v) + 4, 'text-anchor': 'end' }, compact(v)));
+    }
+    data.forEach((d, i) => {
+      const x = pad.l + i * band + gap / 2;
+      const base = y(0);
+      const h = base - y(d.value);
+      const r = Math.min(4, barW / 2, h);
+      const bar = h > 0.5
+        ? svg('path', { class: 'bar' + (d.now ? ' now' : ''), d: `M${x},${base}V${base - h + r}Q${x},${base - h} ${x + r},${base - h}H${x + barW - r}Q${x + barW},${base - h} ${x + barW},${base - h + r}V${base}Z` })
+        : null;
+      const group = svg('g', { class: 'bar-g', 'data-tip': d.tip, tabindex: d.onPick ? '0' : null, role: d.onPick ? 'button' : null, 'aria-label': d.tip },
+        svg('rect', { class: 'hit', x: pad.l + i * band, y: pad.t, width: band, height: innerH }), bar);
+      if (d.onPick) {
+        group.addEventListener('click', d.onPick);
+        group.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); d.onPick(); } });
+      }
+      nodes.push(group);
+      if (i % labelEvery === 0 || d.now) {
+        nodes.push(svg('text', { class: 'tick', x: x + barW / 2, y: height - 8, 'text-anchor': 'middle' }, d.label));
+      }
+    });
+    if (average) {
+      nodes.push(svg('line', { class: 'avg-line', x1: pad.l, x2: width - pad.r, y1: y(average), y2: y(average) }),
+        svg('text', { class: 'avg-label', x: pad.l + 6, y: y(average) - 6, 'text-anchor': 'start' }, `average ${compact(average)}`));
+    }
+    holder.replaceChildren(svg('svg', { viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-label': ariaLabel }, svg('title', {}, ariaLabel), nodes));
+  }
+
+  // labelled horizontal bars: [{ name, value, meta, onPick, over }]
+  function hbars(rows, max) {
+    return el('div', { class: 'hrows' }, rows.map((r) => el(r.onPick ? 'button' : 'div', {
+      class: 'hrow' + (r.over ? ' over' : ''), type: r.onPick ? 'button' : null, onclick: r.onPick || null,
+    },
+    el('span', { class: 'hname' }, r.name), el('span', { class: 'hval' }, rupees.format(r.value)),
+    el('span', { class: 'htrack' }, el('span', { class: 'hfill', style: `width:${max > 0 ? Math.max(1, (Math.max(0, r.value) / max) * 100) : 0}%` })),
+    r.meta ? el('span', { class: 'hmeta' }, r.meta) : null)));
+  }
+
+  /* ---------- Spending tab ---------- */
+  function renderSpendingTab() {
+    const tab = $('tab-spending');
+    if (!state.transactions.length) { tab.replaceChildren(connectPrompt()); return; }
+
+    const month = finMonth;
+    const list = monthOf(month);
+    const counted = list.filter((t) => !t.excluded);
+    const payments = counted.filter((t) => t.type === 'debit');
+    const paid = payments.reduce((s, t) => s + t.amount, 0);
+    const refunded = counted.filter((t) => t.refund).reduce((s, t) => s + t.amount, 0);
+    const received = counted.filter((t) => t.income).reduce((s, t) => s + t.amount, 0);
+    const net = paid - refunded;
+    const elapsed = daysElapsed(month);
+    const monthName = fmtMonth.format(parseKey(`${month}-01`));
+    const prev = addMonths(month, -1);
+    const prevName = fmtMonth.format(parseKey(`${prev}-01`));
+    const current = month === thisMonth();
+    const prevList = monthOf(prev);
+    const prevNet = sumSpend(prevList.filter((t) => !current || Number(t.date.slice(8)) <= elapsed));
+    let compare = null;
+    if (prevList.length && prevNet > 0) {
+      const change = Math.round(((net - prevNet) / prevNet) * 100);
+      const when = current ? ` at this point` : '';
+      compare = change === 0 ? `Same as ${prevName}${when}` : `${Math.abs(change)}% ${change > 0 ? 'more' : 'less'} than ${prevName}${when}`;
+      // the first month with alerts is usually partial
+      const firstDay = finData().list.map((t) => t.date).filter((d) => d && d.startsWith(prev)).sort()[0];
+      if (prev === finData().months[0] && firstDay && Number(firstDay.slice(8)) > 3) compare += ` (records start ${fmtShort.format(parseKey(firstDay)).replace(/^\w+ /, '')})`;
+    }
+
+    const hero = el('section', { class: 'panel hero s12' },
+      el('div', {},
+        el('p', { class: 'stat-label' }, `Spent in ${monthName}${current ? ' so far' : ''}`),
+        el('p', { class: 'hero-num' }, rupees.format(net)),
+        refunded ? el('p', { class: 'stat-sub' }, `${rupees.format(paid)} paid, ${rupees.format(refunded)} refunded`) : null,
+        compare ? el('p', { class: 'stat-sub' + (/more/.test(compare) ? ' more' : '') }, compare) : null),
+      el('div', {}, el('p', { class: 'stat-label' }, 'Payments'), el('p', { class: 'stat-num' }, String(payments.length)),
+        el('p', { class: 'stat-sub' }, payments.length ? `typically ${rupees.format(median(payments.map((t) => t.amount)))} each` : 'none yet')),
+      el('div', {}, el('p', { class: 'stat-label' }, 'Per day'), el('p', { class: 'stat-num' }, rupees.format(elapsed ? net / elapsed : 0)),
+        el('p', { class: 'stat-sub' }, current ? `over ${plural(elapsed, 'day')} so far` : `over ${plural(elapsed, 'day')}`)),
+      el('div', {}, el('p', { class: 'stat-label' }, 'Received'), el('p', { class: 'stat-num' }, rupees.format(received)),
+        el('p', { class: 'stat-sub' }, received ? 'not counted as spending' : 'nothing this month')));
+
+    // per day
+    const days = daysIn(month);
+    const perDay = Array.from({ length: days }, (_, i) => {
+      const key = `${month}-${String(i + 1).padStart(2, '0')}`;
+      const items = counted.filter((t) => t.date === key);
+      return { key, spend: Math.max(0, sumSpend(items)), count: items.filter((t) => t.type === 'debit').length };
+    });
+    const pickDay = (key) => () => { txFilter = { ...blankFilter(), date: key }; goFinance('transactions'); };
+
+    const calendar = el('section', { class: 'panel s5' }, el('h3', { class: 'ptitle' }, 'Day by day', el('small', {}, 'tap a day to see its payments')));
+    const maxDay = Math.max(0, ...perDay.map((d) => d.spend));
+    const offset = (parseKey(`${month}-01`).getUTCDay() + 6) % 7;
+    calendar.append(
+      el('div', { class: 'hm-week', 'aria-hidden': 'true' }, ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => el('span', {}, d))),
+      el('div', { class: 'hm' },
+        Array.from({ length: offset }, () => el('span', { class: 'hm-blank' })),
+        perDay.map((d) => {
+          const level = d.spend > 0 ? Math.min(5, Math.max(1, Math.ceil(Math.sqrt(d.spend / maxDay) * 5))) : 0;
+          const future = d.key > todayKey();
+          const tip = `${fmtShort.format(parseKey(d.key))} · ${rupees.format(d.spend)}${d.count ? ` · ${plural(d.count, 'payment')}` : ''}`;
+          return el('button', {
+            class: `hm-day lv${level}${d.key === todayKey() ? ' today' : ''}${future ? ' future' : ''}`,
+            type: 'button', 'data-tip': tip, 'aria-label': tip, onclick: pickDay(d.key),
+          }, el('span', { class: 'd' }, String(Number(d.key.slice(8)))), el('span', { class: 'v' }, d.spend > 0 ? compact(d.spend) : ''));
+        })),
+      el('div', { class: 'hm-key', 'aria-hidden': 'true' }, 'Less', [0, 1, 2, 3, 4, 5].map((n) => el('i', { class: `lv${n}` })), 'More'));
+
+    const barsHolder = el('div', { class: 'chart' });
+    const bars = el('section', { class: 'panel s7' }, el('h3', { class: 'ptitle' }, 'Spending by day', el('small', {}, elapsed ? `${rupees.format(net / elapsed)} a day on average` : '')), barsHolder);
+
+    // categories
+    const byCat = new Map();
+    for (const t of counted) {
+      if (t.income) continue;
+      const c = byCat.get(t.category) || { value: 0, count: 0 };
+      c.value += t.spend;
+      if (t.type === 'debit') c.count += 1;
+      byCat.set(t.category, c);
+    }
+    const cats = [...byCat.entries()].filter(([, c]) => c.value > 0).sort((a, b) => b[1].value - a[1].value);
+    const categories = el('section', { class: 'panel s7' }, el('h3', { class: 'ptitle' }, 'By category', el('small', {}, 'tap to see the payments')),
+      cats.length ? hbars(cats.map(([name, c]) => ({
+        name, value: c.value, meta: `${pct(c.value, net)}% · ${plural(c.count, 'payment')}`,
+        onPick: () => { txFilter = { ...blankFilter(), category: name }; goFinance('transactions'); },
+      })), cats[0][1].value) : el('p', { class: 'quiet' }, 'No spending this month.'));
+
+    // payees
+    const byPayee = new Map();
+    for (const t of counted) {
+      if (t.type !== 'debit') continue;
+      const p = byPayee.get(t.key) || { name: t.payee, category: t.category, value: 0, count: 0 };
+      p.value += t.amount;
+      p.count += 1;
+      byPayee.set(t.key, p);
+    }
+    const payeesAll = [...byPayee.entries()];
+    const pickPayee = (key) => () => { txFilter = { ...blankFilter(), payee: key }; goFinance('transactions'); };
+    const topAmount = [...payeesAll].sort((a, b) => b[1].value - a[1].value).slice(0, 6);
+    const regulars = payeesAll.filter(([, p]) => p.count >= 3).sort((a, b) => b[1].count - a[1].count || b[1].value - a[1].value).slice(0, 6);
+    const payees = el('section', { class: 'panel s5' }, el('h3', { class: 'ptitle' }, 'Payees'),
+      el('div', { class: 'two' },
+        el('div', {}, el('h4', {}, 'Most spent with'), topAmount.length
+          ? hbars(topAmount.map(([key, p]) => ({ name: p.name, value: p.value, meta: `${p.category} · ${plural(p.count, 'payment')}`, onPick: pickPayee(key) })), topAmount[0][1].value)
+          : el('p', { class: 'quiet' }, 'None yet.')),
+        el('div', {}, el('h4', {}, 'Regulars'), regulars.length
+          ? hbars(regulars.map(([key, p]) => ({ name: `${p.name} ×${p.count}`, value: p.value, meta: `about ${rupees.format(p.value / p.count)} each`, onPick: pickPayee(key) })), Math.max(...regulars.map(([, p]) => p.value)))
+          : el('p', { class: 'quiet' }, 'Payees paid three or more times show up here.'))));
+
+    // time of day and weekday
+    const buckets = [['Morning', 5, 12], ['Afternoon', 12, 17], ['Evening', 17, 21], ['Night', 21, 29]];
+    const hourOf = (t) => { const h = Number((t.time || '12').slice(0, 2)); return h < 5 ? h + 24 : h; };
+    const times = buckets.map(([name, from, to]) => {
+      const items = payments.filter((t) => hourOf(t) >= from && hourOf(t) < to);
+      return { name, value: items.reduce((s, t) => s + t.amount, 0), count: items.length };
+    });
+    const timeMax = Math.max(...times.map((t) => t.value));
+    const timeOfDay = el('section', { class: 'panel s4' }, el('h3', { class: 'ptitle' }, 'Time of day'),
+      hbars(times.map((t) => ({ name: t.name, value: t.value, meta: plural(t.count, 'payment') })), timeMax));
+
+    const weekHolder = el('div', { class: 'chart' });
+    const weekdays = el('section', { class: 'panel s4' }, el('h3', { class: 'ptitle' }, 'By weekday'), weekHolder);
+
+    const trendHolder = el('div', { class: 'chart' });
+    const trendMonths = finData().months.filter((m) => m <= month).slice(-6);
+    const trend = el('section', { class: 'panel s4' }, el('h3', { class: 'ptitle' }, 'Month by month'),
+      trendMonths.length >= 2 ? trendHolder : el('p', { class: 'quiet' }, 'Shows once there’s more than one month of payments.'));
+
+    // small and large payments
+    const small = payments.filter((t) => t.amount < 100);
+    const smallTotal = small.reduce((s, t) => s + t.amount, 0);
+    const smalls = el('section', { class: 'panel s6' }, el('h3', { class: 'ptitle' }, 'Small payments'),
+      el('p', { class: 'small-note' }, el('strong', {}, rupees.format(smallTotal)), el('br'),
+        `${plural(small.length, 'payment')} under ₹100, ${pct(smallTotal, paid)}% of what you paid this month.`));
+    const largest = [...payments].sort((a, b) => b.amount - a.amount).slice(0, 5);
+    const biggest = el('section', { class: 'panel s6' }, el('h3', { class: 'ptitle' }, 'Largest payments'),
+      largest.length ? hbars(largest.map((t) => ({
+        name: t.payee, value: t.amount, meta: `${fmtShort.format(parseKey(t.date))} · ${t.category}`,
+        onPick: () => { txFilter = { ...blankFilter(), payee: t.key }; openTx.add(t.id); goFinance('transactions'); },
+      })), largest[0].amount) : el('p', { class: 'quiet' }, 'None yet.'));
+
+    tab.replaceChildren(el('div', { class: 'fin-grid' }, hero, calendar, bars, categories, payees, timeOfDay, weekdays, trend, smalls, biggest));
+
+    // charts are measured after they are in the page
+    const today = todayKey();
+    barChart(barsHolder, perDay.map((d, i) => ({
+      label: String(i + 1), value: d.key > today ? 0 : d.spend, now: d.key === today,
+      tip: `${fmtShort.format(parseKey(d.key))} · ${rupees.format(d.spend)}`, onPick: d.key > today ? null : pickDay(d.key),
+    })), { labelEvery: 5, average: elapsed ? net / elapsed : null, ariaLabel: `Spending per day in ${monthName}` });
+
+    const weekTotals = Array(7).fill(0);
+    payments.forEach((t) => { weekTotals[(parseKey(t.date).getUTCDay() + 6) % 7] += t.amount; });
+    barChart(weekHolder, ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d, i) => ({
+      label: d, value: weekTotals[i], tip: `${d} · ${rupees.format(weekTotals[i])}`,
+    })), { height: 180, ariaLabel: `Spending by weekday in ${monthName}` });
+
+    if (trendMonths.length >= 2) {
+      barChart(trendHolder, trendMonths.map((m) => {
+        const value = Math.max(0, sumSpend(monthOf(m)));
+        return {
+          label: fmtMonthShort.format(parseKey(`${m}-01`)), value, now: m === month,
+          tip: `${fmtMonthYear.format(parseKey(`${m}-01`))} · ${rupees.format(value)}`,
+          onPick: () => { finMonth = m; renderFinance(); },
+        };
+      }), { height: 180, ariaLabel: 'Spending per month' });
+    }
+  }
+
+  function median(values) {
+    const s = [...values].sort((a, b) => a - b);
+    const mid = Math.floor(s.length / 2);
+    return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
+  }
+
+  /* ---------- Transactions tab ---------- */
+  const blankFilter = () => ({ q: '', type: 'all', category: '', payee: '', date: '', sort: 'newest' });
+  let txFilter = blankFilter();
+  const openTx = new Set();
+
+  function syncTxTools(list) {
+    $('tx-q').value = txFilter.q;
+    $('tx-type').value = txFilter.type;
+    $('tx-sort').value = txFilter.sort;
+    $('tx-cat').replaceChildren(el('option', { value: '' }, 'All categories'), ...[...CATEGORIES, INCOME].map((c) => el('option', { value: c }, c)));
+    $('tx-cat').value = txFilter.category;
+    const payees = [...new Map(list.map((t) => [t.key, t.payee])).entries()].sort((a, b) => a[1].localeCompare(b[1]));
+    if (txFilter.payee && !payees.some(([k]) => k === txFilter.payee)) {
+      const known = finData().list.find((t) => t.key === txFilter.payee);
+      payees.unshift([txFilter.payee, known ? known.payee : txFilter.payee]);
+    }
+    $('tx-payee').replaceChildren(el('option', { value: '' }, 'All payees'), ...payees.map(([k, name]) => el('option', { value: k }, name)));
+    $('tx-payee').value = txFilter.payee;
+  }
+
+  function renderTransactionsTab() {
+    if (!state.transactions.length) { $('tx-list').replaceChildren(connectPrompt()); $('tx-summary').replaceChildren(); return; }
+    const month = monthOf(finMonth);
+    syncTxTools(month);
+    const q = txFilter.q.trim().toLowerCase();
+    let list = month.filter((t) =>
+      (txFilter.type === 'all' || (txFilter.type === 'debit' ? t.type === 'debit' : t.type === 'credit'))
+      && (!txFilter.category || t.category === txFilter.category)
+      && (!txFilter.payee || t.key === txFilter.payee)
+      && (!txFilter.date || t.date === txFilter.date)
+      && (!q || `${t.payee} ${t.description || ''} ${t.category} ${t.excerpt || ''}`.toLowerCase().includes(q)));
+    list = list.sort(txFilter.sort === 'largest' ? (a, b) => b.amount - a.amount
+      : txFilter.sort === 'oldest' ? (a, b) => a.createdAt - b.createdAt : (a, b) => b.createdAt - a.createdAt);
+
+    const spent = list.filter((t) => !t.excluded).reduce((s, t) => s + Math.max(0, t.spend), 0);
+    const inflow = list.filter((t) => t.type === 'credit' && !t.excluded).reduce((s, t) => s + t.amount, 0);
+    const filtered = txFilter.q || txFilter.type !== 'all' || txFilter.category || txFilter.payee || txFilter.date;
+    $('tx-summary').replaceChildren(...[
+      el('span', {}, `${plural(list.length, 'transaction')} · ${rupees.format(spent)} spent · ${rupees.format(inflow)} in`),
+      txFilter.date ? el('span', { class: 'chip-filter' }, fmtLong.format(parseKey(txFilter.date)),
+        el('button', { class: 'icon-btn', type: 'button', 'aria-label': 'Show every day', onclick: () => { txFilter.date = ''; renderFinance(); } }, icon('x'))) : null,
+      filtered ? el('button', { class: 'link-btn', type: 'button', onclick: () => { txFilter = blankFilter(); renderFinance(); } }, 'Clear filters') : null,
+    ].filter(Boolean));
+
+    const kids = [];
+    let day = '';
+    for (const t of list) {
+      if (txFilter.sort !== 'largest' && t.date !== day) {
+        day = t.date;
+        kids.push(el('p', { class: 'fin-day' }, dueLabel(day)));
+      }
+      kids.push(txRow(t));
+    }
+    $('tx-list').replaceChildren(...(kids.length ? kids : [el('p', { class: 'quiet' }, 'No transactions match.')]));
+  }
+
+  function txRow(t) {
+    const meta = [t.category, t.refund ? 'Refund' : null, t.channel, t.account ? `XX${t.account}` : null,
+      txFilter.sort === 'largest' ? fmtShort.format(parseKey(t.date)) : null, t.time, t.excluded ? 'Not counted' : null].filter(Boolean).join(' · ');
+    const sign = t.type === 'credit' ? '+' : t.type === 'debit' ? '−' : '';
+    const row = el('details', { class: 'tx' + (t.excluded ? ' excluded' : ''), open: openTx.has(t.id) },
+      el('summary', {},
+        el('span', {}, el('span', { class: 'tx-name' }, t.payee), el('span', { class: 'tx-meta' }, meta)),
+        el('span', { class: 'tx-amount' + (t.type === 'credit' ? ' credit' : '') }, `${sign}${rupeesExact.format(t.amount)}`)),
+      t.excerpt ? el('p', { class: 'tx-excerpt' }, t.excerpt) : null,
+      txEditor(t));
+    row.addEventListener('toggle', () => (row.open ? openTx.add(t.id) : openTx.delete(t.id)));
+    return row;
+  }
+
+  function txEditor(t) {
+    const { rules, meta } = finData();
+    const rule = rules.get(t.key) || {};
+    const own = meta.get(t.id) || {};
+    const category = el('select', { 'aria-label': 'Category' }, [...CATEGORIES, INCOME].map((c) => el('option', { value: c }, c)));
+    category.value = t.category;
+    const forAll = el('input', { type: 'checkbox', checked: true });
+    const name = el('input', { type: 'text', value: t.payee, maxlength: '60', 'aria-label': 'Payee name' });
+    const counts = el('input', { type: 'checkbox', checked: !t.excluded });
+
+    category.addEventListener('change', async () => {
+      if (forAll.checked) {
+        await store.set('payees', t.key, { ...rule, category: category.value });
+        if (own.category) await store.set('txmeta', t.id, { ...own, category: null });
+        toast(`Every payment to ${t.payee} is now ${category.value}.`);
+      } else {
+        await store.set('txmeta', t.id, { ...own, category: category.value });
+      }
+    });
+    name.addEventListener('change', async () => {
+      const value = name.value.trim();
+      await store.set('payees', t.key, { ...rule, name: value || null });
+    });
+    counts.addEventListener('change', () => store.set('txmeta', t.id, { ...own, excluded: !counts.checked }));
+
+    return el('div', { class: 'tx-edit' },
+      el('label', {}, el('span', {}, 'Category'), category),
+      el('label', {}, el('span', {}, 'Payee name'), name),
+      el('label', { class: 'toggle' }, forAll, `Use this category for every payment to ${t.payee}`),
+      el('label', { class: 'toggle' }, counts, t.type === 'credit' ? 'Count as a refund against spending' : 'Count in spending'));
+  }
+
+  ['tx-q', 'tx-type', 'tx-cat', 'tx-payee', 'tx-sort'].forEach((id) => $(id).addEventListener(id === 'tx-q' ? 'input' : 'change', () => {
+    txFilter.q = $('tx-q').value;
+    txFilter.type = $('tx-type').value;
+    txFilter.category = $('tx-cat').value;
+    txFilter.payee = $('tx-payee').value;
+    txFilter.sort = $('tx-sort').value;
+    renderTransactionsTab();
+    if (id === 'tx-q') $('tx-q').focus();
+  }));
+
+  /* ---------- Budget tab ---------- */
+  let editingBudget = false;
+
+  function budgetRow(name, spent, limit, month) {
+    const elapsed = daysElapsed(month);
+    const days = daysIn(month);
+    const current = month === thisMonth();
+    const left = limit - spent;
+    const over = left < 0;
+    let note;
+    if (over) note = `Over by ${rupees.format(-left)}`;
+    else if (current) {
+      const remaining = days - elapsed + 1;
+      note = `${rupees.format(left)} left · about ${rupees.format(left / remaining)} a day for the ${plural(remaining, 'day')} left`;
+    } else note = `${rupees.format(left)} under budget`;
+    const pace = current && elapsed >= 3 ? (spent / elapsed) * days : null;
+    return el('div', { class: 'bud-row' + (over ? ' over' : '') },
+      el('div', { class: 'bud-top' }, el('strong', {}, name), el('span', {}, `${rupees.format(spent)} of ${rupees.format(limit)}`)),
+      el('div', { class: 'bud-track', role: 'progressbar', 'aria-valuemin': '0', 'aria-valuemax': String(Math.round(limit)), 'aria-valuenow': String(Math.round(spent)), 'aria-label': `${name} budget` },
+        el('i', { style: `width:${Math.min(100, pct(spent, limit))}%` })),
+      el('p', { class: 'bud-note' }, note, pace && !over ? ` · on pace for ${rupees.format(pace)}${pace > limit ? ', which is over' : ''}` : ''));
+  }
+
+  function renderBudgetTab() {
+    const tab = $('tab-budget');
+    const b = budget();
+    if (!b || editingBudget) { tab.replaceChildren(budgetForm(b)); return; }
+    const list = monthOf(finMonth).filter((t) => !t.excluded && !t.income);
+    const spent = Math.max(0, sumSpend(list));
+    const byCat = new Map();
+    list.forEach((t) => byCat.set(t.category, (byCat.get(t.category) || 0) + t.spend));
+    const catLimits = Object.entries(b.categories || {}).filter(([, v]) => Number(v) > 0);
+    const unbudgeted = [...byCat.entries()].filter(([c, v]) => v > 0 && !catLimits.some(([k]) => k === c)).sort((x, y) => y[1] - x[1]);
+    tab.replaceChildren(el('div', { class: 'fin-grid' },
+      el('section', { class: 'panel s7' }, el('h3', { class: 'ptitle' }, 'Monthly budget',
+        el('button', { class: 'btn small', type: 'button', onclick: () => { editingBudget = true; renderBudgetTab(); } }, icon('edit'), 'Edit')),
+      b.total ? budgetRow('Everything', spent, Number(b.total), finMonth) : el('p', { class: 'quiet' }, 'No overall budget set.'),
+      catLimits.map(([c, v]) => budgetRow(c, Math.max(0, byCat.get(c) || 0), Number(v), finMonth))),
+      el('section', { class: 'panel s5' }, el('h3', { class: 'ptitle' }, 'Without a budget'),
+        unbudgeted.length ? hbars(unbudgeted.map(([c, v]) => ({ name: c, value: v })), unbudgeted[0][1]) : el('p', { class: 'quiet' }, 'Every category you spent on has a budget.'))));
+  }
+
+  function budgetForm(b) {
+    const total = el('input', { type: 'number', min: '0', step: '100', inputmode: 'numeric', value: b?.total || '', placeholder: 'e.g. 30000' });
+    const inputs = CATEGORIES.map((c) => [c, el('input', { type: 'number', min: '0', step: '100', inputmode: 'numeric', value: b?.categories?.[c] || '', placeholder: 'No limit' })]);
+    const form = el('form', { class: 'panel bud-form' },
+      el('h3', { class: 'ptitle' }, b ? 'Edit your budget' : 'Set a monthly budget'),
+      el('p', { class: 'quiet', style: 'padding-top:0' }, 'It applies to every month. Leave a category empty to not budget it.'),
+      el('div', { class: 'grid2' }, el('label', {}, el('span', {}, 'Everything (₹ a month)'), total)),
+      el('div', { class: 'grid2' }, inputs.map(([c, input]) => el('label', {}, el('span', {}, c), input))),
+      el('div', { class: 'sheet-actions' },
+        el('span', { class: 'grow' }),
+        b ? el('button', { class: 'btn', type: 'button', onclick: () => { editingBudget = false; renderBudgetTab(); } }, 'Cancel') : null,
+        el('button', { class: 'btn primary', type: 'submit' }, 'Save budget')));
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const categories = {};
+      inputs.forEach(([c, input]) => { if (Number(input.value) > 0) categories[c] = Number(input.value); });
+      editingBudget = false;
+      await store.set('budgets', 'default', { total: Number(total.value) > 0 ? Number(total.value) : null, categories });
+    });
+    return form;
+  }
+
+  /* ---------- Budget and spending card on the tracker ---------- */
   function renderSpending() {
     const card = $('spend-card');
     const sync = state.meta.find((m) => m.id === 'finance');
@@ -1842,68 +2574,57 @@
     if (!sync && !state.transactions.length) {
       card.replaceChildren(title,
         el('p', { class: 'lead' }, 'Fill this in from your Axis Bank alert emails.'),
-        el('button', { class: 'btn small', type: 'button', onclick: openFinanceSetup }, 'Connect Gmail'));
+        el('button', { class: 'btn small', type: 'button', onclick: (e) => { e.stopPropagation(); openFinanceSetup(); } }, 'Connect Gmail'));
       return;
     }
-    const month = todayKey().slice(0, 7);
-    const list = monthTx(month);
+    const month = thisMonth();
+    const list = monthOf(month);
+    const net = Math.max(0, sumSpend(list));
+    const received = list.filter((t) => t.income && !t.excluded).reduce((s, t) => s + t.amount, 0);
     const recent = [...list].sort((a, b) => b.createdAt - a.createdAt).slice(0, 3);
+    const b = budget();
     card.replaceChildren(title,
       el('p', { class: 'when' }, `${fmtMonth.format(parseKey(`${month}-01`))} so far`),
-      el('p', { class: 'total' }, rupees.format(total(list, 'debit'))),
-      el('p', { class: 'in' }, `spent · ${rupees.format(total(list, 'credit'))} in`),
+      el('p', { class: 'total' }, rupees.format(net)),
+      b?.total
+        ? [el('div', { class: 'mini-track' + (net > b.total ? ' over' : '') }, el('i', { style: `width:${Math.min(100, pct(net, b.total))}%` })),
+          el('p', { class: 'in' }, `of ${rupees.format(b.total)} budget`)]
+        : el('p', { class: 'in' }, `spent · ${rupees.format(received)} in`),
       recent.length
         ? el('ul', { class: 'spend-recent' }, recent.map((t) =>
-          el('li', {}, el('span', {}, txName(t)), el('span', { class: t.type === 'credit' ? 'credit' : '' }, txAmount(t)))))
-        : el('p', { class: 'in', style: 'margin-top:12px' }, 'Nothing yet this month.'),
-      el('button', { class: 'link-btn', type: 'button', onclick: openFinance }, 'All transactions'));
+          el('li', {}, el('span', {}, t.payee), el('span', { class: t.type === 'credit' ? 'credit' : '' }, `${t.type === 'credit' ? '+' : '−'}${rupees.format(t.amount)}`))))
+        : el('p', { class: 'in', style: 'margin-top:12px' }, 'Nothing yet this month.'));
   }
+  $('spend-card').addEventListener('click', () => goFinance('spending'));
+  $('spend-card').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goFinance('spending'); } });
 
-  function renderFinanceSheet() {
-    const list = monthTx(finMonth).sort((a, b) => b.createdAt - a.createdAt);
-    $('fin-month').textContent = fmtMonthYear.format(parseKey(`${finMonth}-01`));
-    $('fin-next').disabled = finMonth >= todayKey().slice(0, 7);
-    $('fin-spent').textContent = rupees.format(total(list, 'debit'));
-    $('fin-received').textContent = rupees.format(total(list, 'credit'));
-    const kids = [];
-    let day = '';
-    for (const t of list) {
-      if (t.date !== day) {
-        day = t.date;
-        kids.push(el('p', { class: 'fin-day' }, dueLabel(day)));
-      }
-      const meta = [t.needsReview ? t.subject : null, t.channel, t.account ? `XX${t.account}` : null, t.time].filter(Boolean).join(' · ');
-      kids.push(el('details', { class: 'tx' + (t.needsReview ? ' review' : '') },
-        el('summary', {},
-          el('span', {}, el('span', { class: 'tx-name' }, txName(t)), el('span', { class: 'tx-meta' }, meta)),
-          el('span', { class: 'tx-amount' + (t.type === 'credit' ? ' credit' : '') }, txAmount(t, true))),
-        t.excerpt ? el('p', { class: 'tx-excerpt' }, t.excerpt) : null));
-    }
-    $('fin-list').replaceChildren(...(kids.length ? kids : [el('p', { class: 'quiet' }, 'No transactions this month.')]));
-    const sync = state.meta.find((m) => m.id === 'finance');
-    $('fin-sync').textContent = sync
-      ? `Checked Gmail ${ago(sync.lastSync)}${sync.caughtUp === false ? ', still bringing in older alerts' : ''}`
-      : 'Gmail not connected yet';
+  /* ---------- Chart tooltips (hover, keyboard focus, or tap) ---------- */
+  const tip = $('chart-tip');
+  function showTip(target) {
+    tip.textContent = target.getAttribute('data-tip');
+    tip.hidden = false;
+    const r = target.getBoundingClientRect();
+    const x = Math.min(window.innerWidth - tip.offsetWidth / 2 - 8, Math.max(tip.offsetWidth / 2 + 8, r.left + r.width / 2));
+    tip.style.left = `${x}px`;
+    tip.style.top = `${Math.max(tip.offsetHeight + 16, r.top)}px`;
   }
+  const hideTip = () => { tip.hidden = true; };
+  document.addEventListener('pointerover', (e) => { const t = e.target.closest?.('[data-tip]'); if (t) showTip(t); });
+  document.addEventListener('pointerout', (e) => { if (e.target.closest?.('[data-tip]')) hideTip(); });
+  document.addEventListener('focusin', (e) => { const t = e.target.closest?.('[data-tip]'); if (t) showTip(t); else hideTip(); });
+  window.addEventListener('scroll', hideTip, { passive: true });
 
-  function openFinance() {
-    finMonth = todayKey().slice(0, 7);
-    renderFinanceSheet();
-    $('fin-sheet').showModal();
-  }
+  // redraw the charts when the space they have changes
+  let lastFinWidth = 0;
+  new ResizeObserver((entries) => {
+    const width = Math.round(entries[0].contentRect.width);
+    if (view === 'finance' && finTab === 'spending' && Math.abs(width - lastFinWidth) > 4) { lastFinWidth = width; requestAnimationFrame(renderFinance); }
+  }).observe($('finance-view'));
 
-  function shiftFinMonth(delta) {
-    const [year, month] = finMonth.split('-').map(Number);
-    finMonth = toKey(new Date(Date.UTC(year, month - 1 + delta, 1))).slice(0, 7);
-    renderFinanceSheet();
-  }
-  $('fin-prev').addEventListener('click', () => shiftFinMonth(-1));
-  $('fin-next').addEventListener('click', () => shiftFinMonth(1));
-
+  /* ---------- Connecting Gmail ---------- */
   function openFinanceSetup() {
     if (!store.signedIn) { store.signIn(); return; }
     $('fin-uid').textContent = store.accountId ? `Account id: ${store.accountId}` : 'Sign in with Firebase turned on to get your account id.';
-    if ($('fin-sheet').open) $('fin-sheet').close();
     $('fin-setup').showModal();
   }
   $('fin-setup-link').addEventListener('click', openFinanceSetup);
@@ -1923,7 +2644,7 @@
     }
   }));
 
-  const BACKED_UP = ['tasks', 'projects', 'goals', 'notes'];
+  const BACKED_UP = ['tasks', 'projects', 'goals', 'notes', 'payees', 'txmeta', 'budgets'];
 
   $('export-btn').addEventListener('click', () => {
     const payload = { app: 'potluri-tracker', version: 1, exportedAt: new Date().toISOString(),
@@ -2020,6 +2741,7 @@
   renderClock();
   renderMonth();
   renderAll();
+  route();
   store.onLoaded(() => copyLocalToAccount().then(resetWeeklyIfNeeded));
   loadWeather();
 
