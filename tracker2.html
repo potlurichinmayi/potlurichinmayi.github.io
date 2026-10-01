@@ -350,6 +350,46 @@
   .js .reveal { opacity: 0; transform: translateY(22px); }
   .js .reveal.in { opacity: 1; transform: none; transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
 
+  /* ---------- Finance: spending card and sheets ---------- */
+  .spend { min-height: 206px; }
+  .spend h2 { font-family: var(--serif); font-size: 21px; line-height: 0.95; letter-spacing: 0.01em; }
+  .spend .when { margin-top: 14px; font-size: 14px; color: var(--ink-3); }
+  .spend .total { margin-top: 2px; font-family: var(--serif); font-size: 30px; line-height: 1.1; }
+  .spend .in { font-size: 14px; color: var(--ink-2); }
+  .spend p.lead { margin: 12px 0 14px; font-size: 15px; color: var(--ink-2); }
+  .spend-recent { list-style: none; margin: 12px 0 4px; padding: 10px 0 0; border-top: 1px solid var(--rule); }
+  .spend-recent li { display: flex; justify-content: space-between; gap: 8px; padding: 3px 0; font-size: 14px; }
+  .spend-recent span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink-2); }
+  .spend-recent span:last-child { flex: none; }
+  .credit { color: var(--ember); }
+
+  dialog.wide { width: min(600px, calc(100vw - 32px)); }
+  .fin-nav { display: flex; align-items: center; gap: 4px; margin: -4px 0 10px; }
+  .fin-nav h3 { margin-right: auto; font-family: var(--serif); font-size: 21px; }
+  .fin-totals { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px; }
+  .fin-totals div { padding: 14px 16px; border-radius: 12px; background: var(--raise); }
+  .fin-totals span { display: block; font-size: 14px; color: var(--ink-3); }
+  .fin-totals strong { display: block; margin-top: 2px; font-family: var(--serif); font-weight: 400; font-size: 26px; }
+  .fin-day { margin: 14px 0 4px; font-size: 14px; color: var(--ink-3); }
+  .tx { border-top: 1px solid var(--rule); }
+  .tx summary { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: baseline; padding: 10px 4px; cursor: pointer; list-style: none; border-radius: var(--r-sm); transition: background-color 0.15s; }
+  .tx summary::-webkit-details-marker { display: none; }
+  .tx summary:hover { background: var(--raise); }
+  .tx-name { display: block; overflow-wrap: anywhere; }
+  .tx-meta { display: block; margin-top: 2px; font-size: 13px; color: var(--ink-3); }
+  .tx-amount { white-space: nowrap; }
+  .tx.review .tx-name { color: var(--danger); }
+  .tx-excerpt { margin: 0 4px 12px; padding: 10px 12px; font-size: 14px; line-height: 1.45; color: var(--ink-2); background: var(--raise); border-radius: 8px; overflow-wrap: anywhere; }
+  .fin-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-top: 18px; font-size: 14px; color: var(--ink-3); }
+
+  .steps { margin: 0 0 18px; padding-left: 22px; }
+  .steps li { margin-bottom: 14px; padding-left: 4px; line-height: 1.45; }
+  .steps li::marker { color: var(--ember); }
+  .steps .btn { margin-top: 8px; }
+  .steps code, .uid { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; }
+  .uid { display: inline-block; margin-top: 6px; padding: 4px 8px; border-radius: 6px; background: var(--raise-2); overflow-wrap: anywhere; }
+  .steps a { color: var(--ember); }
+
   /* ---------- Sign-in page (shown instead of the tracker until signed in) ---------- */
   body.locked .bar, body.locked .page, body.locked .foot, body.locked .fab { display: none; }
   .gate { display: none; }
@@ -698,7 +738,7 @@
 
     <!-- Finance is not designed yet: placeholders only -->
     <section class="a-finance" aria-label="Finance">
-      <div class="panel placeholder"><h2>Budget and spending</h2><p>Coming later</p></div>
+      <div class="panel spend" id="spend-card"></div>
       <div class="panel placeholder"><h2>Current investments</h2><p>Coming later</p></div>
       <div class="panel placeholder"><h2>Finance goals</h2><p>Coming later</p></div>
     </section>
@@ -819,6 +859,52 @@
   </form>
 </dialog>
 
+<!-- All transactions for a month -->
+<dialog class="sheet wide" id="fin-sheet" aria-labelledby="fin-h">
+  <div class="sheet-body">
+    <div class="sheet-head">
+      <h2 id="fin-h">Budget and spending</h2>
+      <button class="icon-btn" type="button" data-close aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="fin-nav">
+      <h3 id="fin-month"></h3>
+      <button class="icon-btn" type="button" id="fin-prev" aria-label="Previous month"><svg class="ic" aria-hidden="true"><use href="#i-left"/></svg></button>
+      <button class="icon-btn" type="button" id="fin-next" aria-label="Next month"><svg class="ic" aria-hidden="true"><use href="#i-right"/></svg></button>
+    </div>
+    <div class="fin-totals">
+      <div><span>Spent</span><strong id="fin-spent"></strong></div>
+      <div><span>Received</span><strong id="fin-received"></strong></div>
+    </div>
+    <div id="fin-list"></div>
+    <div class="fin-foot">
+      <span id="fin-sync"></span>
+      <button class="link-btn" type="button" id="fin-setup-link">Gmail connection</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Connecting the Axis Bank alerts -->
+<dialog class="sheet wide" id="fin-setup" aria-labelledby="fin-setup-h">
+  <div class="sheet-body">
+    <div class="sheet-head">
+      <h2 id="fin-setup-h">Connect Axis Bank alerts</h2>
+      <button class="icon-btn" type="button" data-close aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <p style="margin-bottom:18px;color:var(--ink-2)">A small script in your Google account reads emails from alerts@axis.bank.in every 15 minutes, read-only, and adds each transaction here. Do this once, signed in to the Gmail account that receives the alerts.</p>
+    <ol class="steps">
+      <li>Open <a href="https://script.google.com/home/projects/create" target="_blank" rel="noopener">a new Apps Script project</a>.</li>
+      <li>In <strong>Project Settings</strong> (the gear), tick <em>Show “appsscript.json” manifest file in editor</em>.</li>
+      <li>Back in the editor, open <code>appsscript.json</code> and replace everything in it with this:<br>
+        <button class="btn small" type="button" data-copy="tracker-scripts/appsscript.json">Copy manifest</button></li>
+      <li>Open <code>Code.gs</code> and replace everything with the script. Your account id is already filled in.<br>
+        <button class="btn small" type="button" data-copy="tracker-scripts/axis-alerts.gs">Copy script</button>
+        <br><span class="uid" id="fin-uid"></span></li>
+      <li>Save, choose <strong>setup</strong> in the toolbar and press <strong>Run</strong>. Approve access; Google will call it an unverified app because it is your own script, so choose <em>Advanced</em> and continue.</li>
+    </ol>
+    <p style="color:var(--ink-3);font-size:15px">Transactions from the last 120 days appear here within a minute, and new ones every 15 minutes after that.</p>
+  </div>
+</dialog>
+
 <div class="toast" id="toast" role="status" aria-live="polite" hidden><span id="toast-text"></span><button type="button" id="toast-action"></button></div>
 
 <script>
@@ -872,11 +958,13 @@
        projects { id, title, status, date, createdAt, updatedAt }
        goals    { id, title, status, date, createdAt, updatedAt }
        notes    { id, title, body, pinned, createdAt, updatedAt }
-       meta     { id: 'weekly', weekStart }            (one settings document)
+       meta     { id: 'weekly', weekStart } and { id: 'finance', lastSync }
+       transactions { id: gmail message id, amount, type: 'debit' | 'credit' | 'unknown', description,
+                  account, channel, date, time, subject, excerpt, needsReview }   (written by tracker-scripts/axis-alerts.gs)
      status: 'todo' | 'doing' | 'done' | null      date: 'YYYY-MM-DD' | null
      The app only ever calls the five methods below.
      ===================================================================== */
-  const COLLECTIONS = ['tasks', 'projects', 'goals', 'notes', 'meta'];
+  const COLLECTIONS = ['tasks', 'projects', 'goals', 'notes', 'meta', 'transactions'];
 
   function createLocalStore() {
     const PREFIX = 'tracker:';
@@ -909,6 +997,7 @@
 
     return {
       signedIn: true,
+      accountId: null,
       onAccount() {},
       onLoaded(cb) { cb(); },
       signIn() {},
@@ -1025,6 +1114,7 @@
 
     return {
       get signedIn() { return Boolean(user); },
+      get accountId() { return user ? user.uid : null; },
       onAccount(cb) {
         accountListeners.push(cb);
         if (user !== undefined) cb(user);
@@ -1078,7 +1168,7 @@
   }
 
   const store = CONFIG.firebase ? createFirebaseStore(CONFIG.firebase) : createLocalStore();
-  const state = { tasks: [], projects: [], goals: [], notes: [], meta: [] };
+  const state = { tasks: [], projects: [], goals: [], notes: [], meta: [], transactions: [] };
 
   /* =====================================================================
      Dates (everything is reckoned in Hyderabad time)
@@ -1509,6 +1599,8 @@
     renderProjects();
     renderCalendar();
     renderNotes();
+    renderSpending();
+    if ($('fin-sheet').open) renderFinanceSheet();
 
     if (hasRendered && !reduceMotion) {
       document.querySelectorAll('[data-flip]').forEach((node) => {
@@ -1722,6 +1814,113 @@
   /* =====================================================================
      Backup
      ===================================================================== */
+  /* =====================================================================
+     Finance: spending from Axis Bank alerts
+     ===================================================================== */
+  const rupees = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
+  const rupeesExact = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const fmtMonthYear = utcFmt({ month: 'long', year: 'numeric' });
+  let finMonth = todayKey().slice(0, 7);
+
+  const monthTx = (month) => state.transactions.filter((t) => (t.date || '').startsWith(month));
+  const total = (list, type) => list.filter((t) => t.type === type).reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+  const txName = (t) => (t.needsReview ? 'Couldn’t read this alert' : t.description || (t.type === 'credit' ? 'Money in' : 'Payment'));
+  const txAmount = (t, exact) => `${t.type === 'credit' ? '+' : t.type === 'debit' ? '−' : ''}${(exact ? rupeesExact : rupees).format(Number(t.amount) || 0)}`;
+
+  function ago(ms) {
+    const minutes = Math.round((Date.now() - ms) / 60000);
+    if (minutes < 1) return 'just now';
+    if (minutes < 60) return `${minutes} min ago`;
+    const hours = Math.round(minutes / 60);
+    return hours < 24 ? `${hours} h ago` : fmtStamp.format(new Date(ms));
+  }
+
+  function renderSpending() {
+    const card = $('spend-card');
+    const sync = state.meta.find((m) => m.id === 'finance');
+    const title = el('h2', {}, 'Budget and spending');
+    if (!sync && !state.transactions.length) {
+      card.replaceChildren(title,
+        el('p', { class: 'lead' }, 'Fill this in from your Axis Bank alert emails.'),
+        el('button', { class: 'btn small', type: 'button', onclick: openFinanceSetup }, 'Connect Gmail'));
+      return;
+    }
+    const month = todayKey().slice(0, 7);
+    const list = monthTx(month);
+    const recent = [...list].sort((a, b) => b.createdAt - a.createdAt).slice(0, 3);
+    card.replaceChildren(title,
+      el('p', { class: 'when' }, `${fmtMonth.format(parseKey(`${month}-01`))} so far`),
+      el('p', { class: 'total' }, rupees.format(total(list, 'debit'))),
+      el('p', { class: 'in' }, `spent · ${rupees.format(total(list, 'credit'))} in`),
+      recent.length
+        ? el('ul', { class: 'spend-recent' }, recent.map((t) =>
+          el('li', {}, el('span', {}, txName(t)), el('span', { class: t.type === 'credit' ? 'credit' : '' }, txAmount(t)))))
+        : el('p', { class: 'in', style: 'margin-top:12px' }, 'Nothing yet this month.'),
+      el('button', { class: 'link-btn', type: 'button', onclick: openFinance }, 'All transactions'));
+  }
+
+  function renderFinanceSheet() {
+    const list = monthTx(finMonth).sort((a, b) => b.createdAt - a.createdAt);
+    $('fin-month').textContent = fmtMonthYear.format(parseKey(`${finMonth}-01`));
+    $('fin-next').disabled = finMonth >= todayKey().slice(0, 7);
+    $('fin-spent').textContent = rupees.format(total(list, 'debit'));
+    $('fin-received').textContent = rupees.format(total(list, 'credit'));
+    const kids = [];
+    let day = '';
+    for (const t of list) {
+      if (t.date !== day) {
+        day = t.date;
+        kids.push(el('p', { class: 'fin-day' }, dueLabel(day)));
+      }
+      const meta = [t.needsReview ? t.subject : null, t.channel, t.account ? `XX${t.account}` : null, t.time].filter(Boolean).join(' · ');
+      kids.push(el('details', { class: 'tx' + (t.needsReview ? ' review' : '') },
+        el('summary', {},
+          el('span', {}, el('span', { class: 'tx-name' }, txName(t)), el('span', { class: 'tx-meta' }, meta)),
+          el('span', { class: 'tx-amount' + (t.type === 'credit' ? ' credit' : '') }, txAmount(t, true))),
+        t.excerpt ? el('p', { class: 'tx-excerpt' }, t.excerpt) : null));
+    }
+    $('fin-list').replaceChildren(...(kids.length ? kids : [el('p', { class: 'quiet' }, 'No transactions this month.')]));
+    const sync = state.meta.find((m) => m.id === 'finance');
+    $('fin-sync').textContent = sync ? `Checked Gmail ${ago(sync.lastSync)}` : 'Gmail not connected yet';
+  }
+
+  function openFinance() {
+    finMonth = todayKey().slice(0, 7);
+    renderFinanceSheet();
+    $('fin-sheet').showModal();
+  }
+
+  function shiftFinMonth(delta) {
+    const [year, month] = finMonth.split('-').map(Number);
+    finMonth = toKey(new Date(Date.UTC(year, month - 1 + delta, 1))).slice(0, 7);
+    renderFinanceSheet();
+  }
+  $('fin-prev').addEventListener('click', () => shiftFinMonth(-1));
+  $('fin-next').addEventListener('click', () => shiftFinMonth(1));
+
+  function openFinanceSetup() {
+    if (!store.signedIn) { store.signIn(); return; }
+    $('fin-uid').textContent = store.accountId ? `Account id: ${store.accountId}` : 'Sign in with Firebase turned on to get your account id.';
+    if ($('fin-sheet').open) $('fin-sheet').close();
+    $('fin-setup').showModal();
+  }
+  $('fin-setup-link').addEventListener('click', openFinanceSetup);
+
+  // copy the manifest or the script (with this account's id filled in) for pasting into Apps Script
+  document.querySelectorAll('[data-copy]').forEach((button) => button.addEventListener('click', async () => {
+    try {
+      const res = await fetch(button.dataset.copy, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      let text = await res.text();
+      if (store.accountId) text = text.replace('PASTE_YOUR_ACCOUNT_ID', store.accountId);
+      await navigator.clipboard.writeText(text);
+      toast(button.dataset.copy.endsWith('.json') ? 'Manifest copied.' : 'Script copied, with your account id.');
+    } catch (err) {
+      console.error('Copy failed:', err);
+      toast(`Couldn’t copy. Open ${button.dataset.copy} from the site and copy it by hand.`);
+    }
+  }));
+
   const BACKED_UP = ['tasks', 'projects', 'goals', 'notes'];
 
   $('export-btn').addEventListener('click', () => {
