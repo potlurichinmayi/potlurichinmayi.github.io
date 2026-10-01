@@ -1881,7 +1881,9 @@
     }
     $('fin-list').replaceChildren(...(kids.length ? kids : [el('p', { class: 'quiet' }, 'No transactions this month.')]));
     const sync = state.meta.find((m) => m.id === 'finance');
-    $('fin-sync').textContent = sync ? `Checked Gmail ${ago(sync.lastSync)}` : 'Gmail not connected yet';
+    $('fin-sync').textContent = sync
+      ? `Checked Gmail ${ago(sync.lastSync)}${sync.caughtUp === false ? ', still bringing in older alerts' : ''}`
+      : 'Gmail not connected yet';
   }
 
   function openFinance() {

@@ -15,6 +15,8 @@ const SETTINGS = {
   sender: 'alerts@axis.bank.in',
   backfillDays: 120,          // how far back the first run looks
   timeZone: 'Asia/Kolkata',
+  pauseMs: 250,               // gap between emails, to stay under Gmail's per-minute limit
+  maxRunMs: 4.5 * 60 * 1000,  // stop well before Apps Script's 6-minute cap; the next run carries on
 };
 
 /** Run once: schedules the 15-minute check and does the first sync. */
@@ -29,27 +31,61 @@ function setup() {
   syncAxisAlerts();
 }
 
-/** Reads alerts newer than the last run and saves them as transactions. */
+/**
+ * Reads alerts newer than the last run and saves them as transactions.
+ * Works oldest first and saves progress every 50 emails, so a run that stops early
+ * (Gmail's rate limit, or the time cap on a big first backfill) loses nothing and the
+ * next run, 15 minutes later, picks up where it left off.
+ */
 function syncAxisAlerts() {
+  const started = Date.now();
   const props = PropertiesService.getScriptProperties();
   const since = Number(props.getProperty('lastInternalDate') || 0);
   const query = `from:${SETTINGS.sender} ` +
     (since ? `after:${Math.floor(since / 1000)}` : `newer_than:${SETTINGS.backfillDays}d`);
+  const ids = listMessageIds(query).reverse();   // Gmail lists newest first
 
-  const records = {};
-  let newest = since;
-  for (const id of listMessageIds(query)) {
-    const message = Gmail.Users.Messages.get('me', id, { format: 'full' });
-    newest = Math.max(newest, Number(message.internalDate));
+  let records = {};
+  let checkpoint = since;
+  let saved = 0;
+  let caughtUp = true;
+
+  const flush = () => {
+    const count = Object.keys(records).length;
+    if (count) firebase('patch', `users/${SETTINGS.uid}/transactions`, records);   // the Gmail id is the key, so re-runs never duplicate
+    saved += count;
+    records = {};
+    if (checkpoint > since) props.setProperty('lastInternalDate', String(checkpoint));
+  };
+
+  for (let i = 0; i < ids.length; i += 1) {
+    if (Date.now() - started > SETTINGS.maxRunMs) { caughtUp = false; break; }
+    const message = getMessage(ids[i]);
+    if (!message) { caughtUp = false; break; }   // still rate limited: stop and let the next run continue
+    checkpoint = Math.max(checkpoint, Number(message.internalDate));
     const record = parseAlert(message);
-    if (record) records[id] = record;   // the Gmail id is the key, so re-runs never duplicate
+    if (record) records[ids[i]] = record;
+    if ((i + 1) % 50 === 0) flush();
+    Utilities.sleep(SETTINGS.pauseMs);
   }
+  flush();
 
-  const found = Object.keys(records).length;
-  if (found) firebase('patch', `users/${SETTINGS.uid}/transactions`, records);
-  firebase('patch', `users/${SETTINGS.uid}/meta/finance`, { lastSync: Date.now(), lastFound: found });
-  if (newest > since) props.setProperty('lastInternalDate', String(newest));
-  console.log(`Saved ${found} transaction(s).`);
+  firebase('patch', `users/${SETTINGS.uid}/meta/finance`, { lastSync: Date.now(), lastFound: saved, caughtUp });
+  console.log(`Saved ${saved} transaction(s)${caughtUp ? '.' : '; more to bring in on the next run.'}`);
+}
+
+/** Fetches one email, waiting and retrying if Gmail's per-minute limit is hit. Returns null if it still is. */
+function getMessage(id) {
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      return Gmail.Users.Messages.get('me', id, { format: 'full' });
+    } catch (err) {
+      if (!/quota|rate ?limit|too many/i.test(String(err))) throw err;
+      console.warn(`Gmail rate limit reached; waiting before retry ${attempt}.`);
+      Utilities.sleep(20000 * attempt);
+    }
+  }
+  return null;
 }
 
 /** Forget what has been read, so the next run looks back `backfillDays` again. */
