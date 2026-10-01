@@ -15,7 +15,7 @@ const SETTINGS = {
   sender: 'alerts@axis.bank.in',
   backfillDays: 120,          // how far back the first run looks
   timeZone: 'Asia/Kolkata',
-  pauseMs: 250,               // gap between emails, to stay under Gmail's per-minute limit
+  pauseMs: 400,               // gap between emails, to stay under Gmail's per-minute limit
   maxRunMs: 4.5 * 60 * 1000,  // stop well before Apps Script's 6-minute cap; the next run carries on
 };
 
@@ -88,6 +88,21 @@ function getMessage(id) {
   return null;
 }
 
+/**
+ * Diagnostics: logs what the parser makes of the 5 most recent alerts, without saving anything.
+ * Useful when alerts show as "Couldn't read this alert" or nothing is saved.
+ */
+function previewAlerts() {
+  const ids = listMessageIds(`from:${SETTINGS.sender} newer_than:30d`).slice(0, 5);
+  console.log(`Found ${ids.length} recent alert(s).`);
+  ids.forEach((id) => {
+    const message = Gmail.Users.Messages.get('me', id, { format: 'full' });
+    const text = messageText(message).replace(/\s+/g, ' ').trim();
+    console.log(`SUBJECT: ${header(message, 'Subject')}\nTEXT: ${text.slice(0, 600)}\nPARSED: ${JSON.stringify(parseAlert(message))}`);
+    Utilities.sleep(SETTINGS.pauseMs);
+  });
+}
+
 /** Forget what has been read, so the next run looks back `backfillDays` again. */
 function resyncFromScratch() {
   PropertiesService.getScriptProperties().deleteProperty('lastInternalDate');
@@ -111,7 +126,8 @@ function parseAlert(message) {
   const subject = header(message, 'Subject');
   const text = messageText(message);
   const all = `${subject}\n${text}`;
-  if (/\bOTP\b|one[- ]time password/i.test(all)) return null;
+  // skip OTP emails themselves, but not alerts whose footer says "never share your OTP"
+  if (/\bOTP\b|one[- ]time password/i.test(subject) || /\b\d{4,8}\s+is\s+(?:your\s+)?(?:OTP|one[- ]time)|\bOTP\s*(?:is|:)\s*\d{4,8}/i.test(text)) return null;
 
   const amount = money(all.match(/(?:Amount\s+(?:Debited|Credited|Spent)\s*[:\-]?\s*)?(?:INR|Rs\.?|₹)\s*([\d,]+(?:\.\d{1,2})?)/i));
   if (amount == null) return null;   // not a transaction alert (statements, offers, ...)
