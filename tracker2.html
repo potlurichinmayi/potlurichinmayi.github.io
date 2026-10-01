@@ -350,10 +350,25 @@
   .js .reveal { opacity: 0; transform: translateY(22px); }
   .js .reveal.in { opacity: 1; transform: none; transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
 
-  /* ---------- Sign-in ---------- */
-  .signin { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; margin-bottom: 22px; }
-  .signin h2 { font-family: var(--serif); font-size: 21px; line-height: 1.15; }
-  .signin p { margin-top: 6px; max-width: 60ch; color: var(--ink-2); }
+  /* ---------- Sign-in page (shown instead of the tracker until signed in) ---------- */
+  body.locked .bar, body.locked .page, body.locked .foot, body.locked .fab { display: none; }
+  .gate { display: none; }
+  body.locked .gate { display: grid; place-items: center; min-height: 100vh; min-height: 100dvh; padding: 24px 16px; }
+  .gate-card {
+    width: min(100%, 400px);
+    padding: 44px 36px 36px;
+    text-align: center;
+    background: var(--panel);
+    border-radius: 18px;
+    box-shadow: 0 30px 60px -24px rgba(1, 3, 14, 0.9);
+    animation: sheet-in 0.5s var(--ease);
+  }
+  .gate-card img { width: 88px; height: 88px; margin: 0 auto 18px; border-radius: 50%; }
+  .gate-card h1 { font-family: var(--serif); font-size: 26px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .gate-card p { margin-top: 10px; font-size: 17px; color: var(--ink-2); }
+  .gate-card .btn { width: 100%; min-height: 48px; margin-top: 28px; font-size: 17px; }
+  .gate-card small { display: block; margin-top: 16px; font-size: 14px; color: var(--ink-3); text-wrap: balance; }
+  .gate-wait { margin-top: 28px; }
 
   /* ---------- Footer ---------- */
   .foot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; max-width: 1366px; margin: 0 auto; padding: 18px var(--pad) calc(28px + env(safe-area-inset-bottom)); font-size: 15px; color: var(--ink-2); }
@@ -432,7 +447,7 @@
     position: fixed;
     left: 50%;
     bottom: calc(24px + env(safe-area-inset-bottom));
-    z-index: 40;
+    z-index: 60;
     display: flex;
     align-items: center;
     gap: 14px;
@@ -514,7 +529,18 @@
   }
 </style>
 </head>
-<body>
+<body class="locked">
+
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <img src="tracker-assets/eye.png" alt="" width="88" height="88">
+    <h1>Potluri</h1>
+    <p>Sign in to open your tracker.</p>
+    <p class="gate-wait" id="gate-wait" aria-live="polite">Opening…</p>
+    <button class="btn primary" type="button" id="signin-btn" hidden>Sign in with Google</button>
+    <small id="gate-note" hidden>Private. Only the owner’s Google account can open it.</small>
+  </div>
+</div>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
@@ -549,14 +575,6 @@
 </header>
 
 <main class="page">
-  <section class="panel signin" id="signin-banner" hidden>
-    <div>
-      <h2>Sign in to open your tracker</h2>
-      <p>Your tasks, projects and notes are kept in your account, so they stay in step on your phone and laptop.</p>
-    </div>
-    <button class="btn primary" type="button" id="signin-btn">Sign in with Google</button>
-  </section>
-  <h1 class="sr">Potluri tracker</h1>
   <div class="grid">
 
     <div class="side side-left">
@@ -1737,8 +1755,12 @@
     }
   });
 
+  if (!CONFIG.firebase) document.body.classList.remove('locked');
   store.onAccount((user) => {
-    $('signin-banner').hidden = Boolean(user);
+    document.body.classList.toggle('locked', !user);
+    $('gate-wait').hidden = true;
+    $('signin-btn').hidden = false;
+    $('gate-note').hidden = false;
     $('signout-btn').hidden = !user;
     $('storage-note').textContent = user
       ? `Synced to ${user.email || 'your Google account'}.`
