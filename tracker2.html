@@ -350,6 +350,11 @@
   .js .reveal { opacity: 0; transform: translateY(22px); }
   .js .reveal.in { opacity: 1; transform: none; transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
 
+  /* ---------- Sign-in ---------- */
+  .signin { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; margin-bottom: 22px; }
+  .signin h2 { font-family: var(--serif); font-size: 21px; line-height: 1.15; }
+  .signin p { margin-top: 6px; max-width: 60ch; color: var(--ink-2); }
+
   /* ---------- Footer ---------- */
   .foot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; max-width: 1366px; margin: 0 auto; padding: 18px var(--pad) calc(28px + env(safe-area-inset-bottom)); font-size: 15px; color: var(--ink-2); }
   .foot p { margin-right: auto; max-width: 60ch; }
@@ -544,6 +549,13 @@
 </header>
 
 <main class="page">
+  <section class="panel signin" id="signin-banner" hidden>
+    <div>
+      <h2>Sign in to open your tracker</h2>
+      <p>Your tasks, projects and notes are kept in your account, so they stay in step on your phone and laptop.</p>
+    </div>
+    <button class="btn primary" type="button" id="signin-btn">Sign in with Google</button>
+  </section>
   <h1 class="sr">Potluri tracker</h1>
   <div class="grid">
 
@@ -684,6 +696,7 @@
 
 <footer class="foot">
   <p id="storage-note">Saved in this browser only. Export a backup before clearing site data.</p>
+  <button class="btn small" type="button" id="signout-btn" hidden>Sign out</button>
   <button class="btn small" type="button" id="export-btn"><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg>Export backup</button>
   <button class="btn small" type="button" id="import-btn"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg>Import backup</button>
   <input type="file" id="import-file" accept="application/json,.json" hidden>
@@ -795,9 +808,16 @@
 
   const CONFIG = {
     place: { name: 'Hyderabad', lat: 17.385, lon: 78.4867, tz: 'Asia/Kolkata' },
-    // Firebase placeholder: paste the web app config object here to switch storage
-    // from this browser to Firestore (see createFirebaseStore below).
-    firebase: null,
+    // Firebase project. Set to null to keep everything in this browser instead.
+    firebase: {
+      apiKey: 'AIzaSyD4yF6liW4jEuNRl29Ow6CrLfvR99Jx2GU',
+      authDomain: 'chinmayiip.firebaseapp.com',
+      databaseURL: 'https://chinmayiip-default-rtdb.asia-southeast1.firebasedatabase.app',
+      projectId: 'chinmayiip',
+      storageBucket: 'chinmayiip.firebasestorage.app',
+      messagingSenderId: '558682967423',
+      appId: '1:558682967423:web:2b587922c6c5b6d7471e4a',
+    },
   };
 
   const $ = (id) => document.getElementById(id);
@@ -870,7 +890,11 @@
     });
 
     return {
-      label: 'this browser',
+      signedIn: true,
+      onAccount() {},
+      onLoaded(cb) { cb(); },
+      signIn() {},
+      signOut() {},
       subscribe(collection, cb) {
         (listeners[collection] ||= []).push(cb);
         cb(read(collection));
@@ -899,18 +923,140 @@
     };
   }
 
-  /* Firebase placeholder. To switch over:
-       1. Put the web app config in CONFIG.firebase.
-       2. Load the Firebase SDK (app + firestore, and auth if data should be private).
-       3. Implement the same five methods against users/{uid}/{collection}:
-            subscribe -> onSnapshot(collection(db, path), snap => cb(snap.docs.map(d => ({ id: d.id, ...d.data() }))))
-            add       -> addDoc(collection(db, path), { ...data, createdAt, updatedAt })
-            set       -> setDoc(doc(db, path, id), data)
-            update    -> updateDoc(doc(db, path, id), { ...patch, updatedAt })
-            remove    -> deleteDoc(doc(db, path, id))
-     Nothing else in this file needs to change. */
+  /* Firebase Realtime Database. Each person's data lives under users/{uid}/{collection}/{id},
+     and the database rules (database.rules.json) only let that signed-in person read or write it.
+     Writes update the page straight away; Firebase syncs them to the server and other devices. */
   function createFirebaseStore(config) {
-    throw new Error('Firebase storage is not implemented yet. Leave CONFIG.firebase as null to use this browser.');
+    const SDK = 'https://www.gstatic.com/firebasejs/12.19.0';
+    const listeners = {};
+    const accountListeners = [];
+    const loadedListeners = [];
+    let fb = null;       // SDK functions once loaded
+    let auth = null;
+    let db = null;
+    let user;            // undefined until Firebase reports, then a user or null
+    let detach = [];
+
+    const emit = (collection, docs) => (listeners[collection] || []).forEach((cb) => cb(docs));
+    const node = (collection, id) => fb.ref(db, `users/${user.uid}/${collection}${id ? `/${id}` : ''}`);
+    // the database drops null fields and has no ids inside records
+    const clean = (data) => Object.fromEntries(Object.entries(data).filter(([key, value]) => key !== 'id' && value != null));
+
+    function report(err) {
+      console.error('Firebase:', err);
+      toast(/permission/i.test(err?.code || err?.message || '')
+        ? 'Firebase refused the change. Check that the database rules are published.'
+        : 'Couldn’t save to Firebase. Try again in a moment.');
+    }
+
+    function listen() {
+      detach.forEach((stop) => stop());
+      detach = [];
+      if (!user) {
+        Object.keys(listeners).forEach((collection) => emit(collection, []));
+        return;
+      }
+      const pending = new Set(Object.keys(listeners));
+      for (const collection of Object.keys(listeners)) {
+        detach.push(fb.onValue(node(collection), (snap) => {
+          const docs = Object.entries(snap.val() || {}).map(([id, data]) => ({ ...data, id }));
+          emit(collection, docs);
+          if (pending.delete(collection) && !pending.size) loadedListeners.forEach((cb) => cb());
+        }, (err) => {
+          // the rules only admit the owner's account: anyone else is signed straight back out
+          if (/permission/i.test(err?.code || err?.message || '') && user) {
+            fb.signOut(auth);
+            toast('This tracker is private. Sign in with the owner’s Google account.');
+          } else report(err);
+        }));
+      }
+    }
+
+    const ready = Promise.all(['app', 'auth', 'database'].map((name) => import(`${SDK}/firebase-${name}.js`)))
+      .then(([appSdk, authSdk, dbSdk]) => {
+        fb = { ...authSdk, ...dbSdk };
+        const app = appSdk.initializeApp(config);
+        auth = authSdk.getAuth(app);
+        db = dbSdk.getDatabase(app);
+        authSdk.onAuthStateChanged(auth, (next) => {
+          user = next;
+          listen();
+          accountListeners.forEach((cb) => cb(user));
+        });
+      })
+      .catch((err) => {
+        console.error('Firebase failed to load:', err);
+        user = null;
+        accountListeners.forEach((cb) => cb(null));
+        toast('Couldn’t load Firebase. Check the connection and reload.');
+      });
+
+    // returns false (and says so) when nobody is signed in
+    function canWrite() {
+      if (user) return true;
+      toast('Sign in to save changes.');
+      return false;
+    }
+
+    const SIGN_IN_ERRORS = {
+      'auth/unauthorized-domain': 'This site isn’t on Firebase’s list of authorised domains yet.',
+      'auth/operation-not-allowed': 'Google sign-in isn’t turned on in Firebase yet.',
+      'auth/configuration-not-found': 'Firebase Authentication isn’t set up for this project yet.',
+      'auth/popup-blocked': 'The sign-in window was blocked. Allow pop-ups for this site and try again.',
+    };
+
+    return {
+      get signedIn() { return Boolean(user); },
+      onAccount(cb) {
+        accountListeners.push(cb);
+        if (user !== undefined) cb(user);
+      },
+      onLoaded(cb) { loadedListeners.push(cb); },
+      async signIn() {
+        await ready;
+        if (!fb) return;
+        try {
+          await fb.signInWithPopup(auth, new fb.GoogleAuthProvider());
+        } catch (err) {
+          if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') return;
+          console.error('Sign-in failed:', err);
+          toast(SIGN_IN_ERRORS[err.code] || `Sign-in didn’t work (${err.code || err.message}).`);
+        }
+      },
+      async signOut() {
+        await ready;
+        if (fb) await fb.signOut(auth);
+      },
+      subscribe(collection, cb) {
+        (listeners[collection] ||= []).push(cb);
+        cb([]);
+        if (user) listen();
+        return () => { listeners[collection] = listeners[collection].filter((fn) => fn !== cb); };
+      },
+      async add(collection, data) {
+        if (!canWrite()) return null;
+        const now = Date.now();
+        const ref = fb.push(node(collection));
+        const doc = { ...data, createdAt: now, updatedAt: now };
+        fb.set(ref, clean(doc)).catch(report);
+        return { ...doc, id: ref.key };
+      },
+      async set(collection, id, data) {
+        if (!canWrite()) return null;
+        fb.set(node(collection, id), clean(data)).catch(report);
+        return { ...data, id };
+      },
+      async update(collection, id, patch) {
+        if (!canWrite()) return;
+        // null in an update clears that field
+        const { id: _ignored, ...fields } = patch;
+        fb.update(node(collection, id), { ...fields, updatedAt: Date.now() }).catch(report);
+      },
+      async remove(collection, id) {
+        if (!canWrite()) return;
+        fb.remove(node(collection, id)).catch(report);
+      },
+    };
   }
 
   const store = CONFIG.firebase ? createFirebaseStore(CONFIG.firebase) : createLocalStore();
@@ -1411,6 +1557,7 @@
 
   // openEntry() adds; { collection, doc } edits; { type, projectId, date } presets a new item
   function openEntry({ collection, doc, type, projectId, date } = {}) {
+    if (!store.signedIn) { store.signIn(); return; }
     editing = doc ? { collection, doc } : null;
     entryForm.reset();
     entryForm.elements.type.value = doc ? typeOf(collection, doc) : (type || lastType);
@@ -1492,6 +1639,7 @@
   }
 
   function openNoteEdit(note) {
+    if (!store.signedIn) { store.signIn(); return; }
     editingNote = note || null;
     noteForm.reset();
     $('note-title').value = note?.title || '';
@@ -1589,7 +1737,37 @@
     }
   });
 
-  if (CONFIG.firebase) $('storage-note').textContent = 'Synced with Firebase.';
+  store.onAccount((user) => {
+    $('signin-banner').hidden = Boolean(user);
+    $('signout-btn').hidden = !user;
+    $('storage-note').textContent = user
+      ? `Synced to ${user.email || 'your Google account'}.`
+      : 'Not signed in. Sign in to see your tracker.';
+  });
+  $('signin-btn').addEventListener('click', () => store.signIn());
+  $('signout-btn').addEventListener('click', () => store.signOut());
+
+  // first sign-in: bring over anything saved in this browser before Firebase was switched on
+  async function copyLocalToAccount() {
+    if (!CONFIG.firebase) return;
+    if (localStorage.getItem('tracker:copied-to-account')) return;
+    if (BACKED_UP.some((collection) => state[collection].length)) {
+      localStorage.setItem('tracker:copied-to-account', '1');
+      return;
+    }
+    let count = 0;
+    for (const collection of BACKED_UP) {
+      let docs = [];
+      try { docs = JSON.parse(localStorage.getItem(`tracker:${collection}`)) || []; } catch { docs = []; }
+      for (const doc of docs) {
+        if (!doc || typeof doc.id !== 'string') continue;
+        await store.set(collection, doc.id, doc);
+        count += 1;
+      }
+    }
+    localStorage.setItem('tracker:copied-to-account', '1');
+    if (count) toast(`Copied ${plural(count, 'item')} from this browser into your account.`);
+  }
 
   /* =====================================================================
      Weekly reset: routines stay, their ticks clear each Monday
@@ -1619,7 +1797,7 @@
   renderClock();
   renderMonth();
   renderAll();
-  resetWeeklyIfNeeded();
+  store.onLoaded(() => copyLocalToAccount().then(resetWeeklyIfNeeded));
   loadWeather();
 
   setInterval(renderClock, 1000);
