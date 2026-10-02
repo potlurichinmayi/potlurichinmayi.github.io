@@ -2462,9 +2462,12 @@
   const fmtMonthShort = utcFmt({ month: 'short' });
   const fmtWeekdayShort = utcFmt({ weekday: 'short' });
 
-  const BASE_CATEGORIES = ['Groceries', 'Food delivery', 'Eating out & snacks', 'Rides', 'Shopping', 'Health', 'Home services',
+  const BASE_CATEGORIES = ['Groceries', 'Food delivery', 'Eating out & snacks', 'Commute', 'Shopping', 'Health', 'Home services',
     'Bills & recharges', 'Local shops', 'People', 'Family', 'Miscellaneous', 'Other'];
   const INCOME = 'Income';
+  // categories that were renamed: anything saved under the old name reads as the new one
+  const RENAMED = { Rides: 'Commute' };
+  const canon = (name) => RENAMED[name] || name;
   // the built-in categories plus the ones added under Vendors & categories (kept before "Other")
   const CATEGORIES = [...BASE_CATEGORIES];
   const customCategories = () => state.meta.find((m) => m.id === 'categories')?.list || [];
@@ -2477,9 +2480,9 @@
 
   // payees the bank names in many ways; the bank also cuts names at 19 characters
   const KNOWN_PAYEES = [
-    [/^ROPPEN|^RAPIDO/, 'Rapido', 'Rides'],
-    [/^UBER/, 'Uber', 'Rides'],
-    [/^OLA\b|^ANI TECHNOLOGIES/, 'Ola', 'Rides'],
+    [/^ROPPEN|^RAPIDO/, 'Rapido', 'Commute'],
+    [/^UBER/, 'Uber', 'Commute'],
+    [/^OLA\b|^ANI TECHNOLOGIES/, 'Ola', 'Commute'],
     [/INSTAMART/, 'Swiggy Instamart', 'Groceries'],
     [/^SWIGGY/, 'Swiggy', 'Food delivery'],
     [/^ZOMATO|^ETERNAL/, 'Zomato', 'Food delivery'],
@@ -2545,7 +2548,7 @@
       const income = t.type === 'credit' && !refund;
       const auto = income ? INCOME
         : known?.[2] || (/\bPOTLURI\b/.test(raw) ? 'Family' : kind === 'P2A' ? 'People' : kind === 'P2M' ? 'Local shops' : 'Other');
-      const category = own?.category || (income ? INCOME : t.cashCategory || rule?.category) || auto;
+      const category = canon(own?.category || (income ? INCOME : t.cashCategory || rule?.category) || auto);
       const excluded = Boolean(own?.excluded);
       return {
         ...t,
@@ -3323,7 +3326,7 @@
     const spent = Math.max(0, sumSpend(list));
     const byCat = new Map();
     list.forEach((t) => byCat.set(t.category, (byCat.get(t.category) || 0) + t.spend));
-    const catLimits = Object.entries(b.categories || {}).filter(([, v]) => Number(v) > 0);
+    const catLimits = Object.entries(b.categories || {}).map(([c, v]) => [canon(c), v]).filter(([, v]) => Number(v) > 0);
     const unbudgeted = [...byCat.entries()].filter(([c, v]) => v > 0 && !catLimits.some(([k]) => k === c)).sort((x, y) => y[1] - x[1]);
     tab.replaceChildren(el('div', { class: 'fin-grid' },
       el('section', { class: 'panel s7' }, el('h3', { class: 'ptitle' }, 'Monthly budget',
@@ -3336,7 +3339,7 @@
 
   function budgetForm(b) {
     const total = el('input', { type: 'number', min: '0', step: '100', inputmode: 'numeric', value: b?.total || '', placeholder: 'e.g. 30000' });
-    const inputs = CATEGORIES.map((c) => [c, el('input', { type: 'number', min: '0', step: '100', inputmode: 'numeric', value: b?.categories?.[c] || '', placeholder: 'No limit' })]);
+    const inputs = CATEGORIES.map((c) => [c, el('input', { type: 'number', min: '0', step: '100', inputmode: 'numeric', value: b?.categories?.[c] || Object.entries(b?.categories || {}).find(([k]) => canon(k) === c)?.[1] || '', placeholder: 'No limit' })]);
     const form = el('form', { class: 'panel bud-form no-lift' },
       el('h3', { class: 'ptitle' }, b ? 'Edit your budget' : 'Set a monthly budget'),
       el('p', { class: 'quiet', style: 'padding-top:0' }, 'It applies to every month. Leave a category empty to not budget it.'),
@@ -3672,7 +3675,7 @@
     const map = new Map();
     for (const t of list) {
       if (t.income) continue;
-      const v = map.get(t.key) || { key: t.key, name: t.payee, category: rules.get(t.key)?.category || t.category, count: 0, total: 0 };
+      const v = map.get(t.key) || { key: t.key, name: t.payee, category: canon(rules.get(t.key)?.category) || t.category, count: 0, total: 0 };
       v.count += 1;
       if (t.type === 'debit') v.total += t.amount;
       map.set(t.key, v);
