@@ -7,10 +7,10 @@
  *
  * Each "trip with Uber" email from noreply@uber.com says what was paid and when. The rider usually
  * pays the driver by UPI, so the bank sees a payment to a person, not to Uber. This finds that
- * payment and files it under Uber, category Rides, with the person's name in the note.
+ * payment and files it under Uber, category Commute, with the person's name in the note.
  *
  *   rides/{gmail id}   { provider, total, paid, method, date, time, paidAt, status, txId }
- *   txmeta/{tx id}     { vendor: 'Uber', category: 'Rides', note: 'Paid to ...', ride: ride id }
+ *   txmeta/{tx id}     { vendor: 'Uber', category: 'Commute', note: 'Paid to ...', ride: ride id }
  *
  * status: 'pending' (looking, retried every run for a day), 'matched', 'direct' (paid to Uber
  * itself, nothing to change) or 'unmatched' (nothing fitted; left alone for you to sort out by hand).
@@ -72,7 +72,7 @@ function matchUberTrips() {
       if (result.status === 'matched') {
         const tx = txs[result.txId];
         firebasePatch(`${base}/txmeta/${result.txId}`, {
-          vendor: 'Uber', category: 'Rides', note: `Paid to ${nameCase(tx.description)}`, ride: id,
+          vendor: 'Uber', category: 'Commute', note: `Paid to ${nameCase(tx.description)}`, ride: id,
         });
       }
       firebasePatch(`${base}/rides/${id}`, { status: result.status, txId: result.txId });
