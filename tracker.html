@@ -869,7 +869,6 @@
   /* ---------- Cash, owed, appearance ---------- */
   .fin-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
   .fin-actions + .fin-month { margin-left: 0; }
-  body[data-fin-tab="owed"] .fin-month { visibility: hidden; }
   .tx-tools .btn { min-height: 42px; }
   .tx .tx-actions { grid-column: 1 / -1; display: flex; gap: 8px; }
   .tag-cash { color: var(--ember); }
@@ -1212,7 +1211,6 @@
       <a href="#finance/spending" role="tab" data-tab="spending">Spending</a>
       <a href="#finance/transactions" role="tab" data-tab="transactions">Transactions</a>
       <a href="#finance/budget" role="tab" data-tab="budget">Budget</a>
-      <a href="#finance/owed" role="tab" data-tab="owed">Owed</a>
       <span class="tab-pill" aria-hidden="true"></span>
     </nav>
     <div class="fin-actions">
@@ -1251,8 +1249,6 @@
   </section>
 
   <section id="tab-budget" role="tabpanel" aria-label="Budget" hidden></section>
-
-  <section id="tab-owed" role="tabpanel" aria-label="Owed" hidden></section>
 
 </main>
 
@@ -2631,7 +2627,7 @@
   let view = 'tracker';
   let finTab = 'spending';
   let finMonth = thisMonth();
-  const FIN_TABS = ['spending', 'transactions', 'budget', 'owed'];
+  const FIN_TABS = ['spending', 'transactions', 'budget'];
 
   function route() {
     const [name, tab] = location.hash.replace(/^#/, '').split('/');
@@ -2641,7 +2637,6 @@
     if (view === 'finance') finTab = FIN_TABS.includes(tab) ? tab : 'spending';
     if (before !== view || beforeTab !== finTab || !routed) animateNext = true;
     document.body.dataset.view = view;
-    document.body.dataset.finTab = finTab;
     $('tracker-view').hidden = view !== 'tracker';
     $('finance-view').hidden = view !== 'finance';
     document.querySelectorAll('.views a').forEach((a) => a.setAttribute('aria-current', a.dataset.view === view ? 'page' : 'false'));
@@ -2686,7 +2681,6 @@
     if (finTab === 'spending') renderSpendingTab();
     if (finTab === 'transactions') renderTransactionsTab();
     if (finTab === 'budget') renderBudgetTab();
-    if (finTab === 'owed') renderOwedTab();
     if (animate) {
       const panel = $(`tab-${finTab}`);
       const grid = panel.querySelector('.fin-grid');
@@ -2922,7 +2916,16 @@
     holder.replaceChildren(svg('svg', { viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-label': 'Running total of spending through the month' }, nodes));
   }
 
+  // the stories, then the owed card underneath (which stays even when there is nothing else to show)
   function renderSpendingTab() {
+    renderSpendingStories();
+    const tab = $('tab-spending');
+    let grid = tab.querySelector('.fin-grid');
+    if (!grid) { grid = el('div', { class: 'fin-grid', style: 'margin-top:20px' }); tab.append(grid); }
+    grid.append(owedCard());
+  }
+
+  function renderSpendingStories() {
     const tab = $('tab-spending');
     if (!finData().list.length) { tab.replaceChildren(connectPrompt()); return; }
     const s = monthStory(finMonth);
@@ -3569,7 +3572,7 @@
     toast(`Deleted ${doc.person}’s entry`, 'Undo', () => store.set('debts', doc.id, doc));
   });
 
-  function renderOwedTab() {
+  function owedCard() {
     const all = [...state.debts].sort((a, b) => (b.date || '').localeCompare(a.date || '') || b.createdAt - a.createdAt);
     const open = all.filter((d) => !d.settled);
     const theirs = open.filter((d) => d.direction !== 'owe');
@@ -3599,7 +3602,7 @@
       el('button', { class: 'link-btn', type: 'button', style: 'margin-top:6px', onclick: () => openDebt(null, direction) }, icon('plus'), 'Add'));
 
     const settled = all.filter((d) => d.settled);
-    $('tab-owed').replaceChildren(el('div', { class: 'fin-grid' }, el('section', { class: 'panel owed-card s12 no-lift' },
+    return el('section', { class: 'panel owed-card s12 no-lift' },
       el('h3', { class: 'ptitle' }, 'Owed', el('button', { class: 'btn small', type: 'button', onclick: () => openDebt() }, icon('plus'), 'Add')),
       el('div', { class: 'trio' },
         el('div', {}, el('p', {}, 'Owed to you'), el('p', { class: 'credit' }, rupees.format(owedToMe))),
@@ -3608,7 +3611,7 @@
       el('div', { class: 'owed-cols' },
         column('They owe you', theirs, owedToMe, 'owed'),
         column('You owe', mine, iOwe, 'owe'),
-        settled.length ? el('details', {}, el('summary', {}, `Settled (${settled.length})`), settled.map(row)) : null))));
+        settled.length ? el('details', {}, el('summary', {}, `Settled (${settled.length})`), settled.map(row)) : null));
   }
 
   /* =====================================================================
