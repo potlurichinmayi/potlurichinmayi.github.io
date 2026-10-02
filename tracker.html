@@ -12,19 +12,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&display=swap" rel="stylesheet">
 <style>
   :root {
+    /* the three colours a profile sets; everything else is derived from them */
     --ground: #0a1128;
-    --panel: rgba(11, 18, 46, 0.8);
-    --sheet: #0e1738;
-    --raise: rgba(240, 232, 217, 0.06);
-    --raise-2: rgba(240, 232, 217, 0.11);
-    --ink: #f0e8d9;
-    --ink-2: rgba(240, 232, 217, 0.76);
-    --ink-3: rgba(240, 232, 217, 0.58);
-    --rule: rgba(240, 232, 217, 0.14);
-    --rule-2: rgba(240, 232, 217, 0.34);
     --ember: #e9a26c;
-    --ember-hi: #f4bd8e;
+    --ink: #f0e8d9;
     --on-ember: #0b1230;
+    --bg-image: url('tracker-assets/bg-top.webp');
+    --ember-hi: color-mix(in srgb, var(--ember), white 28%);
+    --panel: color-mix(in srgb, var(--ground) 80%, transparent);
+    --sheet: color-mix(in srgb, var(--ground), white 3%);
+    --raise: color-mix(in srgb, var(--ink) 6%, transparent);
+    --raise-2: color-mix(in srgb, var(--ink) 11%, transparent);
+    --ink-2: color-mix(in srgb, var(--ink) 76%, transparent);
+    --ink-3: color-mix(in srgb, var(--ink) 58%, transparent);
+    --rule: color-mix(in srgb, var(--ink) 14%, transparent);
+    --rule-2: color-mix(in srgb, var(--ink) 34%, transparent);
     --danger: #f5a896;
 
     --serif: 'Baskervville', 'Baskerville', 'Libre Baskerville', Georgia, serif;
@@ -34,7 +36,7 @@
     --r-sm: 8px;
     --gap: 20px;
     --pad: 24px;
-    --line: rgba(240, 232, 217, 0.65);
+    --line: color-mix(in srgb, var(--ink) 65%, transparent);
     --ease: cubic-bezier(0.16, 1, 0.3, 1);
     --shadow: 0 20px 40px -24px rgba(1, 3, 14, 0.9);
     --shadow-lift: 0 26px 48px -20px rgba(1, 3, 14, 0.95);
@@ -69,7 +71,7 @@
      so pages of different lengths never resize or move it */
   body {
     background-color: var(--ground);
-    background-image: url('tracker-assets/bg-top.webp');
+    background-image: var(--bg-image);
     background-attachment: fixed;
     background-position: center;
     background-repeat: no-repeat;
@@ -79,7 +81,7 @@
      so there the same effect comes from a fixed layer behind the page */
   @media (hover: none) and (pointer: coarse) {
     body { background: none; }   /* a body colour would paint over the layer below */
-    body::before { content: ''; position: fixed; inset: 0 0 auto 0; z-index: -1; height: 100lvh; pointer-events: none; background: var(--ground) url('tracker-assets/bg-top.webp') center / cover no-repeat; }
+    body::before { content: ''; position: fixed; inset: 0 0 auto 0; z-index: -1; height: 100lvh; pointer-events: none; background: var(--ground) var(--bg-image) center / cover no-repeat; }
   }
 
   ::selection { background: var(--ember); color: var(--on-ember); }
@@ -356,7 +358,7 @@
   .more { margin-top: 8px; }
 
   /* ---------- Finance placeholder ---------- */
-  .placeholder { min-height: 206px; padding: 78px 30px 30px; background: rgba(11, 18, 46, 0.62); box-shadow: inset 0 0 0 1px var(--rule-2); }
+  .placeholder { min-height: 206px; padding: 78px 30px 30px; background: color-mix(in srgb, var(--ground) 62%, transparent); box-shadow: inset 0 0 0 1px var(--rule-2); }
   .placeholder h2 { font-family: var(--serif); font-size: 21px; line-height: 0.95; letter-spacing: 0.01em; }
   .placeholder p { margin-top: 8px; font-size: 15px; color: var(--ink-3); }
 
@@ -457,12 +459,12 @@
   .hm-day.today { box-shadow: inset 0 0 0 1.5px var(--ink); }
   .hm-day.future { opacity: 0.45; }
   .hm-blank { visibility: hidden; }
-  .lv1 { background: rgba(233, 162, 108, 0.16); }
-  .lv2 { background: rgba(233, 162, 108, 0.3); }
-  .lv3 { background: rgba(233, 162, 108, 0.48); }
-  .lv4 { background: rgba(233, 162, 108, 0.72); color: var(--on-ember); }
+  .lv1 { background: color-mix(in srgb, var(--ember) 16%, transparent); }
+  .lv2 { background: color-mix(in srgb, var(--ember) 30%, transparent); }
+  .lv3 { background: color-mix(in srgb, var(--ember) 48%, transparent); }
+  .lv4 { background: color-mix(in srgb, var(--ember) 72%, transparent); color: var(--on-ember); }
   .lv5 { background: var(--ember); color: var(--on-ember); }
-  .lv4 .d, .lv5 .d { color: rgba(11, 18, 48, 0.7); }
+  .lv4 .d, .lv5 .d { color: color-mix(in srgb, var(--on-ember) 70%, transparent); }
   .hm-key { display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 10px; font-size: 13px; color: var(--ink-3); }
   .hm-key i { width: 14px; height: 14px; border-radius: 3px; }
   .hm-key i.lv0 { background: var(--raise); }   /* the legend squares take their shade from lv0-lv5 */
@@ -505,7 +507,7 @@
     padding: 0 12px;
     font-size: 16px;
     color: var(--ink);
-    background: rgba(240, 232, 217, 0.05);
+    background: color-mix(in srgb, var(--ink) 5%, transparent);
     border: 0;
     border-radius: 10px;
     box-shadow: inset 0 0 0 1px var(--rule-2);
@@ -643,7 +645,7 @@
     min-height: 46px;
     padding: 10px 14px;
     font-size: 17px;
-    background: rgba(240, 232, 217, 0.05);
+    background: color-mix(in srgb, var(--ink) 5%, transparent);
     border: 0;
     border-radius: 10px;
     box-shadow: inset 0 0 0 1px var(--rule-2);
@@ -652,7 +654,7 @@
   .field textarea { min-height: 190px; line-height: 1.45; resize: vertical; }
   .field input::placeholder, .field textarea::placeholder { color: var(--ink-3); }
   .field input:hover, .field select:hover, .field textarea:hover { box-shadow: inset 0 0 0 1px var(--ink-3); }
-  .field input:focus, .field select:focus, .field textarea:focus { outline: none; background: rgba(240, 232, 217, 0.08); box-shadow: inset 0 0 0 2px var(--ember); }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; background: color-mix(in srgb, var(--ink) 8%, transparent); box-shadow: inset 0 0 0 2px var(--ember); }
   .field [aria-invalid="true"] { box-shadow: inset 0 0 0 2px var(--danger); }
   .err { margin-top: 6px; font-size: 15px; color: var(--danger); }
   .date-row { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -689,7 +691,7 @@
   }
   .toast span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 6px 12px 6px 0; }
   .toast button { min-height: 38px; padding: 0 16px; border: 0; border-radius: 999px; background: var(--on-ember); color: var(--ink); font-weight: 400; font-size: 15px; }
-  .toast button:hover { background: #1a2450; }
+  .toast button:hover { background: color-mix(in srgb, var(--on-ember), white 12%); }
   @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 16px); } }
 
   /* ---------- Stacked (tracker's 900px breakpoint) ---------- */
@@ -762,7 +764,7 @@
   .trend.up { background: rgba(245, 168, 150, 0.16); color: var(--danger); }
 
   .actual { stroke: var(--ember); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
-  .actual-area { fill: rgba(233, 162, 108, 0.16); }
+  .actual-area { fill: color-mix(in srgb, var(--ember) 16%, transparent); }
   .actual-dot { fill: var(--ember); stroke: var(--ground); stroke-width: 2; }
   .prev { stroke: var(--ink-3); stroke-width: 1.5; stroke-dasharray: 3 5; }
   .keys { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; font-size: 13px; color: var(--ink-2); }
@@ -819,7 +821,7 @@
   .bday:hover { box-shadow: inset 0 0 0 1.5px var(--ember-hi); }
   .bday .n { font-size: 14px; color: var(--ink-2); }
   .bday .amt { margin-top: auto; font-size: 19px; }
-  .bday.hot .n { color: rgba(11, 18, 48, 0.7); }
+  .bday.hot .n { color: color-mix(in srgb, var(--on-ember) 70%, transparent); }
   .bday.hot .amt { color: var(--on-ember); }
   .bday .mix { display: flex; gap: 2px; height: 6px; }
   .bday .mix i { border-radius: 999px; min-width: 4px; }
@@ -864,6 +866,97 @@
     .rcol i { width: 9px; height: 9px; }
   }
 
+  /* ---------- Cash, owed, appearance ---------- */
+  .fin-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
+  .fin-actions + .fin-month { margin-left: 0; }
+  body[data-fin-tab="owed"] .fin-month { visibility: hidden; }
+  .tx-tools .btn { min-height: 42px; }
+  .tx .tx-actions { grid-column: 1 / -1; display: flex; gap: 8px; }
+  .tag-cash { color: var(--ember); }
+
+  .owed-card { padding: 24px; }
+  .owed-card .trio { margin: 4px 0 22px; padding: 0; border-top: 0; }
+  .owed-card .trio div { padding: 6px 4px; }
+  .owed-card .trio p:first-child { font-size: 14px; color: var(--ink-3); }
+  .owed-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 40px; }
+  .owed-cols h4 { display: flex; justify-content: space-between; margin: 0 0 6px; font-size: 15px; font-weight: 400; color: var(--ink-3); }
+  .owed-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 2px 8px; padding: 9px 0; border-top: 1px solid var(--rule); }
+  .owed-row small { grid-column: 1; font-size: 13px; color: var(--ink-3); overflow-wrap: anywhere; }
+  .owed-row .who { overflow-wrap: anywhere; }
+  .owed-row .amt { grid-row: 1; grid-column: 2; }
+  .owed-row .acts { grid-row: 1 / span 2; grid-column: 3; display: flex; }
+  .owed-row .icon-btn { width: 34px; height: 34px; }
+  .owed-row.settled { color: var(--ink-3); }
+  .owed-row.settled .who, .owed-row.settled .amt { text-decoration: line-through; text-decoration-color: var(--rule-2); }
+  .owed-cols details { grid-column: 1 / -1; margin-top: 8px; }
+  .owed-cols summary { cursor: pointer; font-size: 15px; color: var(--ink-3); min-height: 36px; display: flex; align-items: center; }
+
+  .vendor-sheet, .look-sheet { width: min(640px, calc(100vw - 32px)); }
+  .cat-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+  .cat-chips .chip-filter { padding-left: 12px; }
+  .cat-add { display: flex; gap: 8px; margin-bottom: 22px; }
+  .cat-add input, .vendor-row input, .vendor-row select, .vendor-search { min-height: 42px; padding: 0 12px; font-size: 16px; color: var(--ink); background: var(--raise); border: 0; border-radius: 10px; box-shadow: inset 0 0 0 1px var(--rule-2); }
+  .cat-add input { flex: 1; min-width: 0; }
+  .vendor-search { width: 100%; margin-bottom: 8px; }
+  .vendor-row input:focus, .vendor-row select:focus, .cat-add input:focus, .vendor-search:focus { outline: none; box-shadow: inset 0 0 0 2px var(--ember); }
+  .vendor-row select option { background: var(--sheet); color: var(--ink); }
+  .vendor-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 10px; padding: 10px 0; border-top: 1px solid var(--rule); }
+  .vendor-row small { grid-column: 1 / -1; font-size: 13px; color: var(--ink-3); }
+  .vendor-list { max-height: 46vh; overflow-y: auto; }
+  .sheet-note { margin: 0 0 14px; font-size: 14px; color: var(--ink-3); }
+
+  .mini-tabs { display: flex; gap: 4px; margin-bottom: 18px; padding: 4px; border-radius: 999px; background: var(--raise); }
+  .mini-tabs button { flex: 1; min-height: 38px; border: 0; border-radius: 999px; background: none; font-size: 16px; color: var(--ink-2); transition: background-color 0.18s, color 0.18s; }
+  .mini-tabs button[aria-selected="true"] { background: var(--ember); color: var(--on-ember); }
+  .bg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-top: 14px; }
+  .bg-tile { position: relative; display: flex; flex-direction: column; gap: 6px; min-width: 0; padding: 0; border: 0; background: none; text-align: left; font-size: 14px; color: var(--ink-2); }
+  .bg-tile .pick { display: flex; flex-direction: column; gap: 6px; width: 100%; padding: 0; border: 0; background: none; text-align: left; font-size: 14px; color: var(--ink-2); }
+  .bg-tile .thumb { display: block; aspect-ratio: 16 / 10; border-radius: 10px; background: var(--ground) center / cover no-repeat; box-shadow: inset 0 0 0 1px var(--rule-2); transition: box-shadow 0.18s, transform 0.18s var(--ease); }
+  .bg-tile:hover .thumb { transform: translateY(-2px); box-shadow: inset 0 0 0 1px var(--ink-3); }
+  .bg-tile.on .thumb { box-shadow: inset 0 0 0 2.5px var(--ember); }
+  .bg-tile .nm { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bg-tile .when { display: block; font-size: 12px; color: var(--ink-3); }
+  .bg-tile .badge, .badge { padding: 2px 9px; border-radius: 999px; font-size: 12px; background: var(--ember); color: var(--on-ember); }
+  .bg-tile .badge { position: absolute; top: 8px; left: 8px; }
+  .bg-tile .del { position: absolute; top: 4px; right: 4px; width: 30px; height: 30px; background: color-mix(in srgb, var(--ground) 80%, transparent); }
+  .swatches { display: inline-flex; flex: none; }
+  .swatches i { width: 22px; height: 22px; margin-left: -6px; border-radius: 50%; box-shadow: 0 0 0 2px var(--sheet), inset 0 0 0 1px var(--rule-2); }
+  .swatches i:first-child { margin-left: 0; }
+  .prof-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--rule); }
+  .prof-row:first-child { border-top: 0; }
+  .prof-row .nm { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+  .prof-row .nm small { display: block; font-size: 13px; color: var(--ink-3); }
+  .prof-row .btn { min-height: 34px; padding: 0 12px; font-size: 14px; }
+  .prof-row .icon-btn { width: 34px; height: 34px; }
+  .colour-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 4px 0 16px; }
+  .colour-fields label > span { display: block; margin-bottom: 4px; font-size: 14px; color: var(--ink-3); }
+  .colour-fields .pick { display: flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 8px; border-radius: 10px; box-shadow: inset 0 0 0 1px var(--rule-2); }
+  .colour-fields input[type="color"] { width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; }
+  .colour-fields input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+  .colour-fields input[type="color"]::-webkit-color-swatch { border: 0; border-radius: 50%; }
+  .colour-fields input[type="text"] { width: 100%; min-width: 0; border: 0; background: none; font-size: 15px; text-transform: uppercase; }
+  .colour-fields input[type="text"]:focus { outline: none; }
+  .preview { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; padding: 16px; border-radius: 12px; background: var(--panel); box-shadow: inset 0 0 0 1px var(--rule); }
+  .preview h3 { font-size: 20px; }
+  .preview p { color: var(--ink-2); font-size: 15px; }
+  .contrast { margin-bottom: 16px; font-size: 14px; color: var(--ink-3); }
+  .contrast.bad { color: var(--danger); }
+  .look-name { display: flex; gap: 8px; margin-bottom: 18px; }
+  .look-name input { flex: 1; min-width: 0; min-height: 42px; padding: 0 12px; font-size: 16px; color: var(--ink); background: var(--raise); border: 0; border-radius: 10px; box-shadow: inset 0 0 0 1px var(--rule-2); }
+  .look-name input:focus { outline: none; box-shadow: inset 0 0 0 2px var(--ember); }
+  .look-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-top: 1px solid var(--rule); }
+  .look-row .thumb { flex: none; width: 76px; aspect-ratio: 16 / 10; border-radius: 8px; background: var(--ground) center / cover no-repeat; box-shadow: inset 0 0 0 1px var(--rule-2); }
+  .look-row .nm { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+  .look-row .nm small { display: block; font-size: 13px; color: var(--ink-3); }
+  .look-row .btn { min-height: 34px; padding: 0 12px; font-size: 14px; }
+  .look-row .icon-btn { width: 34px; height: 34px; }
+  .ap-h { margin: 18px 0 4px; font-size: 15px; font-weight: 400; color: var(--ink-3); }
+  @media (max-width: 719px) {
+    .owed-cols, .colour-fields { grid-template-columns: minmax(0, 1fr); }
+    .vendor-row { grid-template-columns: minmax(0, 1fr); }
+    .fin-actions { order: 2; margin-left: 0; }
+  }
+
   /* ---------- Motion ---------- */
   :root { interpolate-size: allow-keywords; }   /* lets <details> open and close smoothly where supported */
   @keyframes rise { from { opacity: 0; transform: translateY(16px); } }
@@ -880,7 +973,7 @@
   .panel, .zone, .col { transition: box-shadow 0.35s var(--ease), transform 0.35s var(--ease); }
   .panel:not(.no-lift):hover, .zone:hover, .col:hover {
     transform: translateY(-2px);
-    box-shadow: 0 32px 56px -24px rgba(1, 3, 14, 0.95), inset 0 0 0 1px rgba(240, 232, 217, 0.08);
+    box-shadow: 0 32px 56px -24px rgba(1, 3, 14, 0.95), inset 0 0 0 1px color-mix(in srgb, var(--ink) 8%, transparent);
   }
 
   /* charts draw themselves the first time they appear */
@@ -910,6 +1003,17 @@
     .js .reveal { opacity: 1; transform: none; }
   }
 </style>
+<script>
+  /* the last look (colours, background) is cached so the page never flashes the default one */
+  try {
+    const look = JSON.parse(localStorage.getItem('tracker:look'));
+    if (look) {
+      for (const [name, value] of Object.entries(look.vars)) document.documentElement.style.setProperty(name, value);
+      document.documentElement.style.colorScheme = look.scheme;
+      document.querySelector('meta[name="theme-color"]').content = look.vars['--ground'];
+    }
+  } catch {}
+</script>
 </head>
 <body class="locked">
 
@@ -941,6 +1045,7 @@
     <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18.500h10a4 4 0 0 0 .6-7.950A5.500 5.500 0 0 0 7.100 9.600 4.500 4.500 0 0 0 7 18.500z"/></symbol>
     <symbol id="i-rain" viewBox="0 0 24 24"><path d="M7 15h10a4 4 0 0 0 .6-7.950A5.500 5.500 0 0 0 7.100 6.100 4.500 4.500 0 0 0 7 15zM8.500 18l-1 3M12.500 18l-1 3M16.500 18l-1 3"/></symbol>
     <symbol id="i-storm" viewBox="0 0 24 24"><path d="M7 15h10a4 4 0 0 0 .6-7.950A5.500 5.500 0 0 0 7.100 6.100 4.500 4.500 0 0 0 7 15zM12.500 15l-2 3.500h3l-2 3.500"/></symbol>
+    <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3.500a8.500 8.500 0 1 0 0 17c1.500 0 2-1 1.500-2-.600-1.200.200-2.500 1.600-2.500H17a3.500 3.500 0 0 0 3.500-3.500C20.500 6.500 16.800 3.500 12 3.500z"/><circle cx="7.800" cy="11" r="1"/><circle cx="10.500" cy="7.500" r="1"/><circle cx="15" cy="8" r="1"/></symbol>
     <symbol id="i-fog" viewBox="0 0 24 24"><path d="M4 9h16M6 13h12M4 17h16"/></symbol>
   </defs>
 </svg>
@@ -955,6 +1060,7 @@
     <a href="#overview" data-view="tracker" aria-label="Overview" title="Overview"><svg class="ic" aria-hidden="true"><use href="#i-overview"/></svg></a>
     <a href="#finance" data-view="finance" aria-label="Finance" title="Finance"><svg class="ic" aria-hidden="true"><use href="#i-finance"/></svg></a>
   </nav>
+  <button class="icon-btn" type="button" id="appearance-btn" aria-label="Appearance" title="Backgrounds and colours"><svg class="ic" aria-hidden="true" style="width:21px;height:21px"><use href="#i-palette"/></svg></button>
   <button class="add-circle" type="button" data-add aria-label="Add" title="Add">
     <svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg>
   </button>
@@ -1106,8 +1212,13 @@
       <a href="#finance/spending" role="tab" data-tab="spending">Spending</a>
       <a href="#finance/transactions" role="tab" data-tab="transactions">Transactions</a>
       <a href="#finance/budget" role="tab" data-tab="budget">Budget</a>
+      <a href="#finance/owed" role="tab" data-tab="owed">Owed</a>
       <span class="tab-pill" aria-hidden="true"></span>
     </nav>
+    <div class="fin-actions">
+      <button class="btn small" type="button" id="cash-add"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg>Add cash</button>
+      <button class="btn small" type="button" id="vendors-open">Vendors &amp; categories</button>
+    </div>
     <div class="fin-month">
       <button class="icon-btn" type="button" id="fm-prev" aria-label="Previous month"><svg class="ic" aria-hidden="true"><use href="#i-left"/></svg></button>
       <h2 id="fm-label" aria-live="polite"></h2>
@@ -1140,6 +1251,8 @@
   </section>
 
   <section id="tab-budget" role="tabpanel" aria-label="Budget" hidden></section>
+
+  <section id="tab-owed" role="tabpanel" aria-label="Owed" hidden></section>
 
 </main>
 
@@ -1248,6 +1361,129 @@
   </form>
 </dialog>
 
+<!-- Add / edit a cash transaction -->
+<dialog class="sheet" id="cash-sheet" aria-labelledby="cash-h">
+  <form class="sheet-body" id="cash-form" novalidate>
+    <div class="sheet-head">
+      <h2 id="cash-h">Add cash</h2>
+      <button class="icon-btn" type="button" data-close aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <fieldset class="seg seg-status">
+      <legend class="sr">Spent or received</legend>
+      <div class="seg-opts" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+        <label><input type="radio" name="ctype" value="debit" checked><span>Spent</span></label>
+        <label><input type="radio" name="ctype" value="credit"><span>Received</span></label>
+      </div>
+    </fieldset>
+    <div class="field">
+      <label for="cash-amount">Amount (₹)</label>
+      <input type="number" id="cash-amount" min="0" step="any" inputmode="decimal" style="display:block;width:100%;min-height:46px;padding:10px 14px;font-size:17px;background:var(--raise);border:0;border-radius:10px;box-shadow:inset 0 0 0 1px var(--rule-2)">
+      <p class="err" id="cash-err" hidden>Enter an amount above zero.</p>
+    </div>
+    <div class="field">
+      <label for="cash-what">Who or what</label>
+      <input type="text" id="cash-what" list="cash-payees" maxlength="60" autocomplete="off" placeholder="e.g. Tea stall, auto driver">
+      <datalist id="cash-payees"></datalist>
+    </div>
+    <div class="field" id="cash-cat-field">
+      <label for="cash-cat">Category</label>
+      <select id="cash-cat"></select>
+    </div>
+    <div class="field">
+      <label for="cash-date">Date</label>
+      <div class="date-row">
+        <input type="date" id="cash-date">
+        <input type="time" id="cash-time" style="flex:0 1 130px" aria-label="Time (optional)">
+      </div>
+    </div>
+    <div class="sheet-actions">
+      <button class="btn danger" type="button" id="cash-delete" hidden><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg>Delete</button>
+      <span class="grow"></span>
+      <button class="btn" type="button" data-close>Cancel</button>
+      <button class="btn primary" type="submit" id="cash-save">Add</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Add / edit money owed -->
+<dialog class="sheet" id="debt-sheet" aria-labelledby="debt-h">
+  <form class="sheet-body" id="debt-form" novalidate>
+    <div class="sheet-head">
+      <h2 id="debt-h">Add</h2>
+      <button class="icon-btn" type="button" data-close aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <fieldset class="seg seg-status">
+      <legend class="sr">Who owes whom</legend>
+      <div class="seg-opts" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+        <label><input type="radio" name="ddir" value="owed" checked><span>They owe me</span></label>
+        <label><input type="radio" name="ddir" value="owe"><span>I owe them</span></label>
+      </div>
+    </fieldset>
+    <div class="field">
+      <label for="debt-person">Person</label>
+      <input type="text" id="debt-person" maxlength="60" autocomplete="off">
+      <p class="err" id="debt-person-err" hidden>Who is it?</p>
+    </div>
+    <div class="field">
+      <label for="debt-amount">Amount (₹)</label>
+      <input type="number" id="debt-amount" min="0" step="any" inputmode="decimal" style="display:block;width:100%;min-height:46px;padding:10px 14px;font-size:17px;background:var(--raise);border:0;border-radius:10px;box-shadow:inset 0 0 0 1px var(--rule-2)">
+      <p class="err" id="debt-amount-err" hidden>Enter an amount above zero.</p>
+    </div>
+    <div class="field">
+      <label for="debt-note">Note (optional)</label>
+      <input type="text" id="debt-note" maxlength="120" autocomplete="off" placeholder="e.g. dinner, trip">
+    </div>
+    <div class="field">
+      <label for="debt-date">Date</label>
+      <input type="date" id="debt-date">
+    </div>
+    <label class="toggle" id="debt-settled-wrap" hidden><input type="checkbox" id="debt-settled">Settled</label>
+    <div class="sheet-actions">
+      <button class="btn danger" type="button" id="debt-delete" hidden><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg>Delete</button>
+      <span class="grow"></span>
+      <button class="btn" type="button" data-close>Cancel</button>
+      <button class="btn primary" type="submit" id="debt-save">Add</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Vendors and categories -->
+<dialog class="sheet vendor-sheet" id="vendors" aria-labelledby="vendors-h">
+  <div class="sheet-body">
+    <div class="sheet-head">
+      <h2 id="vendors-h">Vendors &amp; categories</h2>
+      <button class="icon-btn" type="button" data-close aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <h3 class="ap-h" style="margin-top:0">Categories</h3>
+    <div class="cat-chips" id="cat-chips"></div>
+    <form class="cat-add" id="cat-form">
+      <input type="text" id="cat-new" maxlength="30" placeholder="New category" aria-label="New category" autocomplete="off">
+      <button class="btn" type="submit">Add</button>
+    </form>
+    <h3 class="ap-h">Vendors</h3>
+    <p class="sheet-note">Changing a vendor’s category applies to all its payments, except ones you categorised one by one.</p>
+    <input type="search" class="vendor-search" id="vendor-q" placeholder="Search vendors" aria-label="Search vendors" autocomplete="off">
+    <div class="vendor-list" id="vendor-list"></div>
+  </div>
+</dialog>
+
+<!-- Backgrounds, colour profiles and looks -->
+<dialog class="sheet look-sheet" id="appearance" aria-labelledby="appearance-h">
+  <div class="sheet-body">
+    <div class="sheet-head">
+      <h2 id="appearance-h">Appearance</h2>
+      <button class="icon-btn" type="button" data-close aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="mini-tabs" role="tablist" id="ap-tabs">
+      <button type="button" role="tab" data-ap="bg">Backgrounds</button>
+      <button type="button" role="tab" data-ap="colours">Colours</button>
+      <button type="button" role="tab" data-ap="looks">Looks</button>
+    </div>
+    <div id="ap-body"></div>
+    <input type="file" id="bg-file" accept="image/*" hidden>
+  </div>
+</dialog>
+
 <!-- Connecting the Axis Bank alerts -->
 <dialog class="sheet wide" id="fin-setup" aria-labelledby="fin-setup-h">
   <div class="sheet-body">
@@ -1330,7 +1566,7 @@
      status: 'todo' | 'doing' | 'done' | null      date: 'YYYY-MM-DD' | null
      The app only ever calls the five methods below.
      ===================================================================== */
-  const COLLECTIONS = ['tasks', 'projects', 'goals', 'notes', 'meta', 'transactions', 'payees', 'txmeta', 'budgets'];
+  const COLLECTIONS = ['tasks', 'projects', 'goals', 'notes', 'meta', 'transactions', 'payees', 'txmeta', 'budgets', 'cash', 'debts', 'profiles', 'backgrounds', 'looks'];
 
   function createLocalStore() {
     const PREFIX = 'tracker:';
@@ -1534,7 +1770,7 @@
   }
 
   const store = CONFIG.firebase ? createFirebaseStore(CONFIG.firebase) : createLocalStore();
-  const state = { tasks: [], projects: [], goals: [], notes: [], meta: [], transactions: [], payees: [], txmeta: [], budgets: [] };
+  const state = { tasks: [], projects: [], goals: [], notes: [], meta: [], transactions: [], payees: [], txmeta: [], budgets: [], cash: [], debts: [], profiles: [], backgrounds: [], looks: [] };
 
   /* =====================================================================
      Dates (everything is reckoned in Hyderabad time)
@@ -1965,7 +2201,10 @@
     renderProjects();
     renderCalendar();
     renderNotes();
+    syncCategories();
     finCache = null;
+    applyTheme();
+    renderAppearance();
     renderSpending();
     renderFinance();
 
@@ -2197,9 +2436,18 @@
   const fmtMonthShort = utcFmt({ month: 'short' });
   const fmtWeekdayShort = utcFmt({ weekday: 'short' });
 
-  const CATEGORIES = ['Groceries', 'Food delivery', 'Eating out & snacks', 'Rides', 'Shopping', 'Health', 'Home services',
+  const BASE_CATEGORIES = ['Groceries', 'Food delivery', 'Eating out & snacks', 'Rides', 'Shopping', 'Health', 'Home services',
     'Bills & recharges', 'Local shops', 'People', 'Family', 'Other'];
   const INCOME = 'Income';
+  // the built-in categories plus the ones added under Vendors & categories (kept before "Other")
+  const CATEGORIES = [...BASE_CATEGORIES];
+  const customCategories = () => state.meta.find((m) => m.id === 'categories')?.list || [];
+  function syncCategories() {
+    const extra = Object.values(customCategories()).filter((c) => !BASE_CATEGORIES.includes(c));
+    CATEGORIES.splice(0, CATEGORIES.length, ...BASE_CATEGORIES.slice(0, -1), ...extra, 'Other');
+  }
+  const categoryOptions = (current) => [...CATEGORIES, INCOME, ...(current && ![...CATEGORIES, INCOME].includes(current) ? [current] : [])]
+    .map((c) => el('option', { value: c }, c));
 
   // payees the bank names in many ways; the bank also cuts names at 19 characters
   const KNOWN_PAYEES = [
@@ -2236,10 +2484,11 @@
       const parts = transfer[1].split('/').map((s) => s.replace(/[^A-Za-z0-9 &]/g, '')).filter((s) => /[A-Za-z]{3,}/.test(s) && !/\d/.test(s) && !/^(NEFT|IMPS|RTGS)$/i.test(s));
       if (parts.length) return parts[parts.length - 1];
     }
-    return t.description || (t.type === 'credit' ? 'Money in' : 'Payment');
+    return t.description || (t.cash ? 'Cash' : t.type === 'credit' ? 'Money in' : 'Payment');
   }
   const upiKind = (t) => ((t.excerpt || '').match(/UPI\/(P2M|P2A)\//i) || [])[1]?.toUpperCase() || null;
   function channelOf(t) {
+    if (t.cash) return 'Cash';
     const excerpt = t.excerpt || '';
     if (/\bUPI\//i.test(excerpt)) return 'UPI';
     const transfer = excerpt.match(/\b(NEFT|IMPS|RTGS)\//);
@@ -2252,7 +2501,12 @@
     if (finCache) return finCache;
     const rules = new Map(state.payees.map((p) => [p.id, p]));
     const meta = new Map(state.txmeta.map((m) => [m.id, m]));
-    const list = state.transactions.map((t) => {
+    const cashTx = state.cash.map((c) => ({
+      id: `cash-${c.id}`, cashId: c.id, cash: true, amount: c.amount, type: c.type === 'credit' ? 'credit' : 'debit',
+      description: c.description || '', channel: 'Cash', date: c.date, time: c.time || '', excerpt: '', account: null,
+      createdAt: Date.parse(`${c.date}T${c.time || '12:00'}:00+05:30`) || c.createdAt, cashCategory: c.category || null,
+    }));
+    const list = [...state.transactions, ...cashTx].map((t) => {
       const raw = rawPayee(t).toUpperCase().replace(/\s+/g, ' ').trim();
       const known = KNOWN_PAYEES.find(([re]) => re.test(raw));
       const key = payeeKey(known?.[1] || raw);
@@ -2264,7 +2518,7 @@
       const income = t.type === 'credit' && !refund;
       const auto = income ? INCOME
         : known?.[2] || (/\bPOTLURI\b/.test(raw) ? 'Family' : kind === 'P2A' ? 'People' : kind === 'P2M' ? 'Local shops' : 'Other');
-      const category = own?.category || (income ? INCOME : rule?.category) || auto;
+      const category = own?.category || (income ? INCOME : t.cashCategory || rule?.category) || auto;
       const excluded = Boolean(own?.excluded);
       return {
         ...t,
@@ -2376,7 +2630,7 @@
   let view = 'tracker';
   let finTab = 'spending';
   let finMonth = thisMonth();
-  const FIN_TABS = ['spending', 'transactions', 'budget'];
+  const FIN_TABS = ['spending', 'transactions', 'budget', 'owed'];
 
   function route() {
     const [name, tab] = location.hash.replace(/^#/, '').split('/');
@@ -2386,6 +2640,7 @@
     if (view === 'finance') finTab = FIN_TABS.includes(tab) ? tab : 'spending';
     if (before !== view || beforeTab !== finTab || !routed) animateNext = true;
     document.body.dataset.view = view;
+    document.body.dataset.finTab = finTab;
     $('tracker-view').hidden = view !== 'tracker';
     $('finance-view').hidden = view !== 'finance';
     document.querySelectorAll('.views a').forEach((a) => a.setAttribute('aria-current', a.dataset.view === view ? 'page' : 'false'));
@@ -2430,6 +2685,7 @@
     if (finTab === 'spending') renderSpendingTab();
     if (finTab === 'transactions') renderTransactionsTab();
     if (finTab === 'budget') renderBudgetTab();
+    if (finTab === 'owed') renderOwedTab();
     if (animate) {
       const panel = $(`tab-${finTab}`);
       const grid = panel.querySelector('.fin-grid');
@@ -2667,7 +2923,7 @@
 
   function renderSpendingTab() {
     const tab = $('tab-spending');
-    if (!state.transactions.length) { tab.replaceChildren(connectPrompt()); return; }
+    if (!finData().list.length) { tab.replaceChildren(connectPrompt()); return; }
     const s = monthStory(finMonth);
     if (!s.payments.length) {
       tab.replaceChildren(el('div', { class: 'panel' }, emptyEl(`No spending recorded in ${s.name}.`)));
@@ -2890,7 +3146,7 @@
     $('tx-q').value = txFilter.q;
     $('tx-type').value = txFilter.type;
     $('tx-sort').value = txFilter.sort;
-    $('tx-cat').replaceChildren(el('option', { value: '' }, 'All categories'), ...[...CATEGORIES, INCOME].map((c) => el('option', { value: c }, c)));
+    $('tx-cat').replaceChildren(el('option', { value: '' }, 'All categories'), ...categoryOptions(txFilter.category));
     $('tx-cat').value = txFilter.category;
     const payees = [...new Map(list.map((t) => [t.key, t.payee])).entries()].sort((a, b) => a[1].localeCompare(b[1]));
     if (txFilter.payee && !payees.some(([k]) => k === txFilter.payee)) {
@@ -2902,7 +3158,7 @@
   }
 
   function renderTransactionsTab() {
-    if (!state.transactions.length) { $('tx-list').replaceChildren(connectPrompt()); $('tx-summary').replaceChildren(); return; }
+    if (!finData().list.length) { $('tx-list').replaceChildren(connectPrompt()); $('tx-summary').replaceChildren(); return; }
     const month = monthOf(finMonth);
     syncTxTools(month);
     const q = txFilter.q.trim().toLowerCase();
@@ -2956,14 +3212,17 @@
     const { rules, meta } = finData();
     const rule = rules.get(t.key) || {};
     const own = meta.get(t.id) || {};
-    const category = el('select', { 'aria-label': 'Category' }, [...CATEGORIES, INCOME].map((c) => el('option', { value: c }, c)));
+    const category = el('select', { 'aria-label': 'Category' }, categoryOptions(t.category));
     category.value = t.category;
     const forAll = el('input', { type: 'checkbox', checked: true });
     const name = el('input', { type: 'text', value: t.payee, maxlength: '60', 'aria-label': 'Payee name' });
     const counts = el('input', { type: 'checkbox', checked: !t.excluded });
 
     category.addEventListener('change', async () => {
-      if (forAll.checked) {
+      if (t.cash) {
+        if (own.category) await store.set('txmeta', t.id, { ...own, category: null });
+        await store.update('cash', t.cashId, { category: category.value });
+      } else if (forAll.checked) {
         await store.set('payees', t.key, { ...rule, category: category.value });
         if (own.category) await store.set('txmeta', t.id, { ...own, category: null });
         toast(`Every payment to ${t.payee} is now ${category.value}.`);
@@ -2980,8 +3239,9 @@
     return el('div', { class: 'tx-edit' },
       el('label', {}, el('span', {}, 'Category'), category),
       el('label', {}, el('span', {}, 'Payee name'), name),
-      el('label', { class: 'toggle' }, forAll, `Use this category for every payment to ${t.payee}`),
-      el('label', { class: 'toggle' }, counts, t.type === 'credit' ? 'Count as a refund against spending' : 'Count in spending'));
+      t.cash ? null : el('label', { class: 'toggle' }, forAll, `Use this category for every payment to ${t.payee}`),
+      el('label', { class: 'toggle' }, counts, t.type === 'credit' ? 'Count as a refund against spending' : 'Count in spending'),
+      t.cash ? el('div', { class: 'tx-actions' }, el('button', { class: 'btn small', type: 'button', onclick: () => openCash(state.cash.find((c) => c.id === t.cashId)) }, icon('edit'), 'Edit cash entry')) : null);
   }
 
   ['tx-q', 'tx-type', 'tx-cat', 'tx-payee', 'tx-sort'].forEach((id) => $(id).addEventListener(id === 'tx-q' ? 'input' : 'change', () => {
@@ -3063,7 +3323,7 @@
     const card = $('spend-card');
     const sync = state.meta.find((m) => m.id === 'finance');
     const title = el('h2', {}, 'Budget and spending');
-    if (!sync && !state.transactions.length) {
+    if (!sync && !finData().list.length) {
       card.replaceChildren(title,
         el('p', { class: 'lead' }, 'Fill this in from your Axis Bank alert emails.'),
         el('button', { class: 'btn small', type: 'button', onclick: (e) => { e.stopPropagation(); openFinanceSetup(); } }, 'Connect Gmail'));
@@ -3137,7 +3397,7 @@
   }));
 
   // what the first sign-in copies from this browser into the account
-  const BACKED_UP = ['tasks', 'projects', 'goals', 'notes', 'payees', 'txmeta', 'budgets'];
+  const BACKED_UP = ['tasks', 'projects', 'goals', 'notes', 'payees', 'txmeta', 'budgets', 'cash', 'debts', 'profiles', 'backgrounds', 'looks'];
 
 
   if (!CONFIG.firebase) document.body.classList.remove('locked');
@@ -3175,6 +3435,498 @@
     localStorage.setItem('tracker:copied-to-account', '1');
     if (count) toast(`Copied ${plural(count, 'item')} from this browser into your account.`);
   }
+
+  /* =====================================================================
+     Cash transactions
+       cash { id, amount, type: 'debit' | 'credit', description, category, date, time }
+     They join the bank transactions in finData(), so every chart, the calendar and the budget count them.
+     ===================================================================== */
+  const cashSheet = $('cash-sheet');
+  const cashForm = $('cash-form');
+  let editingCash = null;
+  let cashCatTouched = false;
+
+  const syncCashType = () => { $('cash-cat-field').hidden = cashForm.elements.ctype.value === 'credit'; };
+
+  function openCash(doc) {
+    if (!store.signedIn) { store.signIn(); return; }
+    editingCash = doc || null;
+    cashCatTouched = Boolean(doc);
+    cashForm.reset();
+    cashForm.elements.ctype.value = doc?.type === 'credit' ? 'credit' : 'debit';
+    $('cash-amount').value = doc?.amount ?? '';
+    $('cash-what').value = doc?.description || '';
+    $('cash-cat').replaceChildren(...categoryOptions(doc?.category).filter((o) => o.value !== INCOME));
+    $('cash-cat').value = doc?.category || 'Other';
+    $('cash-date').value = doc?.date || todayKey();
+    $('cash-time').value = doc?.time || '';
+    const names = [...new Set(finData().list.filter((t) => !t.income).map((t) => t.payee))].sort();
+    $('cash-payees').replaceChildren(...names.slice(0, 200).map((n) => el('option', { value: n })));
+    $('cash-h').textContent = doc ? 'Edit cash entry' : 'Add cash';
+    $('cash-save').textContent = doc ? 'Save' : 'Add';
+    $('cash-delete').hidden = !doc;
+    $('cash-err').hidden = true;
+    syncCashType();
+    cashSheet.showModal();
+    $('cash-amount').focus();
+  }
+
+  cashForm.addEventListener('change', (e) => { if (e.target.name === 'ctype') syncCashType(); });
+  $('cash-cat').addEventListener('change', () => { cashCatTouched = true; });
+  // a vendor you already know brings its category along
+  $('cash-what').addEventListener('change', () => {
+    if (cashCatTouched) return;
+    const name = $('cash-what').value.trim().toLowerCase();
+    const match = finData().list.find((t) => !t.income && t.payee.toLowerCase() === name);
+    if (match && [...$('cash-cat').options].some((o) => o.value === match.category)) $('cash-cat').value = match.category;
+  });
+  $('cash-amount').addEventListener('input', () => { $('cash-err').hidden = true; });
+
+  cashForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const amount = Math.round(Number($('cash-amount').value) * 100) / 100;
+    if (!(amount > 0)) { $('cash-err').hidden = false; $('cash-amount').focus(); return; }
+    const type = cashForm.elements.ctype.value;
+    const data = {
+      amount, type,
+      description: $('cash-what').value.trim() || null,
+      category: type === 'debit' ? $('cash-cat').value : null,
+      date: $('cash-date').value || todayKey(),
+      time: $('cash-time').value || null,
+    };
+    if (editingCash) await store.update('cash', editingCash.id, data);
+    else await store.add('cash', data);
+    finMonth = data.date.slice(0, 7) <= thisMonth() ? data.date.slice(0, 7) : finMonth;
+    cashSheet.close();
+    toast(`Cash ${type === 'credit' ? 'received' : 'spent'}: ${rupees.format(amount)}.`);
+  });
+
+  $('cash-delete').addEventListener('click', async () => {
+    const doc = editingCash;
+    const meta = state.txmeta.find((m) => m.id === `cash-${doc.id}`);
+    cashSheet.close();
+    await store.remove('cash', doc.id);
+    if (meta) await store.remove('txmeta', meta.id);
+    toast('Deleted the cash entry', 'Undo', async () => {
+      await store.set('cash', doc.id, doc);
+      if (meta) await store.set('txmeta', meta.id, meta);
+    });
+  });
+  $('cash-add').addEventListener('click', () => openCash());
+
+  /* =====================================================================
+     Owed: money you owe and money owed to you, added by hand
+       debts { id, person, amount, direction: 'owed' (they owe me) | 'owe' (I owe them), note, date, settled, settledOn }
+     ===================================================================== */
+  const debtSheet = $('debt-sheet');
+  const debtForm = $('debt-form');
+  let editingDebt = null;
+
+  function openDebt(doc, direction) {
+    if (!store.signedIn) { store.signIn(); return; }
+    editingDebt = doc || null;
+    debtForm.reset();
+    debtForm.elements.ddir.value = doc?.direction === 'owe' ? 'owe' : (direction || 'owed');
+    $('debt-person').value = doc?.person || '';
+    $('debt-amount').value = doc?.amount ?? '';
+    $('debt-note').value = doc?.note || '';
+    $('debt-date').value = doc?.date || todayKey();
+    $('debt-settled').checked = Boolean(doc?.settled);
+    $('debt-settled-wrap').hidden = !doc;
+    $('debt-h').textContent = doc ? 'Edit' : 'Add';
+    $('debt-save').textContent = doc ? 'Save' : 'Add';
+    $('debt-delete').hidden = !doc;
+    $('debt-person-err').hidden = true;
+    $('debt-amount-err').hidden = true;
+    debtSheet.showModal();
+    $('debt-person').focus();
+  }
+
+  debtForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const person = $('debt-person').value.trim();
+    const amount = Math.round(Number($('debt-amount').value) * 100) / 100;
+    $('debt-person-err').hidden = Boolean(person);
+    $('debt-amount-err').hidden = amount > 0;
+    if (!person) { $('debt-person').focus(); return; }
+    if (!(amount > 0)) { $('debt-amount').focus(); return; }
+    const settled = editingDebt ? $('debt-settled').checked : false;
+    const data = {
+      person, amount, direction: debtForm.elements.ddir.value,
+      note: $('debt-note').value.trim() || null, date: $('debt-date').value || todayKey(),
+      settled, settledOn: settled ? (editingDebt?.settledOn || todayKey()) : null,
+    };
+    if (editingDebt) await store.update('debts', editingDebt.id, data);
+    else await store.add('debts', data);
+    debtSheet.close();
+  });
+
+  $('debt-delete').addEventListener('click', async () => {
+    const doc = editingDebt;
+    debtSheet.close();
+    await store.remove('debts', doc.id);
+    toast(`Deleted ${doc.person}’s entry`, 'Undo', () => store.set('debts', doc.id, doc));
+  });
+
+  function renderOwedTab() {
+    const all = [...state.debts].sort((a, b) => (b.date || '').localeCompare(a.date || '') || b.createdAt - a.createdAt);
+    const open = all.filter((d) => !d.settled);
+    const theirs = open.filter((d) => d.direction !== 'owe');
+    const mine = open.filter((d) => d.direction === 'owe');
+    const sum = (list) => list.reduce((s, d) => s + (Number(d.amount) || 0), 0);
+    const owedToMe = sum(theirs);
+    const iOwe = sum(mine);
+    const net = owedToMe - iOwe;
+
+    const row = (d) => el('div', { class: 'owed-row' + (d.settled ? ' settled' : '') },
+      el('span', { class: 'who' }, d.person),
+      el('span', { class: 'amt' }, rupees.format(d.amount)),
+      el('small', {}, [d.note, d.settled ? `Settled ${dueLabel(d.settledOn || d.date)}` : dueLabel(d.date)].filter(Boolean).join(' · ')),
+      el('div', { class: 'acts' },
+        d.settled ? null : el('button', {
+          class: 'icon-btn', type: 'button', 'aria-label': `Mark ${d.person} settled`, title: 'Mark settled',
+          onclick: async () => {
+            await store.update('debts', d.id, { settled: true, settledOn: todayKey() });
+            toast(`${d.person} is settled.`, 'Undo', () => store.update('debts', d.id, { settled: false, settledOn: null }));
+          },
+        }, icon('check')),
+        el('button', { class: 'icon-btn', type: 'button', 'aria-label': `Edit ${d.person}`, title: 'Edit', onclick: () => openDebt(d) }, icon('edit'))));
+
+    const column = (title, list, total, direction) => el('div', {},
+      el('h4', {}, title, el('span', {}, rupees.format(total))),
+      list.length ? list.map(row) : el('p', { class: 'quiet' }, 'Nothing here.'),
+      el('button', { class: 'link-btn', type: 'button', style: 'margin-top:6px', onclick: () => openDebt(null, direction) }, icon('plus'), 'Add'));
+
+    const settled = all.filter((d) => d.settled);
+    $('tab-owed').replaceChildren(el('div', { class: 'fin-grid' }, el('section', { class: 'panel owed-card s12 no-lift' },
+      el('h3', { class: 'ptitle' }, 'Owed', el('button', { class: 'btn small', type: 'button', onclick: () => openDebt() }, icon('plus'), 'Add')),
+      el('div', { class: 'trio' },
+        el('div', {}, el('p', {}, 'Owed to you'), el('p', { class: 'credit' }, rupees.format(owedToMe))),
+        el('div', {}, el('p', {}, 'You owe'), el('p', {}, rupees.format(iOwe))),
+        el('div', {}, el('p', {}, net >= 0 ? 'Net, in your favour' : 'Net, you owe'), el('p', {}, rupees.format(Math.abs(net))))),
+      el('div', { class: 'owed-cols' },
+        column('They owe you', theirs, owedToMe, 'owed'),
+        column('You owe', mine, iOwe, 'owe'),
+        settled.length ? el('details', {}, el('summary', {}, `Settled (${settled.length})`), settled.map(row)) : null))));
+  }
+
+  /* =====================================================================
+     Vendors and categories
+       meta 'categories' { list: [custom category names] }       payees { id: vendor key, name, category }
+     ===================================================================== */
+  const vendorDialog = $('vendors');
+
+  function renderCategoryChips() {
+    const custom = Object.values(customCategories());
+    $('cat-chips').replaceChildren(...CATEGORIES.map((c) => custom.includes(c)
+      ? el('span', { class: 'chip-filter' }, c,
+        el('button', { class: 'icon-btn', type: 'button', 'aria-label': `Remove ${c}`, onclick: async () => {
+          await store.set('meta', 'categories', { list: custom.filter((x) => x !== c) });
+          await new Promise((r) => requestAnimationFrame(r));
+          syncCategories(); renderCategoryChips(); renderVendorList();
+        } }, icon('x')))
+      : el('span', { class: 'chip-filter', style: 'padding-right:12px' }, c)));
+  }
+
+  function renderVendorList() {
+    const q = $('vendor-q').value.trim().toLowerCase();
+    const { list, rules } = finData();
+    const map = new Map();
+    for (const t of list) {
+      if (t.income) continue;
+      const v = map.get(t.key) || { key: t.key, name: t.payee, category: rules.get(t.key)?.category || t.category, count: 0, total: 0 };
+      v.count += 1;
+      if (t.type === 'debit') v.total += t.amount;
+      map.set(t.key, v);
+    }
+    const rows = [...map.values()].filter((v) => !q || v.name.toLowerCase().includes(q))
+      .sort((a, b) => b.total - a.total || a.name.localeCompare(b.name)).slice(0, 100);
+    $('vendor-list').replaceChildren(...(rows.length ? rows.map((v) => {
+      const name = el('input', { type: 'text', value: v.name, maxlength: '60', 'aria-label': `Name for ${v.name}` });
+      const category = el('select', { 'aria-label': `Category for ${v.name}` }, categoryOptions(v.category));
+      category.value = v.category;
+      name.addEventListener('change', () => store.set('payees', v.key, { ...(finData().rules.get(v.key) || {}), name: name.value.trim() || null }));
+      category.addEventListener('change', () => store.set('payees', v.key, { ...(finData().rules.get(v.key) || {}), category: category.value }));
+      return el('div', { class: 'vendor-row' }, name, category, el('small', {}, `${plural(v.count, 'payment')} · ${rupees.format(v.total)} spent`));
+    }) : [el('p', { class: 'quiet' }, 'No vendors match.')]));
+  }
+
+  function openVendors() {
+    if (!store.signedIn) { store.signIn(); return; }
+    $('vendor-q').value = '';
+    renderCategoryChips();
+    renderVendorList();
+    vendorDialog.showModal();
+  }
+  $('vendors-open').addEventListener('click', openVendors);
+  $('vendor-q').addEventListener('input', renderVendorList);
+  $('cat-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = $('cat-new').value.trim();
+    if (!name) return;
+    if ([...CATEGORIES, INCOME].some((c) => c.toLowerCase() === name.toLowerCase())) { toast(`“${name}” already exists.`); return; }
+    await store.set('meta', 'categories', { list: [...Object.values(customCategories()), name] });
+    $('cat-new').value = '';
+    await new Promise((r) => requestAnimationFrame(r));
+    syncCategories(); renderCategoryChips(); renderVendorList();
+  });
+
+  /* =====================================================================
+     Appearance: backgrounds, colour profiles and looks
+       backgrounds { id, name, data (a resized JPEG as a data URL), usedAt }
+       profiles    { id, name, primary, secondary, text }
+       looks       { id, name, profileId, bgId }          a saved background + colour pairing
+       meta 'theme' { profileId, bgId, history: [{ profileId, bgId, at }] }     what is in use now, and what was before
+     Primary is the accent (buttons, highlights, chart colour), Secondary the page's surface, Text the writing.
+     ===================================================================== */
+  const MAX_BG = 12;
+  const DEFAULT_PROFILE = { id: 'default', name: 'Midnight', primary: '#e9a26c', secondary: '#0a1128', text: '#f0e8d9' };
+  const DEFAULT_BG = { id: 'default', name: 'Original', data: 'tracker-assets/bg-top.webp' };
+  const themeDoc = () => state.meta.find((m) => m.id === 'theme') || {};
+  const allProfiles = () => [DEFAULT_PROFILE, ...[...state.profiles].sort((a, b) => a.createdAt - b.createdAt)];
+  const profileOf = (id) => allProfiles().find((p) => p.id === id) || DEFAULT_PROFILE;
+  const bgOf = (id) => state.backgrounds.find((b) => b.id === id) || DEFAULT_BG;
+  const validHex = (v) => /^#[0-9a-f]{6}$/i.test(v);
+  const luminance = (hex) => {
+    const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+      .map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  const contrastOf = (a, b) => { const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x); return (hi + 0.05) / (lo + 0.05); };
+
+  let previewProfile = null;   // colours being edited, shown live but not saved
+  let appliedKey = '';
+
+  function applyTheme() {
+    const t = themeDoc();
+    const p = previewProfile || profileOf(t.profileId);
+    const bg = bgOf(t.bgId);
+    const key = [p.primary, p.secondary, p.text, bg.id, bg.data.length].join('|');
+    if (key === appliedKey) return;
+    appliedKey = key;
+    const vars = { '--ember': p.primary, '--ground': p.secondary, '--ink': p.text, '--on-ember': luminance(p.primary) > 0.4 ? '#0b1230' : '#fbf7ee' };
+    if (bg.id !== 'default') vars['--bg-image'] = `url("${bg.data}")`;
+    const root = document.documentElement;
+    for (const [name, value] of Object.entries(vars)) root.style.setProperty(name, value);
+    if (bg.id === 'default') root.style.removeProperty('--bg-image');
+    const scheme = luminance(p.secondary) > 0.4 ? 'light' : 'dark';
+    root.style.colorScheme = scheme;
+    document.querySelector('meta[name="theme-color"]').content = p.secondary;
+    if (!previewProfile) { try { localStorage.setItem('tracker:look', JSON.stringify({ vars, scheme })); } catch { /* too big or blocked: the page just starts on the default look */ } }
+  }
+
+  // change the profile and/or background in use, and remember it in the history
+  async function setLook(next) {
+    if (!store.signedIn) { store.signIn(); return; }
+    const cur = themeDoc();
+    const profileId = next.profileId ?? cur.profileId ?? 'default';
+    const bgId = next.bgId ?? cur.bgId ?? 'default';
+    if (profileId === (cur.profileId ?? 'default') && bgId === (cur.bgId ?? 'default')) return;
+    const history = [{ profileId, bgId, at: Date.now() },
+      ...(cur.history ? Object.values(cur.history) : []).filter((h) => !(h.profileId === profileId && h.bgId === bgId))].slice(0, 20);
+    if (state.backgrounds.some((b) => b.id === bgId)) store.update('backgrounds', bgId, { usedAt: Date.now() });
+    await store.set('meta', 'theme', { profileId, bgId, history });
+  }
+
+  async function shrinkImage(file, max, quality) {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, max / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close?.();
+    return canvas.toDataURL('image/jpeg', quality);
+  }
+
+  const appearance = $('appearance');
+  let apTab = 'bg';
+  let draft = null;   // the colour profile being created or edited
+
+  const swatchesOf = (p) => el('span', { class: 'swatches', 'aria-hidden': 'true' },
+    [p.primary, p.secondary, p.text].map((c) => el('i', { style: `background:${c}` })));
+  const thumbStyle = (bg) => `background-image:url("${bg.data}")`;
+  const dayWord = (ms) => fmtStamp.format(new Date(ms));
+
+  function renderAppearance() {
+    if (!appearance.open) return;
+    if (draft && apTab === 'colours') return;   // don't rebuild the form while it is being typed in
+    document.querySelectorAll('#ap-tabs button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.ap === apTab)));
+    $('ap-body').replaceChildren(apTab === 'bg' ? bgPanel() : apTab === 'colours' ? coloursPanel() : looksPanel());
+  }
+
+  function bgPanel() {
+    const current = themeDoc().bgId || 'default';
+    const tiles = [DEFAULT_BG, ...[...state.backgrounds].sort((a, b) => (b.usedAt || b.createdAt) - (a.usedAt || a.createdAt))];
+    return el('div', {},
+      el('div', { style: 'display:flex;flex-wrap:wrap;align-items:center;gap:10px' },
+        el('button', { class: 'btn primary', type: 'button', onclick: () => $('bg-file').click() }, icon('plus'), 'Upload a background'),
+        el('span', { class: 'sheet-note', style: 'margin:0' }, `${state.backgrounds.length} of ${MAX_BG} saved · most recently used first`)),
+      el('div', { class: 'bg-grid' }, tiles.map((bg) => {
+        const on = (bg.id === (bgOf(current).id));
+        return el('div', { class: 'bg-tile' + (on ? ' on' : '') },
+          el('button', { class: 'pick', type: 'button', 'aria-pressed': String(on), onclick: () => setLook({ bgId: bg.id }) },
+            el('span', { class: 'thumb', style: thumbStyle(bg) }),
+            el('span', { class: 'nm' }, bg.name),
+            el('span', { class: 'when' }, bg.id === 'default' ? 'Built in' : `${bg.usedAt ? 'Used' : 'Added'} ${dayWord(bg.usedAt || bg.createdAt)}`)),
+          on ? el('span', { class: 'badge' }, 'In use') : null,
+          bg.id === 'default' ? null : el('button', { class: 'icon-btn del', type: 'button', 'aria-label': `Delete ${bg.name}`, onclick: async () => {
+            await store.remove('backgrounds', bg.id);
+            toast(`Deleted “${bg.name}”`, 'Undo', () => store.set('backgrounds', bg.id, bg));
+          } }, icon('trash')));
+      })));
+  }
+
+  $('bg-file').addEventListener('change', async () => {
+    const file = $('bg-file').files[0];
+    $('bg-file').value = '';
+    if (!file) return;
+    if (!store.signedIn) { store.signIn(); return; }
+    if (state.backgrounds.length >= MAX_BG) { toast(`You have ${MAX_BG} saved backgrounds. Delete one to add another.`); return; }
+    try {
+      const data = await shrinkImage(file, 1600, 0.78);
+      const name = file.name.replace(/\.[^.]+$/, '').slice(0, 40) || 'Background';
+      const doc = await store.add('backgrounds', { name, data });
+      if (doc) { await setLook({ bgId: doc.id }); toast(`“${name}” is now your background.`); }
+    } catch (err) {
+      console.error('Background upload failed:', err);
+      toast('Couldn’t read that image. Try a JPG, PNG or WebP.');
+    }
+  });
+
+  function coloursPanel() {
+    if (draft) return colourEditor();
+    const current = themeDoc().profileId || 'default';
+    return el('div', {},
+      el('button', { class: 'btn primary', type: 'button', style: 'margin-bottom:10px', onclick: () => startDraft({ ...profileOf(current), id: null, name: '' }) }, icon('plus'), 'New colour profile'),
+      el('div', {}, allProfiles().map((p) => {
+        const on = p.id === profileOf(current).id;
+        return el('div', { class: 'prof-row' }, swatchesOf(p),
+          el('span', { class: 'nm' }, p.name, el('small', {}, p.id === 'default' ? 'Built in' : `Primary ${p.primary} · Secondary ${p.secondary} · Text ${p.text}`)),
+          on ? el('span', { class: 'badge' }, 'In use') : el('button', { class: 'btn', type: 'button', onclick: () => setLook({ profileId: p.id }) }, 'Use'),
+          el('button', { class: 'icon-btn', type: 'button', 'aria-label': p.id === 'default' ? 'Make a copy to edit' : `Edit ${p.name}`, title: p.id === 'default' ? 'Make a copy to edit' : 'Edit',
+            onclick: () => startDraft(p.id === 'default' ? { ...p, id: null, name: 'My colours' } : p) }, icon('edit')),
+          p.id === 'default' ? null : el('button', { class: 'icon-btn', type: 'button', 'aria-label': `Delete ${p.name}`, onclick: async () => {
+            await store.remove('profiles', p.id);
+            if (current === p.id) await setLook({ profileId: 'default' });
+            toast(`Deleted “${p.name}”`, 'Undo', () => store.set('profiles', p.id, p));
+          } }, icon('trash')));
+      })));
+  }
+
+  function startDraft(p) {
+    draft = { id: p.id, name: p.name, primary: p.primary, secondary: p.secondary, text: p.text };
+    previewProfile = { ...draft };
+    applyTheme();
+    $('ap-body').replaceChildren(colourEditor());
+  }
+  function endDraft() {
+    draft = null;
+    previewProfile = null;
+    applyTheme();
+    renderAppearance();
+  }
+
+  function colourEditor() {
+    const name = el('input', { type: 'text', value: draft.name, maxlength: '30', placeholder: 'e.g. Rose dusk', 'aria-label': 'Profile name' });
+    const err = el('p', { class: 'err', hidden: true }, 'Give the profile a name.');
+    const preview = el('div', { class: 'preview' }, el('h3', {}, 'Preview'), el('p', {}, 'This is how writing looks on a card.'),
+      el('span', { class: 'btn primary small', style: 'align-self:flex-start;pointer-events:none' }, 'Button'));
+    const note = el('p', { class: 'contrast' });
+    const sync = () => {
+      previewProfile = { ...draft };
+      applyTheme();
+      const text = contrastOf(draft.text, draft.secondary);
+      const accent = contrastOf(draft.primary, draft.secondary);
+      const low = text < 4.5 || accent < 3;
+      note.className = 'contrast' + (low ? ' bad' : '');
+      note.textContent = low
+        ? `${text < 4.5 ? 'Text is hard to read on the Secondary colour. ' : ''}${accent < 3 ? 'Primary is hard to see on the Secondary colour.' : ''}`
+        : 'Contrast looks good.';
+    };
+    const field = (label, key) => {
+      const picker = el('input', { type: 'color', value: draft[key], 'aria-label': `${label} colour` });
+      const hex = el('input', { type: 'text', value: draft[key], maxlength: '7', spellcheck: 'false', 'aria-label': `${label} hex code` });
+      picker.addEventListener('input', () => { draft[key] = picker.value; hex.value = picker.value; sync(); });
+      hex.addEventListener('input', () => {
+        const v = hex.value.startsWith('#') ? hex.value : `#${hex.value}`;
+        if (validHex(v)) { draft[key] = v.toLowerCase(); picker.value = draft[key]; sync(); }
+      });
+      return el('label', {}, el('span', {}, label), el('div', { class: 'pick' }, picker, hex));
+    };
+    const form = el('form', { novalidate: true },
+      el('div', { class: 'field' }, el('label', {}, 'Name'), name, err),
+      el('div', { class: 'colour-fields' }, field('Primary', 'primary'), field('Secondary', 'secondary'), field('Text', 'text')),
+      preview, note,
+      el('div', { class: 'sheet-actions' }, el('span', { class: 'grow' }),
+        el('button', { class: 'btn', type: 'button', onclick: endDraft }, 'Cancel'),
+        el('button', { class: 'btn primary', type: 'submit' }, draft.id ? 'Save' : 'Save and use')));
+    name.addEventListener('input', () => { draft.name = name.value; err.hidden = true; });
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const label = draft.name.trim();
+      if (!label) { err.hidden = false; name.focus(); return; }
+      const data = { name: label, primary: draft.primary, secondary: draft.secondary, text: draft.text };
+      let id = draft.id;
+      if (id) await store.update('profiles', id, data);
+      else id = (await store.add('profiles', data))?.id;
+      draft = null;
+      previewProfile = null;
+      if (id) await setLook({ profileId: id });
+      applyTheme();
+      renderAppearance();
+    });
+    sync();
+    return form;
+  }
+
+  function looksPanel() {
+    const t = themeDoc();
+    const curP = profileOf(t.profileId);
+    const curB = bgOf(t.bgId);
+    const same = (l) => profileOf(l.profileId).id === curP.id && bgOf(l.bgId).id === curB.id;
+    const lookName = el('input', { type: 'text', maxlength: '40', placeholder: `Name this look, e.g. “${curP.name} on ${curB.name}”`, 'aria-label': 'Look name' });
+    const row = (profile, bg, title, sub, ...actions) => el('div', { class: 'look-row' },
+      el('span', { class: 'thumb', style: thumbStyle(bg) }), el('span', { class: 'nm' }, title, el('small', {}, sub)), swatchesOf(profile), ...actions);
+    const apply = (l) => el('button', { class: 'btn', type: 'button', onclick: () => setLook({ profileId: l.profileId, bgId: l.bgId }) }, 'Use');
+    const looks = [...state.looks].sort((a, b) => b.createdAt - a.createdAt);
+    const history = (t.history ? Object.values(t.history) : []);
+    return el('div', {},
+      el('form', { class: 'look-name', onsubmit: async (e) => {
+        e.preventDefault();
+        await store.add('looks', { name: lookName.value.trim() || `${curP.name} on ${curB.name}`, profileId: curP.id, bgId: curB.id });
+        toast('Look saved.');
+      } }, lookName, el('button', { class: 'btn primary', type: 'submit' }, 'Save current look')),
+      el('h3', { class: 'ap-h', style: 'margin-top:0' }, 'Saved looks'),
+      looks.length ? looks.map((l) => row(profileOf(l.profileId), bgOf(l.bgId), l.name, `${profileOf(l.profileId).name} · ${bgOf(l.bgId).name}`,
+        same(l) ? el('span', { class: 'badge' }, 'In use') : apply(l),
+        el('button', { class: 'icon-btn', type: 'button', 'aria-label': `Delete ${l.name}`, onclick: async () => {
+          await store.remove('looks', l.id);
+          toast(`Deleted “${l.name}”`, 'Undo', () => store.set('looks', l.id, l));
+        } }, icon('trash'))))
+        : el('p', { class: 'quiet' }, 'Pair a background with a colour profile, then save it here to switch back in one tap.'),
+      el('h3', { class: 'ap-h' }, 'Recently used'),
+      history.length ? history.map((h) => row(profileOf(h.profileId), bgOf(h.bgId), `${profileOf(h.profileId).name} on ${bgOf(h.bgId).name}`, ago(h.at),
+        same(h) ? el('span', { class: 'badge' }, 'In use') : apply(h),
+        el('button', { class: 'btn', type: 'button', onclick: async () => {
+          await store.add('looks', { name: `${profileOf(h.profileId).name} on ${bgOf(h.bgId).name}`, profileId: h.profileId, bgId: h.bgId });
+          toast('Look saved.');
+        } }, 'Save')))
+        : el('p', { class: 'quiet' }, 'Changes you make to the background or colours are listed here.'));
+  }
+
+  $('appearance-btn').addEventListener('click', () => { if (!store.signedIn) { store.signIn(); return; } draft = null; appearance.showModal(); renderAppearance(); });
+  $('ap-tabs').addEventListener('click', (e) => {
+    const tab = e.target.closest('button')?.dataset.ap;
+    if (!tab || tab === apTab) return;
+    if (draft) endDraft();
+    apTab = tab;
+    renderAppearance();
+  });
+  appearance.addEventListener('close', () => { if (draft) endDraft(); });
 
   /* =====================================================================
      Weekly reset: routines stay, their ticks clear each Monday
