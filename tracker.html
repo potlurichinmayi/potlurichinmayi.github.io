@@ -2437,7 +2437,7 @@
   const fmtWeekdayShort = utcFmt({ weekday: 'short' });
 
   const BASE_CATEGORIES = ['Groceries', 'Food delivery', 'Eating out & snacks', 'Rides', 'Shopping', 'Health', 'Home services',
-    'Bills & recharges', 'Local shops', 'People', 'Family', 'Other'];
+    'Bills & recharges', 'Local shops', 'People', 'Family', 'Miscellaneous', 'Other'];
   const INCOME = 'Income';
   // the built-in categories plus the ones added under Vendors & categories (kept before "Other")
   const CATEGORIES = [...BASE_CATEGORIES];
@@ -2471,7 +2471,8 @@
     [/\bMEDI(?:CAL|CALS)?\b|PHARMA|APOLLO/, null, 'Health'],
     [/^URBAN COMPANY/, 'Urban Company', 'Home services'],
     [/AIRTEL|\bJIO\b|VODAFONE|ELECTRICITY|TSSPDCL|FIBERNET/, null, 'Bills & recharges'],
-    [/^MOHD MUSTAFA$/, 'Mohammed Mustafa', null],
+    [/^(MOHD|MOHAMMED) MUSTAFA$/, 'Mohammed Mustafa', 'Miscellaneous'],
+    [/^(MAHAMMED|MOHAMMED|MOHD) ASLAM$/, null, 'Miscellaneous'],
   ];
 
   const titleCase = (s) => s.toLowerCase().replace(/(^|[\s.&'-])([a-z])/g, (_, a, b) => a + b.toUpperCase());
