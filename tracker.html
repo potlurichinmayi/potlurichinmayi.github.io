@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0a1128">
 <title>Potluri — Tracker</title>
 <link rel="icon" href="tracker-assets/eye.png">
-<link rel="preload" as="image" href="tracker-assets/bg-top.webp">
+<link rel="preload" as="image" href="tracker-assets/bg-full.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&display=swap" rel="stylesheet">
@@ -17,7 +17,10 @@
     --ember: #e9a26c;
     --ink: #f0e8d9;
     --on-ember: #0b1230;
-    --bg-image: url('tracker-assets/bg-top.webp');
+    --bg-image: url('tracker-assets/bg-full.webp');
+    /* the background is a fixed size, set from the tallest page (Finance > Spending) and never rescales with the window */
+    --bg-w: 2826px;
+    --bg-h: 3177px;
     --ember-hi: color-mix(in srgb, var(--ember), white 28%);
     --panel: color-mix(in srgb, var(--ground) 80%, transparent);
     --sheet: color-mix(in srgb, var(--ground), white 3%);
@@ -67,22 +70,12 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* parallax: the photograph stays fixed to the window while the page scrolls over it,
-     so pages of different lengths never resize or move it */
-  body {
-    background-color: var(--ground);
-    background-image: var(--bg-image);
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
-  /* phones and tablets ignore background-attachment: fixed (iOS stretches the photo instead),
-     so there the same effect comes from a fixed layer behind the page */
-  @media (hover: none) and (pointer: coarse) {
-    body { background: none; }   /* a body colour would paint over the layer below */
-    body::before { content: ''; position: fixed; inset: 0 0 auto 0; z-index: -1; height: 100lvh; pointer-events: none; background: var(--ground) var(--bg-image) center / cover no-repeat; }
-  }
+  /* the photograph is part of the page: it scrolls with the content, always the same size, centred on the top.
+     Pages shorter than it are cropped off at the bottom; longer ones fade into the surface colour below it. */
+  body { position: relative; }   /* no body colour: html paints it, behind the layer */
+  .bg-layer { position: absolute; z-index: -1; top: 0; left: 0; right: 0; height: min(var(--bg-h), 100%); overflow: hidden; pointer-events: none; }   /* never taller than the page, so a short page crops it */
+  .bg-layer i { position: absolute; top: 0; left: 50%; width: var(--bg-w); height: var(--bg-h); transform: translateX(-50%); background: var(--bg-image) center / cover no-repeat; }
+  .bg-layer i::after { content: ''; position: absolute; inset: auto 0 0 0; height: 360px; background: linear-gradient(to bottom, transparent, var(--ground)); }
 
   ::selection { background: var(--ember); color: var(--on-ember); }
   :focus-visible { outline: 2px solid var(--ember); outline-offset: 2px; }
@@ -870,6 +863,11 @@
   .fin-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
   .fin-actions + .fin-month { margin-left: 0; }
   .tx-tools .btn { min-height: 42px; }
+  /* the transaction list scrolls inside its card, so the page itself stays put */
+  #tab-transactions > .panel { display: flex; flex-direction: column; height: calc(100dvh - 230px); min-height: 440px; }
+  #tab-transactions .tx-tools, #tab-transactions .tx-summary { flex: none; }
+  #tx-list { flex: 1; min-height: 0; margin: 0 -10px; padding: 0 10px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--rule-2) transparent; }
+  #tx-list > .fin-day:first-child { margin-top: 4px; }
   .tx .tx-actions { grid-column: 1 / -1; display: flex; gap: 8px; }
   .tag-cash { color: var(--ember); }
 
@@ -1077,6 +1075,7 @@
   </defs>
 </svg>
 
+<div class="bg-layer" aria-hidden="true"><i></i></div>
 <span id="top"></span>
 <header class="bar" id="bar">
   <a class="brand" href="#top">
@@ -3713,7 +3712,7 @@
      ===================================================================== */
   const MAX_BG = 12;
   const DEFAULT_PROFILE = { id: 'default', name: 'Midnight', primary: '#e9a26c', secondary: '#0a1128', text: '#f0e8d9' };
-  const DEFAULT_BG = { id: 'default', name: 'Original', data: 'tracker-assets/bg-top.webp' };
+  const DEFAULT_BG = { id: 'default', name: 'Original', data: 'tracker-assets/bg-full.webp' };
   const themeDoc = () => state.meta.find((m) => m.id === 'theme') || {};
   const allProfiles = () => [DEFAULT_PROFILE, ...[...state.profiles].sort((a, b) => a.createdAt - b.createdAt)];
   const profileOf = (id) => allProfiles().find((p) => p.id === id) || DEFAULT_PROFILE;
