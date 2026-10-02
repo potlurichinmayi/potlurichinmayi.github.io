@@ -518,7 +518,9 @@
   .tx summary:hover { background: var(--raise); }
   .tx-name { display: block; overflow-wrap: anywhere; }
   .tx-meta { display: block; margin-top: 2px; font-size: 13px; color: var(--ink-3); }
-  .tx-amount { white-space: nowrap; }
+  .tx-amount { white-space: nowrap; text-align: right; }
+  .tx-bal { display: block; margin-top: 2px; font-size: 13px; color: var(--ink-3); }
+  .bal-chart .hit { fill: transparent; }
   .tx.excluded .tx-amount, .tx.excluded .tx-name { color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--rule-2); }
   .tx-excerpt { margin: 0 4px 12px; padding: 10px 12px; font-size: 14px; line-height: 1.45; color: var(--ink-2); background: var(--raise); border-radius: 8px; overflow-wrap: anywhere; }
   .tx-edit { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; margin: 0 4px 16px; }
@@ -1241,6 +1243,7 @@
       <span class="tab-pill" aria-hidden="true"></span>
     </nav>
     <div class="fin-actions">
+      <button class="btn small" type="button" id="bal-set">Set balance</button>
       <button class="btn small" type="button" id="cash-add"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg>Add cash</button>
       <button class="btn small" type="button" id="vendors-open">Vendors &amp; categories</button>
     </div>
@@ -1424,6 +1427,33 @@
       <span class="grow"></span>
       <button class="btn" type="button" data-close>Cancel</button>
       <button class="btn primary" type="submit" id="cash-save">Add</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Set the current balance -->
+<dialog class="sheet" id="bal-sheet" aria-labelledby="bal-h">
+  <form class="sheet-body" id="bal-form" novalidate>
+    <div class="sheet-head">
+      <h2 id="bal-h">Current balance</h2>
+      <button class="icon-btn" type="button" data-close aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="field">
+      <label for="bal-amount">Balance (₹)</label>
+      <input type="number" id="bal-amount" step="any" inputmode="decimal" style="display:block;width:100%;min-height:46px;padding:10px 14px;font-size:17px;background:var(--raise);border:0;border-radius:10px;box-shadow:inset 0 0 0 1px var(--rule-2)">
+      <p class="err" id="bal-err" hidden>Enter the balance as a number.</p>
+    </div>
+    <div class="field">
+      <label for="bal-date">As of</label>
+      <div class="date-row">
+        <input type="date" id="bal-date">
+        <input type="time" id="bal-time" style="flex:0 1 130px" aria-label="Time">
+      </div>
+    </div>
+    <div class="sheet-actions">
+      <span class="grow"></span>
+      <button class="btn" type="button" data-close>Cancel</button>
+      <button class="btn primary" type="submit">Save</button>
     </div>
   </form>
 </dialog>
@@ -3154,9 +3184,11 @@
         el('small', {}, [t.time, t.category, t.refunded ? `${rupees.format(t.refunded)} refunded` : null].filter(Boolean).join(' · '))))),
       items.length ? el('button', { class: 'link-btn', type: 'button', style: 'margin-top:10px', onclick: toTransactions({ date: day.key }) }, 'Open in Transactions') : null);
 
-    tab.replaceChildren(el('div', { class: 'fin-grid' }, lede, gaugeCard, catCard, regCard, punchCard, smallCard, dayCard, calCard, pickedCard));
+    const bal = balanceCard(s);
+    tab.replaceChildren(el('div', { class: 'fin-grid' }, bal.card, lede, gaugeCard, catCard, regCard, punchCard, smallCard, dayCard, calCard, pickedCard));
 
     // charts are measured once they're in the page
+    bal.draw();
     lineChart(cum, [
       prev.payments.length ? { values: runningTotal(prev), cls: 'prev', dashed: true } : { values: [] },
       { values: runningTotal(s), cls: 'actual', area: true, dot: true },
@@ -3194,6 +3226,124 @@
     $('tx-payee').replaceChildren(el('option', { value: '' }, 'All payees'), ...payees.map(([k, name]) => el('option', { value: k }, name)));
     $('tx-payee').value = txFilter.payee;
   }
+
+  /* =====================================================================
+     Balance
+       meta/balance { amount, asOf }  what the account held at that moment (ms since epoch)
+     Every transaction's balance is worked out from it: later ones roll forward, earlier ones back.
+     ===================================================================== */
+  const BALANCE_FALLBACK = { amount: 53826.76, asOf: Date.parse('2026-10-02T15:03:00+05:30') };
+  const balanceAnchor = () => {
+    const m = state.meta.find((x) => x.id === 'balance');
+    return m && Number.isFinite(Number(m.amount)) && m.asOf ? { amount: Number(m.amount), asOf: Number(m.asOf) } : BALANCE_FALLBACK;
+  };
+  const cents = (v) => Math.round(v * 100) / 100;
+
+  let balCache = null;   // cleared with finCache
+  function balances() {
+    if (balCache && balCache.src === finCache) return balCache;
+    const { list } = finData();
+    const { amount, asOf } = balanceAnchor();
+    const sorted = [...list].sort((a, b) => a.createdAt - b.createdAt || String(a.id).localeCompare(String(b.id)));
+    const delta = (t) => (t.type === 'credit' ? t.amount : -t.amount);
+    const split = sorted.findIndex((t) => t.createdAt > asOf);
+    const at = split < 0 ? sorted.length : split;      // sorted[0..at) happened by the anchor
+    const after = new Map();
+    let run = amount;
+    for (let i = at - 1; i >= 0; i--) { after.set(sorted[i].id, cents(run)); run -= delta(sorted[i]); }
+    run = amount;
+    for (let i = at; i < sorted.length; i++) { run += delta(sorted[i]); after.set(sorted[i].id, cents(run)); }
+    // the balance at the end of each day, carried over days with nothing in them
+    const days = new Map();
+    for (const t of sorted) days.set(t.date, after.get(t.id));
+    const first = sorted[0]?.date;
+    const daily = new Map();
+    if (first) {
+      let last = null;
+      for (let d = parseKey(first), end = todayKey(); toKey(d) <= end; d = new Date(d.getTime() + 864e5)) {
+        const k = toKey(d);
+        if (days.has(k)) last = days.get(k);
+        daily.set(k, last);
+      }
+    }
+    balCache = { src: finCache, after, daily, current: sorted.length ? cents(run) : amount };
+    return balCache;
+  }
+
+  function balanceCard(s) {
+    const { daily, current } = balances();
+    const vals = s.perDay.map((d) => (d.future ? null : daily.get(d.key) ?? null));
+    const known = vals.filter((v) => v != null);
+    const holder = el('div', { class: 'chart bal-chart' });
+    const change = known.length > 1 ? cents(known[known.length - 1] - known[0]) : 0;
+    const card = el('section', { class: 'panel story-card lede s12' },
+      el('p', { class: 'kicker' }, 'Balance'),
+      el('h3', { class: 'finding' }, 'You have ', el('span', { class: 'hl' }, rupeesExact.format(current)), '.'),
+      el('p', { class: 'stat-sub' }, known.length > 1
+        ? `${change >= 0 ? 'Up' : 'Down'} ${rupees.format(Math.abs(change))} over ${s.name}`
+        : `Daily balance, ${s.name}`),
+      holder);
+    return { card, draw: () => balanceChart(holder, s, vals) };
+  }
+
+  function balanceChart(holder, s, vals) {
+    const known = vals.filter((v) => v != null);
+    if (!known.length) { holder.replaceChildren(emptyEl(`No balance to show for ${s.name}.`)); return; }
+    const width = Math.max(240, Math.round(holder.clientWidth || 600));
+    const height = Math.max(190, Math.floor(holder.clientHeight || 0));
+    const pad = { l: 4, r: 8, t: 14, b: 22 };
+    let lo = Math.min(...known); let hi = Math.max(...known);
+    if (hi - lo < 1) { hi += 1; lo -= 1; }
+    const gap = (hi - lo) * 0.12; lo -= gap; hi += gap;
+    const x = (i) => pad.l + (i / Math.max(s.days - 1, 1)) * (width - pad.l - pad.r);
+    const y = (v) => pad.t + (height - pad.t - pad.b) * (1 - (v - lo) / (hi - lo));
+    const pts = vals.map((v, i) => (v == null ? null : [x(i), y(v)]));
+    const live = pts.filter(Boolean);
+    const d = live.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join('');
+    const nodes = [];
+    for (let g = 0; g < 4; g++) {
+      const v = lo + ((hi - lo) * g) / 3;
+      nodes.push(svg('line', { class: 'grid-line', x1: pad.l, x2: width - pad.r, y1: y(v), y2: y(v) }));
+    }
+    nodes.push(svg('text', { class: 'tick', x: pad.l, y: pad.t - 3 }, compact(Math.round(hi - gap))));
+    nodes.push(svg('text', { class: 'tick', x: pad.l, y: height - pad.b - 4 }, compact(Math.round(lo + gap))));
+    for (let i = 0; i < s.days; i += 5) nodes.push(svg('text', { class: 'tick', x: x(i), y: height - 4, 'text-anchor': i ? 'middle' : 'start' }, String(i + 1)));
+    nodes.push(svg('path', { class: 'actual-area fade', d: `${d}L${live[live.length - 1][0]},${height - pad.b}L${live[0][0]},${height - pad.b}Z` }));
+    nodes.push(svg('path', { class: 'actual draw', d, pathLength: '1', fill: 'none' }));
+    nodes.push(svg('circle', { class: 'actual-dot fade', cx: live[live.length - 1][0], cy: live[live.length - 1][1], r: 4.5 }));
+    // one wide invisible column per day carries the tooltip
+    const step = (width - pad.l - pad.r) / Math.max(s.days - 1, 1);
+    pts.forEach((p, i) => {
+      if (!p) return;
+      const day = s.perDay[i];
+      nodes.push(svg('rect', { class: 'hit', x: p[0] - step / 2, y: 0, width: step, height, 'data-tip': `${fmtShort.format(parseKey(day.key))} · ${rupeesExact.format(vals[i])}`, 'aria-label': `${day.key} ${rupeesExact.format(vals[i])}` }));
+    });
+    holder.replaceChildren(svg('svg', { viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-label': `Balance at the end of each day in ${s.name}` }, nodes));
+  }
+
+  function openBalance() {
+    if (!store.signedIn) { store.signIn(); return; }
+    const a = balanceAnchor();
+    const when = new Date(a.asOf);
+    const p2 = (n) => String(n).padStart(2, '0');
+    $('bal-amount').value = a.amount;
+    $('bal-date').value = `${when.getFullYear()}-${p2(when.getMonth() + 1)}-${p2(when.getDate())}`;
+    $('bal-time').value = `${p2(when.getHours())}:${p2(when.getMinutes())}`;
+    $('bal-err').hidden = true;
+    $('bal-sheet').showModal();
+    $('bal-amount').focus();
+  }
+  $('bal-set').addEventListener('click', openBalance);
+  $('bal-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const amount = $('bal-amount').value === '' ? NaN : cents(Number($('bal-amount').value));
+    if (!Number.isFinite(amount)) { $('bal-err').hidden = false; $('bal-amount').focus(); return; }
+    const asOf = Date.parse(`${$('bal-date').value || todayKey()}T${$('bal-time').value || '00:00'}:00`) || Date.now();
+    await store.set('meta', 'balance', { amount, asOf });
+    $('bal-sheet').close();
+    toast(`Balance set to ${rupeesExact.format(amount)}.`);
+  });
+
 
   function renderTransactionsTab() {
     if (!finData().list.length) { $('tx-list').replaceChildren(connectPrompt()); $('tx-summary').replaceChildren(); return; }
@@ -3239,7 +3389,8 @@
     const row = el('details', { class: 'tx' + (t.excluded ? ' excluded' : ''), open: openTx.has(t.id) },
       el('summary', {},
         el('span', {}, el('span', { class: 'tx-name' }, t.payee), el('span', { class: 'tx-meta' }, meta)),
-        el('span', { class: 'tx-amount' + (t.type === 'credit' ? ' credit' : '') }, `${sign}${rupeesExact.format(t.amount)}`)),
+        el('span', { class: 'tx-amount' + (t.type === 'credit' ? ' credit' : '') }, `${sign}${rupeesExact.format(t.amount)}`,
+          balances().after.has(t.id) ? el('small', { class: 'tx-bal' }, `Balance ${rupeesExact.format(balances().after.get(t.id))}`) : null)),
       t.excerpt ? el('p', { class: 'tx-excerpt' }, t.excerpt) : null,
       txEditor(t));
     row.addEventListener('toggle', () => (row.open ? openTx.add(t.id) : openTx.delete(t.id)));
