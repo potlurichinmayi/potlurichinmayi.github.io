@@ -2444,7 +2444,8 @@
      Finance
      Transactions come from tracker-scripts/axis-alerts.gs. On top of them the page keeps:
        payees  { id: payee key, name, category }              a name and category for every payment to that payee
-       txmeta  { id: transaction id, category, excluded }      one transaction's own choices (win over the payee's)
+       txmeta  { id: transaction id, category, excluded, vendor, note }   one transaction's own choices (win over the payee's);
+                                                                           vendor files it under another vendor, note says who was actually paid
        budgets { id: 'default', total, categories: { [category]: amount } }   one budget for every month
      Everything below is recomputed from those whenever the data changes, so charts stay live.
      ===================================================================== */
@@ -2474,7 +2475,7 @@
 
   // payees the bank names in many ways; the bank also cuts names at 19 characters
   const KNOWN_PAYEES = [
-    [/^ROPPEN/, 'Rapido', 'Rides'],
+    [/^ROPPEN|^RAPIDO/, 'Rapido', 'Rides'],
     [/^UBER/, 'Uber', 'Rides'],
     [/^OLA\b|^ANI TECHNOLOGIES/, 'Ola', 'Rides'],
     [/INSTAMART/, 'Swiggy Instamart', 'Groceries'],
@@ -2531,11 +2532,11 @@
       createdAt: Date.parse(`${c.date}T${c.time || '12:00'}:00+05:30`) || c.createdAt, cashCategory: c.category || null,
     }));
     const list = [...state.transactions, ...cashTx].map((t) => {
-      const raw = rawPayee(t).toUpperCase().replace(/\s+/g, ' ').trim();
+      const own = meta.get(t.id);
+      const raw = (own?.vendor || rawPayee(t)).toUpperCase().replace(/\s+/g, ' ').trim();
       const known = KNOWN_PAYEES.find(([re]) => re.test(raw));
       const key = payeeKey(known?.[1] || raw);
       const rule = rules.get(key);
-      const own = meta.get(t.id);
       const kind = upiKind(t);
       const amount = Number(t.amount) || 0;
       const refund = t.type === 'credit' && /\brefu|refund|revers/i.test(t.excerpt || '');
@@ -2549,6 +2550,7 @@
         amount,
         key,
         payee: rule?.name || known?.[1] || titleCase(raw),
+        note: own?.note || null,
         category,
         kind,
         channel: channelOf(t),
@@ -3198,7 +3200,7 @@
       && (!txFilter.category || t.category === txFilter.category)
       && (!txFilter.payee || t.key === txFilter.payee)
       && (!txFilter.date || t.date === txFilter.date)
-      && (!q || `${t.payee} ${t.description || ''} ${t.category} ${t.excerpt || ''}`.toLowerCase().includes(q)));
+      && (!q || `${t.payee} ${t.description || ''} ${t.note || ''} ${t.category} ${t.excerpt || ''}`.toLowerCase().includes(q)));
     list = list.sort(txFilter.sort === 'largest' ? (a, b) => b.amount - a.amount
       : txFilter.sort === 'oldest' ? (a, b) => a.createdAt - b.createdAt : (a, b) => b.createdAt - a.createdAt);
 
@@ -3225,7 +3227,7 @@
   }
 
   function txRow(t) {
-    const meta = [t.category, t.refund ? (t.refundFor ? `Refund for ${fmtShort.format(parseKey(t.refundFor))}` : 'Refund') : null,
+    const meta = [t.category, t.note, t.refund ? (t.refundFor ? `Refund for ${fmtShort.format(parseKey(t.refundFor))}` : 'Refund') : null,
       t.refunded ? `${rupees.format(t.refunded)} refunded, ${rupees.format(t.spend)} net` : null, t.channel, t.account ? `XX${t.account}` : null,
       txFilter.sort === 'largest' ? fmtShort.format(parseKey(t.date)) : null, t.time, t.excluded ? 'Not counted' : null].filter(Boolean).join(' · ');
     const sign = t.type === 'credit' ? '+' : t.type === 'debit' ? '−' : '';
@@ -3248,6 +3250,8 @@
     const forAll = el('input', { type: 'checkbox', checked: true });
     const name = el('input', { type: 'text', value: t.payee, maxlength: '60', 'aria-label': 'Payee name' });
     const counts = el('input', { type: 'checkbox', checked: !t.excluded });
+    const note = el('input', { type: 'text', value: t.note || '', maxlength: '120', placeholder: 'e.g. who you paid', 'aria-label': 'Note' });
+    note.addEventListener('change', () => store.set('txmeta', t.id, { ...(finData().meta.get(t.id) || {}), note: note.value.trim() || null }));
 
     category.addEventListener('change', async () => {
       if (t.cash) {
@@ -3270,6 +3274,7 @@
     return el('div', { class: 'tx-edit' },
       el('label', {}, el('span', {}, 'Category'), category),
       el('label', {}, el('span', {}, 'Payee name'), name),
+      el('label', { style: 'grid-column:1/-1' }, el('span', {}, 'Note'), note),
       t.cash ? null : el('label', { class: 'toggle' }, forAll, `Use this category for every payment to ${t.payee}`),
       el('label', { class: 'toggle' }, counts, t.type === 'credit' ? 'Count as a refund against spending' : 'Count in spending'),
       t.cash ? el('div', { class: 'tx-actions' }, el('button', { class: 'btn small', type: 'button', onclick: () => openCash(state.cash.find((c) => c.id === t.cashId)) }, icon('edit'), 'Edit cash entry')) : null);
