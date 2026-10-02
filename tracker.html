@@ -1523,6 +1523,8 @@
       <li>Open <code>Code.gs</code> and replace everything with the script. Your account id is already filled in.<br>
         <button class="btn small" type="button" data-copy="tracker-scripts/axis-alerts.gs">Copy script</button>
         <br><span class="uid" id="fin-uid"></span></li>
+      <li>Optional, to file Uber rides paid to a driver under Uber: click <strong>+</strong> beside Files, choose <em>Script</em>, name it <code>uber-trips</code> and replace everything in it with this.<br>
+        <button class="btn small" type="button" data-copy="tracker-scripts/uber-trips.gs">Copy Uber script</button></li>
       <li>Save, choose <strong>setup</strong> in the toolbar and press <strong>Run</strong>. Approve access; Google will call it an unverified app because it is your own script, so choose <em>Advanced</em> and continue.</li>
     </ol>
     <p style="color:var(--ink-3);font-size:15px">Transactions from the last 120 days appear here within a minute, and new ones every 15 minutes after that.</p>
@@ -3425,7 +3427,7 @@
       let text = await res.text();
       if (store.accountId) text = text.replace('PASTE_YOUR_ACCOUNT_ID', store.accountId);
       await navigator.clipboard.writeText(text);
-      toast(button.dataset.copy.endsWith('.json') ? 'Manifest copied.' : 'Script copied, with your account id.');
+      toast(button.dataset.copy.endsWith('.json') ? 'Manifest copied.' : 'Script copied.');
     } catch (err) {
       console.error('Copy failed:', err);
       toast(`Couldn’t copy. Open ${button.dataset.copy} from the site and copy it by hand.`);
