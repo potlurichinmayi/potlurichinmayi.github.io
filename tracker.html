@@ -861,88 +861,6 @@
     .rcol i { width: 9px; height: 9px; }
   }
 
-  /* ---------- Spending: laid out like Overview ----------
-     One grid for the top block: the left half is tracks 1-3, the right half 5-7, so a row's cards share their edges across the page. */
-  .sp-top { display: grid; grid-template-columns: minmax(0, 304fr) 35px minmax(0, 304fr) 40px minmax(0, 299fr) 35px minmax(0, 299fr); grid-template-rows: auto 1fr auto auto; align-items: stretch; }
-  .sp-top > *, .sp-bottom > * { min-width: 0; }
-  .sp-cell { display: flex; flex-direction: column; }
-  .sp-cell > .panel, .sp-cell > .sp-open { flex: 1; }
-  .sp-glance { grid-column: 1 / 4; grid-row: 1; }
-  .sp-month { grid-column: 1 / 4; grid-row: 2; }
-  .sp-cal { grid-column: 5 / 8; grid-row: 1 / 3; padding-top: 18px; }
-  .sp-where { grid-column: 1; grid-row: 3 / 5; padding-top: 35px; }
-  .sp-bal { grid-column: 3; grid-row: 3; padding-top: 35px; }
-  .sp-budget { grid-column: 3; grid-row: 4; padding-top: 35px; }
-  .sp-day { grid-column: 5; grid-row: 3; padding-top: 35px; }
-  .sp-picked { grid-column: 7; grid-row: 3; padding-top: 35px; }
-  .sp-when { grid-column: 5 / 8; grid-row: 4; padding-top: 35px; }
-  .sp-bottom { display: grid; grid-template-columns: minmax(0, 643fr) minmax(0, 633fr); column-gap: 40px; align-items: start; margin-top: 64px; }
-  .sp-bottom.solo { display: block; margin-top: 20px; }
-  .sp-open { display: flex; flex-direction: column; }
-  .sp-day .sp-open { padding-top: 0; }
-
-  /* inside these cards the sentence is body-sized and the heading is the label above */
-  .sp-top .story-card .finding, .sp-bottom .finding { margin-bottom: 0; font-size: 19px; line-height: 1.25; text-wrap: balance; }
-  .sp-top .story-card .finding-sm, .sp-top .story-card .stat-sub { margin: 4px 0 0; font-size: 14px; color: var(--ink-2); }
-  .sp-top .story-card > * + :not(.finding-sm):not(.stat-sub) { margin-top: 14px; }
-  .sp-open > .finding { margin: 14px 0 4px; }
-  .sp-open > .finding-sm { margin: 0 0 6px; font-size: 14px; color: var(--ink-2); }
-  .sp-top .panel { padding: 22px; }
-  .sp-month .chart { flex: 1; min-height: 190px; margin-top: 14px; }
-  .sp-bal .bal-chart { flex: 1; min-height: 150px; margin-top: 14px; }
-  .sp-day .chart { flex: 1; min-height: 180px; margin-top: 16px; }
-  .sp-budget .gauge svg, .sp-top .gauge svg { max-width: 210px; }
-  .sp-budget .trio { margin-top: 12px; }
-  .sp-top .trio p:last-child { font-size: 20px; }
-  .sp-top .stack-legend { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .sp-top .moves { margin-top: 0; }
-  .sp-top .moves li { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'n t' 's t'; gap: 0 10px; }
-  .sp-top .moves li > :nth-child(1) { grid-area: n; }
-  .sp-top .moves li > :nth-child(2) { grid-area: s; font-size: 13px; color: var(--ink-3); }
-  .sp-top .moves li > :nth-child(3) { grid-area: t; }
-  .sp-top .moves .stat-sub { margin: 0; }
-  .sp-top .cat-card > .moves { margin-top: 18px; }
-  .sp-top .bigcal-week, .sp-top .bigcal { grid-template-columns: repeat(7, minmax(0, 1fr)) 52px; gap: 5px; }
-  .sp-top .bday { min-height: 66px; padding: 6px 8px; }
-  .sp-top .bday .amt { font-size: 15px; }
-  .sp-top .day-list { max-height: none; }
-  .sp-top .punch svg { margin-top: 4px; }
-  .sp-bottom .hrows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; }
-
-  /* the glance row: a figure, a small line, and a footer band shared by all three */
-  .sp-glance .zone { display: flex; flex-direction: column; min-height: 168px; background: linear-gradient(155deg, color-mix(in srgb, var(--ember) 9%, transparent), transparent 52%), var(--panel); box-shadow: var(--shadow), inset 0 1px 0 color-mix(in srgb, var(--ink) 9%, transparent); }
-  .sp-glance .k { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; min-height: 18px; font-size: 14px; line-height: 1.2; color: var(--ink-2); white-space: nowrap; }
-  .sp-glance .k em { font-style: normal; font-size: 13px; color: var(--ink-3); }
-  .sp-glance .big { display: block; margin-top: 12px; font-size: 40px; letter-spacing: -0.01em; }
-  .sp-glance .big .cur { margin-right: 2px; font-size: 0.5em; vertical-align: 0.75em; color: var(--ember-hi); }
-  .sp-glance .big small { margin-left: 2px; font-size: 18px; letter-spacing: 0.02em; color: var(--ink-3); }
-  .sp-glance .zfoot { display: flex; align-items: flex-end; height: 46px; box-sizing: content-box; margin-top: auto; padding-top: 14px; }
-  .sp-glance .zfoot > * { flex: 1; min-width: 0; }
-  .sp-glance .zfoot > .btn { flex: none; }
-  .sp-glance .ticks { width: 100%; height: 40px; margin: 0; }
-  .spark svg { display: block; width: 100%; height: 46px; overflow: visible; }
-  .spark .sl { stroke: var(--ember); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
-  .spark .sp { stroke: var(--ink-3); stroke-width: 1.2; stroke-dasharray: 2 4; vector-effect: non-scaling-stroke; }
-
-  .owed-sec .head { margin-bottom: 12px; }
-  .owed-sec .owed-card { padding: 22px; }
-
-  @media (max-width: 1100px) {
-    .sp-top { display: flex; flex-direction: column; gap: 28px; }
-    .sp-top > * { padding-top: 0 !important; }
-    .sp-bottom { display: flex; flex-direction: column; gap: 40px; margin-top: 40px; }
-    .sp-month > .rule { display: none; }
-  }
-  @media (max-width: 719px) {
-    .sp-glance .glance { grid-template-columns: minmax(0, 1fr); }
-    .sp-glance .zone { min-height: 0; }
-    .sp-top .panel { padding: 16px; }
-    .sp-bottom .hrows { grid-template-columns: minmax(0, 1fr); }
-    .sp-top .bigcal-week, .sp-top .bigcal { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
-    .sp-top .bday { min-height: 56px; padding: 5px; }
-    .sp-top .bday .amt { font-size: 12px; }
-  }
-
   /* ---------- Cash, owed, appearance ---------- */
   .fin-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
   .fin-actions + .fin-month { margin-left: 0; }
@@ -2830,7 +2748,7 @@
     if (animate) {
       const panel = $(`tab-${finTab}`);
       const grid = panel.querySelector('.fin-grid');
-      stagger(grid ? grid.children : finTab === 'spending' ? [...panel.querySelectorAll('.sp-top > *, .sp-bottom > * > *')] : panel.children);
+      stagger(grid ? grid.children : panel.children);
       if (finTab === 'transactions') stagger([...$('tx-list').children].slice(0, 16), 2);
       drawIn(panel);
       countUp(panel);
@@ -3062,36 +2980,13 @@
     holder.replaceChildren(svg('svg', { viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-label': 'Running total of spending through the month' }, nodes));
   }
 
-  // a small line without axes, for the glance row: series [{ values, main }]; `full` stretches the main line across the width
-  let sparkId = 0;
-  function sparkline(series, full = false) {
-    const W = 300; const H = 46;
-    const live = (v) => v.filter((x) => x != null);
-    const all = series.flatMap((x) => live(x.values));
-    if (all.length < 2) return el('div', { class: 'spark' });
-    const lo = Math.min(...all); const hi = Math.max(...all);
-    const main = series.find((x) => x.main);
-    const n = full ? live(main.values).length : Math.max(...series.map((x) => x.values.length));
-    const x = (i) => 3 + (i / Math.max(n - 1, 1)) * (W - 6);
-    const y = (v) => H - 6 - ((v - lo) / (hi - lo || 1)) * (H - 14);
-    const path = (vals) => live(vals).map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join('');
-    const pts = live(main.values);
-    const id = `spark${sparkId += 1}`;
-    return el('div', { class: 'spark' }, svg('svg', { viewBox: `0 0 ${W} ${H}`, preserveAspectRatio: 'none', role: 'img', 'aria-hidden': 'true' },
-      svg('defs', {}, svg('linearGradient', { id, x1: 0, y1: 0, x2: 0, y2: 1 },
-        svg('stop', { offset: 0, 'stop-color': 'var(--ember)', 'stop-opacity': 0.32 }), svg('stop', { offset: 1, 'stop-color': 'var(--ember)', 'stop-opacity': 0 }))),
-      svg('path', { d: `${path(main.values)}L${x(pts.length - 1)},${H}L${x(0)},${H}Z`, fill: `url(#${id})` }),
-      series.map((o) => svg('path', { class: o.main ? 'sl' : 'sp', d: path(o.values), fill: 'none' })),
-      svg('circle', { cx: x(pts.length - 1), cy: y(pts[pts.length - 1]), r: 3.5, fill: 'var(--ember)', stroke: 'var(--ground)', 'stroke-width': 2 })));
-  }
-
   // the stories, then the owed card underneath (which stays even when there is nothing else to show)
   function renderSpendingTab() {
     renderSpendingStories();
     const tab = $('tab-spending');
-    let slot = tab.querySelector('.sp-owed');
-    if (!slot) { slot = el('div', { class: 'sp-owed' }); tab.append(el('div', { class: 'sp-bottom solo' }, slot)); }
-    slot.replaceChildren(owedCard());
+    let grid = tab.querySelector('.fin-grid');
+    if (!grid) { grid = el('div', { class: 'fin-grid', style: 'margin-top:20px' }); tab.append(grid); }
+    grid.append(owedCard());
   }
 
   function renderSpendingStories() {
@@ -3106,10 +3001,7 @@
     const avg = s.elapsed ? s.net / s.elapsed : 0;
     const hl = (t) => el('span', { class: 'hl' }, t);
     const card = (cls, kicker, finding, ...body) => el('section', { class: `panel story-card ${cls}` },
-      kicker ? el('p', { class: 'kicker' }, kicker) : null, el('h3', { class: 'finding' }, finding), ...body);
-    // the heading that sits above a card (or, with ruled, over an open section), as on Overview
-    const spHead = (title, { ruled = false, to = null } = {}) => el('div', { class: `head${ruled ? ' ruled' : ''}` }, el('h2', {}, title),
-      to ? el('button', { class: 'icon-btn', type: 'button', 'aria-label': `${title} in Transactions`, onclick: to }, '↗') : null);
+      el('p', { class: 'kicker' }, kicker), el('h3', { class: 'finding' }, finding), ...body);
     const toTransactions = (filter) => () => { txFilter = { ...blankFilter(), ...filter }; goFinance('transactions'); };
 
     /* 1 · the month so far, with its running total against last month */
@@ -3122,7 +3014,8 @@
       compare = { change, text: `${change === 0 ? `Same as ${prev.name}` : `${Math.abs(change)}% ${change > 0 ? 'more' : 'less'} than ${prev.name}`}${s.isCurrent && change !== 0 ? ' by this point' : ''}${partial ? ` (records start ${fmtShort.format(parseKey(firstDay)).replace(/^\w+ /, '')})` : ''}` };
     }
     const cum = el('div', { class: 'chart' });
-    const lede = el('section', { class: 'panel story-card lede' },
+    const lede = el('section', { class: 'panel story-card lede s8' },
+      el('p', { class: 'kicker' }, `${s.name}${s.isCurrent ? ', so far' : ''}`),
       el('h3', { class: 'finding' }, s.isCurrent ? 'You’ve spent ' : 'You spent ', el('span', { class: 'hl', 'data-count': s.net, 'data-money': true }, rupees.format(s.net)), ', about ', hl(rupees.format(avg)), ' a day.'),
       el('p', { class: 'stat-sub' }, [plural(s.payments.length, 'payment'), `typically ${rupees.format(median(s.payments.map((t) => t.spend)))}`,
         `${rupees.format(s.received)} received`, s.refunded ? `${rupees.format(s.refunded)} credited back` : null].filter(Boolean).join(' · ')),
@@ -3134,7 +3027,7 @@
     const b = budget();
     let gaugeCard;
     if (!b?.total) {
-      gaugeCard = card('gauge-card', null, 'Set a monthly budget to see whether you’re on pace.',
+      gaugeCard = card('s4', 'Budget', 'Set a monthly budget to see whether you’re on pace.',
         el('div', { class: 'fill-card' }, el('button', { class: 'btn primary', type: 'button', onclick: () => goFinance('budget') }, 'Set a budget')));
     } else {
       const limit = Number(b.total);
@@ -3149,7 +3042,7 @@
       const finding = !s.isCurrent
         ? (left >= 0 ? ['You finished ', hl(rupees.format(left)), ' under budget.'] : ['You went ', hl(rupees.format(-left)), ' over budget.'])
         : ahead > 0 ? ['You’re ', hl(rupees.format(ahead)), ' ahead of an even pace.'] : ['You’re ', hl(rupees.format(-ahead)), ' under an even pace.'];
-      gaugeCard = card('gauge-card', null, finding,
+      gaugeCard = card('s4', 'Budget', finding,
         s.isCurrent ? el('p', { class: 'finding-sm' }, 'The white mark is where an even pace would be today.') : null,
         el('div', { class: 'gauge fill-card' }, svg('svg', { viewBox: `0 0 ${g * 2} ${g + 30}`, role: 'img', 'aria-label': `${rupees.format(s.net)} of ${rupees.format(limit)} budget` },
           svg('path', { class: 'track', d: arc(1), fill: 'none', 'stroke-width': 26, 'stroke-linecap': 'round' }),
@@ -3175,7 +3068,7 @@
     const slices = head.map((c, i) => ({ name: c.name, value: c.value, color: shade(ranks[i]), onPick: toTransactions({ category: c.name }) }));
     if (rest.length) slices.push({ name: 'Everything else', value: rest.reduce((a, c) => a + c.value, 0), color: shade(ranks[5]), rest: rest.map((c) => c.name) });
     const [c1, c2] = s.cats;
-    const catCard = card('cat-card', null,
+    const catCard = card('s7', 'Where it went',
       c2 ? [`${c1.name} and ${c2.name.toLowerCase()} took `, hl(`${pct(c1.value + c2.value, s.net)}%`), ' of it.'] : [`${c1.name} took `, hl(`${pct(c1.value, s.net)}%`), ' of it.'],
       el('div', { class: 'stack' }, slices.map((d, i) => el(d.onPick ? 'button' : 'span', {
         class: 'fill-x', type: d.onPick ? 'button' : null, style: `--b:${i};flex:${d.value};background:${d.color}`,
@@ -3191,15 +3084,13 @@
             el('span', { class: `trend ${change > 0 ? 'up' : 'down'}` }, change == null ? 'new' : change === 0 ? 'same' : `${change > 0 ? '▲' : '▼'} ${Math.abs(change)}%`));
         }))) : null);
 
-    /* 4 · regulars: an open section along the bottom */
+    /* 4 · regulars */
     const regs = s.payees.filter((p) => p.count >= 3).sort((a, b) => b.count - a.count || b.value - a.value);
-    const regFinding = regs.length
-      ? [`${regs[0].name} is your regular: `, hl(`${regs[0].count} times`), `, about ${rupees.format(regs[0].value / regs[0].count)} each.`]
-      : `Your biggest payee was ${s.payees[0].name}, at ${rupees.format(s.payees[0].value)}.`;
-    const regBars = regs.length
-      ? hbars(regs.slice(0, 6).map((p) => ({ name: p.name, value: p.count, valueText: `×${p.count}`, meta: `${rupees.format(p.value)} in all · ${p.category}`, onPick: toTransactions({ payee: p.key }) })), regs[0].count)
-      : hbars(s.payees.slice(0, 6).map((p) => ({ name: p.name, value: p.value, meta: `${plural(p.count, 'payment')} · ${p.category}`, onPick: toTransactions({ payee: p.key }) })), s.payees[0].value);
-    const regSection = el('section', { class: 'sp-open' }, spHead('Who you pay', { ruled: true, to: toTransactions({}) }), el('h3', { class: 'finding' }, regFinding), regBars);
+    const regCard = regs.length
+      ? card('s5', 'Who you pay', [`${regs[0].name} is your regular: `, hl(`${regs[0].count} times`), `, about ${rupees.format(regs[0].value / regs[0].count)} each.`],
+        hbars(regs.slice(0, 6).map((p) => ({ name: p.name, value: p.count, valueText: `×${p.count}`, meta: `${rupees.format(p.value)} in all · ${p.category}`, onPick: toTransactions({ payee: p.key }) })), regs[0].count))
+      : card('s5', 'Who you pay', `Your biggest payee was ${s.payees[0].name}, at ${rupees.format(s.payees[0].value)}.`,
+        hbars(s.payees.slice(0, 6).map((p) => ({ name: p.name, value: p.value, meta: `${plural(p.count, 'payment')} · ${p.category}`, onPick: toTransactions({ payee: p.key }) })), s.payees[0].value));
 
     /* 5 · weekday × hour */
     const cells = Array.from({ length: 7 }, () => Array.from({ length: 24 }, () => ({ value: 0, count: 0 })));
@@ -3209,7 +3100,7 @@
     cells.forEach((row, r) => row.forEach((c, h) => { if (c.value > peak.v) peak = { v: c.value, r, h }; }));
     const dayTotals = cells.map((row) => row.reduce((a, c) => a + c.value, 0));
     const busiest = dayTotals.indexOf(Math.max(...dayTotals));
-    const W = 590; const lw = 34; const cw = (W - lw) / 24; const ch = 24; const H = ch * 7 + 20;
+    const W = 980; const lw = 44; const cw = (W - lw) / 24; const ch = 34; const H = ch * 7 + 26;
     const punch = svg('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': 'Spending by weekday and hour' },
       SP_WEEKDAYS.map((d, r) => svg('text', { class: 'tick', x: 0, y: r * ch + ch / 2 + 4 }, d)),
       Array.from({ length: 8 }, (_, k) => svg('text', { class: 'tick', x: lw + k * 3 * cw + cw / 2, y: H - 4, 'text-anchor': 'middle' }, hourName(k * 3))),
@@ -3218,17 +3109,30 @@
         if (!c.value) return svg('circle', { class: 'pc-empty', cx, cy, r: 1.6 });
         return svg('g', { class: 'pcell', 'data-tip': `${SP_WEEKDAYS[r]} ${hourName(h)} · ${rupees.format(c.value)} · ${plural(c.count, 'payment')}` },
           svg('circle', { class: 'hit', cx, cy, r: 15 }),
-          svg('circle', { class: 'pc', style: `--b:${r * 24 + h};fill:${shadeOf(c.value, maxCell)}`, cx, cy, r: 2 + Math.sqrt(c.value / maxCell) * 9.5 }));
+          svg('circle', { class: 'pc', style: `--b:${r * 24 + h};fill:${shadeOf(c.value, maxCell)}`, cx, cy, r: 3 + Math.sqrt(c.value / maxCell) * 12 }));
       })));
-    const punchCard = card('punch', null, ['You spend most on ', hl(`${SP_DAYNAMES[busiest]}s`), ', and your busiest hour is ', hl(`${SP_DAYNAMES[peak.r]} around ${hourName(peak.h)}`), '.'],
+    const punchCard = card('s12 punch', 'When you pay', ['You spend most on ', hl(`${SP_DAYNAMES[busiest]}s`), ', and your busiest hour is ', hl(`${SP_DAYNAMES[peak.r]} around ${hourName(peak.h)}`), '.'],
       el('p', { class: 'finding-sm' }, 'Each circle is an hour of the week; bigger and deeper means more was spent.'), punch);
+
+    /* 6 · small payments, in ₹20 ranges */
+    const small = s.payments.filter((t) => t.spend < 100);
+    const smallTotal = small.reduce((a, t) => a + t.spend, 0);
+    const bins = Array.from({ length: 5 }, (_, i) => small.filter((t) => t.spend >= i * 20 && t.spend < (i + 1) * 20));
+    const fullest = bins.reduce((x, bin, i) => (bin.length > bins[x].length ? i : x), 0);
+    const range = (i) => `₹${i * 20}–${i * 20 + 19}`;
+    const smallCard = card('s5', 'Small payments', [plural(small.length, 'payment'), ' under ₹100 added up to ', hl(rupees.format(smallTotal)), '.'],
+      el('p', { class: 'finding-sm' }, small.length ? `Most were ${range(fullest)}, ${pct(smallTotal, s.net)}% of the month’s spending.` : 'None this month.'),
+      el('div', { class: 'rhist' }, bins.map((bin) => el('div', { class: 'rcol' }, bin.map((t, k) => el('i', {
+        class: 'pop', style: `--b:${k};background:${shadeOf(bin.length, Math.max(1, bins[fullest].length))}`, 'data-tip': `${t.payee} · ${rupees.format(t.spend)} · ${fmtShort.format(parseKey(t.date))}`,
+      }))))),
+      el('div', { class: 'rlabels' }, bins.map((bin, i) => el('span', {}, el('b', {}, String(bin.length)), range(i)))));
 
     /* 7 · heaviest days */
     const ranked = s.perDay.filter((d) => !d.future && d.spend > 0).sort((a, b) => b.spend - a.spend);
     const largest = [...s.payments].sort((a, b) => b.spend - a.spend)[0];
     const daily = el('div', { class: 'chart' });
-    const dayCard = el('section', { class: 'sp-open' }, spHead('Day by day', { ruled: true }),
-      el('h3', { class: 'finding' }, ranked[1] ? ['Your heaviest days were the ', hl(ordinal(ranked[0].day)), ' and the ', hl(ordinal(ranked[1].day)), '.'] : ['Your heaviest day was the ', hl(ordinal(ranked[0].day)), '.']),
+    const dayCard = card('s7', 'Day by day',
+      ranked[1] ? ['Your heaviest days were the ', hl(ordinal(ranked[0].day)), ' and the ', hl(ordinal(ranked[1].day)), '.'] : ['Your heaviest day was the ', hl(ordinal(ranked[0].day)), '.'],
       el('p', { class: 'finding-sm' }, `The largest single payment was ${rupees.format(largest.spend)} to ${largest.payee}, on the ${ordinal(Number(largest.date.slice(8)))}${largest.refunded ? ` (after ${rupees.format(largest.refunded)} refunded)` : ''}.`),
       daily);
 
@@ -3260,7 +3164,7 @@
       }
     });
     const spendDays = s.perDay.filter((d) => !d.future && d.spend > 0).length;
-    const calCard = card('cal-card', null, spCategory
+    const calCard = card('s8 cal-card', 'The month', spCategory
       ? [hl(spCategory), ` came up on ${plural(s.perDay.filter((d) => shown(d) > 0).length, 'day')}.`]
       : ['You spent something on ', hl(`${spendDays} of ${s.elapsed}`), ' days.'],
       el('div', { class: 'bigcal-week' }, SP_WEEKDAYS.map((d) => el('span', {}, d)), el('span', {}, 'Week')),
@@ -3272,7 +3176,7 @@
     const day = s.perDay.find((d) => d.key === spPicked);
     const items = day.items.filter((t) => !spCategory || t.category === spCategory).sort((a, b) => (a.time || '').localeCompare(b.time || ''));
     const dayTotal = spCategory ? shown(day) : day.spend;
-    const pickedCard = card('day-card', fmtLong.format(parseKey(day.key)),
+    const pickedCard = card('s4 day-card', fmtLong.format(parseKey(day.key)),
       items.length ? [hl(rupees.format(dayTotal)), ` across ${plural(items.filter((t) => t.type === 'debit').length, 'payment')}.`] : 'Nothing spent this day.',
       el('ul', { class: 'day-list' }, items.map((t) => el('li', {},
         el('span', {}, t.payee),
@@ -3281,55 +3185,20 @@
       items.length ? el('button', { class: 'link-btn', type: 'button', style: 'margin-top:10px', onclick: toTransactions({ date: day.key }) }, 'Open in Transactions') : null);
 
     const bal = balanceCard(s);
-
-    /* the glance row: three figures, each with a small line of its own */
-    const money = (n) => rupees.format(n).replace('₹', '');
-    const big = (n, tail) => el('p', { class: 'big' }, el('span', { class: 'cur' }, '₹'), money(n), tail ? el('small', {}, tail) : null);
-    const [bWhole, bCents] = rupeesExact.format(bal.current).replace('₹', '').split('.');
-    const glanceBal = el('div', { class: 'zone' }, el('p', { class: 'k' }, 'Balance'),
-      el('p', { class: 'big' }, el('span', { class: 'cur' }, '₹'), bWhole, bCents ? el('small', {}, `.${bCents}`) : null),
-      el('div', { class: 'zfoot' }, sparkline([{ values: bal.vals, main: true }], true)));
-    const glanceMonth = el('div', { class: 'zone' }, el('p', { class: 'k' }, `${s.name}${s.isCurrent ? ', so far' : ''}`), big(s.net),
-      el('div', { class: 'zfoot' }, sparkline([prev.payments.length ? { values: runningTotal(prev) } : null, { values: runningTotal(s), main: true }].filter(Boolean))));
-    let glanceBudget;
-    if (!b?.total) {
-      glanceBudget = el('div', { class: 'zone' }, el('p', { class: 'k' }, 'Budget'), el('p', { class: 'stat-sub' }, 'No monthly budget yet'),
-        el('div', { class: 'zfoot' }, el('button', { class: 'btn small', type: 'button', onclick: () => goFinance('budget') }, 'Set a budget')));
-    } else {
-      const lim = Number(b.total);
-      const aheadBy = s.net - lim * (s.elapsed / s.days);
-      const gap = s.isCurrent ? aheadBy : s.net - lim;
-      glanceBudget = el('div', { class: 'zone' },
-        el('p', { class: 'k' }, 'Budget', el('em', {}, s.isCurrent ? `${gap > 0 ? 'ahead of' : 'under'} an even pace` : `${gap > 0 ? 'over' : 'under'} budget`)),
-        big(Math.abs(gap)),
-        el('div', { class: 'zfoot' }, el('div', { class: 'ticks' }, Array.from({ length: s.days }, (_, i) => el('i', { class: i + 1 === s.elapsed && s.isCurrent ? 'now' : i < s.elapsed ? 'past' : '' })))));
-    }
-
-    const cell = (cls, ...kids) => el('div', { class: `sp-cell ${cls}` }, ...kids);
-    const top = el('div', { class: 'sp-top' },
-      el('div', { class: 'sp-glance' }, el('div', { class: 'glance' }, glanceBal, glanceMonth, glanceBudget)),
-      cell('sp-month', el('hr', { class: 'rule' }), spHead('The month so far'), lede),
-      cell('sp-cal', spHead('The month', { ruled: true }), calCard),
-      cell('sp-where', spHead('Where it went', { to: toTransactions({}) }), catCard),
-      cell('sp-bal', spHead('Balance'), bal.card),
-      cell('sp-budget', spHead('Budget'), gaugeCard),
-      cell('sp-day', dayCard),
-      cell('sp-picked', pickedCard),
-      cell('sp-when', spHead('When you pay'), punchCard));
-    tab.replaceChildren(top, el('div', { class: 'sp-bottom' }, el('div', { class: 'sp-b-left' }, regSection), el('div', { class: 'sp-owed' })));
+    tab.replaceChildren(el('div', { class: 'fin-grid' }, bal.card, lede, gaugeCard, catCard, regCard, punchCard, smallCard, dayCard, calCard, pickedCard));
 
     // charts are measured once they're in the page
     bal.draw();
     lineChart(cum, [
       prev.payments.length ? { values: runningTotal(prev), cls: 'prev', dashed: true } : { values: [] },
       { values: runningTotal(s), cls: 'actual', area: true, dot: true },
-    ], { height: 150, days: Math.max(s.days, prev.days) });
+    ], { height: 190, days: Math.max(s.days, prev.days) });
     const notes = ranked.slice(0, 2).map((d) => d.key);
     barChart(daily, s.perDay.map((d) => ({
       label: String(d.day), value: d.future ? 0 : d.spend, now: d.key === todayKey(),
       note: notes.includes(d.key) ? compact(d.spend) : null,
       tip: `${fmtShort.format(parseKey(d.key))} · ${rupees.format(d.spend)}`, onPick: d.future ? null : () => { spPicked = d.key; renderSpendingTab(); },
-    })), { height: 150, labelEvery: 5, average: avg || null, ariaLabel: `Spending per day in ${s.name}` });
+    })), { labelEvery: 5, average: avg || null, ariaLabel: `Spending per day in ${s.name}` });
   }
 
   function median(values) {
@@ -3407,13 +3276,14 @@
     const known = vals.filter((v) => v != null);
     const holder = el('div', { class: 'chart bal-chart' });
     const change = known.length > 1 ? cents(known[known.length - 1] - known[0]) : 0;
-    const card = el('section', { class: 'panel story-card' },
+    const card = el('section', { class: 'panel story-card lede s12' },
+      el('p', { class: 'kicker' }, 'Balance'),
       el('h3', { class: 'finding' }, 'You have ', el('span', { class: 'hl' }, rupeesExact.format(current)), '.'),
       el('p', { class: 'stat-sub' }, known.length > 1
         ? `${change >= 0 ? 'Up' : 'Down'} ${rupees.format(Math.abs(change))} over ${s.name}`
         : `Daily balance, ${s.name}`),
       holder);
-    return { card, current, vals, change, known, draw: () => balanceChart(holder, s, vals) };
+    return { card, draw: () => balanceChart(holder, s, vals) };
   }
 
   function balanceChart(holder, s, vals) {
@@ -3920,9 +3790,8 @@
       el('button', { class: 'link-btn', type: 'button', style: 'margin-top:6px', onclick: () => openDebt(null, direction) }, icon('plus'), 'Add'));
 
     const settled = all.filter((d) => d.settled);
-    return el('section', { class: 'owed-sec' },
-      el('div', { class: 'head ruled' }, el('h2', {}, 'Owed'), el('button', { class: 'icon-btn', type: 'button', 'aria-label': 'Add money owed', onclick: () => openDebt() }, icon('plus'))),
-      el('div', { class: 'panel owed-card no-lift' },
+    return el('section', { class: 'panel owed-card s12 no-lift' },
+      el('h3', { class: 'ptitle' }, 'Owed', el('button', { class: 'btn small', type: 'button', onclick: () => openDebt() }, icon('plus'), 'Add')),
       el('div', { class: 'trio' },
         el('div', {}, el('p', {}, 'Owed to you'), el('p', { class: 'credit' }, rupees.format(owedToMe))),
         el('div', {}, el('p', {}, 'You owe'), el('p', {}, rupees.format(iOwe))),
@@ -3930,7 +3799,7 @@
       el('div', { class: 'owed-cols' },
         column('They owe you', theirs, owedToMe, 'owed'),
         column('You owe', mine, iOwe, 'owe'),
-        settled.length ? el('details', {}, el('summary', {}, `Settled (${settled.length})`), settled.map(row)) : null)));
+        settled.length ? el('details', {}, el('summary', {}, `Settled (${settled.length})`), settled.map(row)) : null));
   }
 
   /* =====================================================================
