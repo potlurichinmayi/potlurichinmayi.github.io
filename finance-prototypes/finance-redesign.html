@@ -170,6 +170,9 @@
   .day-list { margin: 0; padding: 0; list-style: none; overflow-y: auto; }
   .day-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1px 10px; padding: 8px 0; border-top: 1px solid var(--rule); font-size: 15px; }
   .day-list small { grid-column: 1; font-size: 12px; color: var(--ink-3); }
+  .day-list li { cursor: pointer; transition: background-color 0.2s; }
+  .day-list li:hover { background: var(--raise); }
+  .day-list li.sel { background: var(--raise-2); box-shadow: -8px 0 0 var(--raise-2), 8px 0 0 var(--raise-2); }
   .day-card .finding { font-size: 21px; }
 
   /* ---- owed ---- */
@@ -777,12 +780,14 @@ renderDeposits();
       return b;
     }));
 
-    // the picked day
-    const d = perDay[picked - 1], wd = (FIRST_WD + picked - 1) % 7;
-    const items = d.items.filter((t) => !filter || filter.test(t));
-    $('day-kicker').textContent = `${WDLONG[wd]} ${picked} September`;
-    html('day-head', items.length ? `<span class="hl">${rs(items.reduce((a, t) => a + t.amount, 0))}</span> across ${items.length} payment${items.length === 1 ? '' : 's'}.` : 'Nothing spent this day.');
-    $('day-list').replaceChildren(...items.map((t) => el('li', {}, el('span', {}, t.payee), el('span', {}, rs(t.amount)), el('small', {}, `${t.time} · ${t.category}`))));
+    // the month's largest payments (within the picked category, if there is one); a row picks its day on the calendar
+    const big = TX.filter((t) => !filter || filter.test(t)).sort((a, b) => b.amount - a.amount).slice(0, 8);
+    $('day-kicker').textContent = filter ? `Largest payments · ${filter.key}` : 'Largest payments · September';
+    html('day-head', big.length ? `<span class="hl">${rs(big[0].amount)}</span> to ${big[0].payee} was the largest.` : 'No payments yet.');
+    $('day-list').replaceChildren(...big.map((t) => {
+      const li = el('li', { class: t.day === picked ? 'sel' : '', onclick: () => { picked = t.day; paint(); } }, el('span', {}, t.payee), el('span', {}, rs(t.amount)), el('small', {}, `${t.day} Sep · ${t.time} · ${t.category}`));
+      return li;
+    }));
   }
   paint();
 })();
