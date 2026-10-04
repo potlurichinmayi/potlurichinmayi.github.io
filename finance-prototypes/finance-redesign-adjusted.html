@@ -68,6 +68,7 @@
   .stats span { font-size: 13px; color: var(--ink-3); }
   .chart { position: relative; flex: 1; min-height: 120px; }
   .chart svg { display: block; width: 100%; overflow: visible; }
+  .chart.fill svg { position: absolute; inset: 0; height: 100%; }
   svg text { font-family: var(--serif); fill: var(--ink-3); font-size: 11px; }
   .keys { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; font-size: 13px; color: var(--ink-2); }
   .keys span { display: inline-flex; align-items: center; gap: 6px; }
@@ -89,17 +90,17 @@
   .overview .chart { flex: none; min-height: 270px; }
   .overview .stats { margin-top: auto !important; padding-top: 16px; }
   .midcol { grid-column: span 3; display: flex; flex-direction: column; gap: 10px; }
-  .widget { gap: 0; }
+  .widget { gap: 0; flex: 1; }
   .widget .keys { margin: 0 0 4px; justify-content: flex-end; font-size: 14px; }
   .widget .keys i { width: 9px; height: 9px; border: 0; border-radius: 50%; background: var(--ember); }
   .widget .keys i.b { background: var(--budget); }
-  .widget .chart { flex: none; min-height: 0; height: 150px; }
+  .widget .chart { flex: 1; min-height: 150px; }
   .widget .wnote { margin-top: 6px; font-size: 12px; color: var(--ink-3); }
   .widget .bal { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--rule); }
   .widget .bal small { display: block; font-size: 14px; color: var(--ink-3); }
   .widget .bal b { display: block; font-weight: 400; font-size: 32px; line-height: 1.1; }
-  .money { flex: 1; min-height: 0; display: grid; place-items: end center; }
-  .money img { width: 100%; max-width: 330px; filter: drop-shadow(0 14px 18px rgba(1, 3, 14, 0.55)); }
+  .money { flex: none; }
+  .money img { width: 100%; max-width: 330px; height: auto; margin: 0 auto; filter: drop-shadow(0 14px 18px rgba(1, 3, 14, 0.55)); }
   .fd { grid-column: span 3; }
   .fd .finding { font-size: 20px; }
   .fd .chart { flex: none; min-height: 0; }
@@ -119,6 +120,8 @@
   .msg { min-height: 20px; margin-top: 8px; font-size: 13px; color: var(--ink-2); }
   .punch svg { width: 100%; height: auto; }
   .punch .pc-empty { fill: var(--rule); }
+  .punch .chart { min-height: 240px; }
+  #pace { min-height: 200px; }
   .punch .hit { fill: transparent; }
   .punch .pc { transition: opacity 0.2s; }
   @media (hover: hover) { .punch svg:hover .pc { opacity: 0.45; } .punch .pcell:hover .pc { opacity: 1; } }
@@ -208,14 +211,14 @@
   .overview .sub { margin-bottom: 20px; }
   .stack { display: flex; gap: 4px; height: 26px; }
   .stack > i { min-width: 8px; border-radius: 999px; }
-  .stack-legend { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; margin: 16px 0 0; padding: 0; list-style: none; }
+  .stack-legend { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 24px; margin: 16px 0 0; padding: 0; list-style: none; }
   .stack-legend li { display: grid; grid-template-columns: 12px 1fr; column-gap: 8px; align-items: baseline; font-size: 15px; }
   .stack-legend i { width: 10px; height: 10px; border-radius: 50%; }
   .stack-legend small { grid-column: 2; font-size: 13px; color: var(--ink-3); }
   .balfill { flex: 1; display: flex; flex-direction: column; margin-top: 22px; min-height: 150px; }
   .balfill .kicker { margin-bottom: 4px; }
   .balfill .chart { flex: 1; min-height: 130px; }
-  .month-block { padding-top: 16px; }
+  .month-block { padding-top: 4px; }
   .month-block .kicker { margin-bottom: 10px; padding-top: 14px; border-top: 1px solid var(--rule); }
   .flow { display: grid; grid-template-columns: 74px minmax(0, 1fr) 76px; align-items: center; gap: 12px; padding: 5px 0; font-size: 15px; }
   .flow .tr { height: 10px; border-radius: 999px; background: var(--raise); overflow: hidden; }
@@ -276,6 +279,7 @@
     .wk, .bigcal-week span:last-child { display: none; }
     .bday { min-height: 52px; padding: 4px; } .bday .amt { font-size: 11px; } .bday .n { font-size: 11px; } .bday.today .n::after { content: ''; }
     .subbar { gap: 8px 12px; } .quiet { margin-left: 0; order: 3; width: 100%; }
+    .stack-legend { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .owed .tri b { font-size: 20px; } .owed .tri small { font-size: 12px; }
     .owed .cols { grid-template-columns: minmax(0, 1fr); }
   }
@@ -327,18 +331,16 @@
   <!-- ===== Template 1 ===== -->
   <div class="grid">
     <section class="panel overview" aria-label="Finance overview">
-      <p class="kicker">Finance overview</p>
+      <p class="kicker">Finance overview · September, so far</p>
       <h2 class="finding xl" id="ov-head"></h2>
       <p class="sub" id="ov-sub"></p>
       <div class="stack" id="ov-stack" role="img"></div>
       <ul class="stack-legend" id="ov-legend"></ul>
       <div class="balfill">
-        <p class="kicker">Account balance, September</p>
-        <div class="chart" id="ov-bal" data-label="Account balance at the end of each day in September"></div>
+        <p class="kicker">Day by day</p>
+        <div class="chart fill" id="ov-bal" data-label="Spending on each day of September"></div>
       </div>
       <div class="month-block">
-        <p class="kicker" id="ov-month"></p>
-        <div id="ov-flows"></div>
         <div class="trio" id="ov-trio"></div>
       </div>
     </section>
@@ -346,7 +348,7 @@
     <div class="midcol">
       <section class="panel widget" aria-label="Budget against spending">
         <div class="keys"><span><i class="b"></i>Budget</span><span><i></i>Spending</span></div>
-        <div class="chart" id="widget"></div>
+        <div class="chart fill" id="widget"></div>
         <p class="wnote" id="w-note"></p>
         <div class="bal"><div><small>Current balance</small><b id="w-bal"></b></div><span class="pill good" id="w-pill"></span></div>
       </section>
@@ -381,7 +383,7 @@
       <h2 class="finding" id="bp-head"></h2>
       <p class="sub" id="bp-sub"></p>
       <div class="stats" id="bp-stats" style="grid-template-columns:repeat(2,minmax(0,1fr))"></div>
-      <div class="chart" id="pace"></div>
+      <div class="chart fill" id="pace"></div>
       <div class="keys">
         <span><i></i>Actual</span><span><i class="d" style="border-color:var(--rule-2)"></i>Even pace</span>
         <span><i class="d"></i>Projected</span><span><i style="border-color:var(--danger)"></i>Budget cap</span>
@@ -392,7 +394,7 @@
       <p class="kicker">When you pay</p>
       <h2 class="finding" id="pu-head"></h2>
       <p class="sub">Each circle is an hour of the week; bigger and deeper means more was spent.</p>
-      <div class="chart" id="punch"></div>
+      <div class="chart fill" id="punch"></div>
     </section>
   </div>
 
@@ -468,7 +470,10 @@ const width = (id, min = 200) => Math.max(min, Math.round($(id).clientWidth || 3
 const draw = (id, w, h, body) => { $(id).innerHTML = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${$(id).dataset.label || ''}">${body}</svg>`; };
 const redraws = [];
 const chart = (fn) => { redraws.push(fn); fn(); };
-let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => redraws.forEach((f) => f()), 120); });
+let rt; const again = () => { clearTimeout(rt); rt = setTimeout(() => redraws.forEach((f) => f()), 120); };
+addEventListener('resize', again);
+if (document.fonts) document.fonts.ready.then(again);
+if (window.ResizeObserver) new ResizeObserver(again).observe(document.querySelector('.grid'));
 
 /* ---------------------------------------------------------------- sample data
    Everything below is made up. September 2026, today is the 18th. */
@@ -536,38 +541,39 @@ const dName = (k) => { const d = dt(k); return `${d.getDate()} ${MON[d.getMonth(
 const fdValue = (f, at) => f.p * Math.pow(1 + f.r / 400, 4 * Math.max(0, Math.min(yrs(dt(f.start), at), yrs(dt(f.start), dt(f.end)))));
 const fdFinal = (f) => fdValue(f, dt(f.end));
 
-/* ---------------------------------------------------------------- 1 · finance overview: what you hold, and what the month did to it */
-function renderOverview() {
-  const fdNow = FDS.reduce((a, f) => a + fdValue(f, NOW), 0);
-  const total = BALANCE + fdNow;
-  const received = RECEIVED + REFUNDS, net = received - spent, rate = spent / TODAY, runway = Math.floor(BALANCE / rate);
-  html('ov-head', `You hold <span class="hl">${rs(total)}</span> in all, ${Math.round((fdNow / total) * 100)}% of it in fixed deposits.`);
-  $('ov-sub').textContent = `${rs(BALANCE)} in your account and ${rs(fdNow)} in ${FDS.length} deposits. Held to maturity, the deposits will be worth ${rs(FDS.reduce((a, f) => a + fdFinal(f), 0))}.`;
-  const parts = [['In your account', BALANCE, 'var(--deep)'], ['Fixed deposits', fdNow, 'var(--ember)']];
-  html('ov-stack', parts.map((q) => `<i style="flex:${q[1]};background:${q[2]}"></i>`).join(''));
-  $('ov-stack').setAttribute('aria-label', parts.map((q) => `${q[0]} ${rs(q[1])}`).join(', '));
-  html('ov-legend', parts.map((q) => `<li><i style="background:${q[2]}"></i>${q[0]}<small>${rs(q[1])} · ${Math.round((q[1] / total) * 100)}%</small></li>`).join(''));
-  $('ov-month').textContent = 'September, so far';
-  const top = Math.max(received, spent);
-  html('ov-flows', [['Received', received, 'var(--ember)'], ['Spent', spent, 'var(--rule-2)']].map((q) => `<div class="flow"><span>${q[0]}</span><span class="tr"><i style="width:${(q[1] / top) * 100}%;background:${q[2]}"></i></span><b>${rs(q[1])}</b></div>`).join(''));
-  html('ov-trio', `<div><p>${net >= 0 ? 'Left over' : 'Overspent'}</p><b>${rs(Math.abs(net))}</b></div><div><p>Account lasts</p><b>${runway} days</b></div><div><p>Savings rate</p><b>${Math.round((net / received) * 100)}%</b></div>`);
-}
-renderOverview();
-(function balanceLine() {
-  const income = { 1: RECEIVED, 9: REFUNDS };
-  const start = BALANCE - RECEIVED - REFUNDS + spent;
-  let run = start; const vals = perDay.slice(0, TODAY).map((d) => (run += (income[d.day] || 0) - d.spend));
+/* ---------------------------------------------------------------- 1 · finance overview: this month's spending */
+(function overview() {
+  const sorted = (a) => [...a].sort((x, y) => x - y);
+  const median = (a) => { const q = sorted(a), m = Math.floor(q.length / 2); return q.length % 2 ? q[m] : (q[m - 1] + q[m]) / 2; };
+  const avg = spent / TODAY;
+  const byCat = new Map(); TX.forEach((t) => byCat.set(t.category, (byCat.get(t.category) || 0) + t.amount));
+  const cats = [...byCat.entries()].sort((a, b) => b[1] - a[1]);
+  const head = cats.slice(0, cats.length > 6 ? 5 : 6), rest = cats.slice(head.length);
+  const RANKS = [1, 0.8, 0.62, 0.46, 0.3, 0.14];
+  const slices = head.map((c, i) => ({ name: c[0], v: c[1], col: shade(RANKS[i]) }));
+  if (rest.length) slices.push({ name: 'Everything else', v: rest.reduce((a, c) => a + c[1], 0), col: shade(RANKS[5]) });
+  html('ov-head', `You’ve spent <span class="hl">${rs(spent)}</span>, about <span class="hl">${rs(avg)}</span> a day.`);
+  $('ov-sub').textContent = `${slices[0].name}${slices[1] ? ' and ' + slices[1].name.toLowerCase() : ''} took ${Math.round(((slices[0].v + (slices[1] ? slices[1].v : 0)) / spent) * 100)}% of it. August, from the 19th, came to ${rs(7110)}.`;
+  html('ov-stack', slices.map((q) => `<i style="flex:${q.v};background:${q.col}" title="${q.name} · ${rs(q.v)}"></i>`).join(''));
+  $('ov-stack').setAttribute('aria-label', slices.map((q) => `${q.name} ${rs(q.v)}`).join(', '));
+  html('ov-legend', slices.map((q) => `<li><i style="background:${q.col}"></i>${q.name}<small>${rs(q.v)} · ${Math.round((q.v / spent) * 100)}%</small></li>`).join(''));
+  const heavy = perDay.filter((d) => !d.future).sort((a, b) => b.spend - a.spend)[0];
+  html('ov-trio', `<div><p>Payments</p><b>${TX.length}</b></div><div><p>Typical payment</p><b>${rs(median(TX.map((t) => t.amount)))}</b></div><div><p>Heaviest day</p><b>${heavy.day} Sep</b></div>`);
+  const top = perDay.filter((d) => !d.future).sort((a, b) => b.spend - a.spend).slice(0, 2).map((d) => d.day);
   chart(() => {
-    const W = width('ov-bal', 240), H = Math.max(130, $('ov-bal').clientHeight || 0), pl = 4, pr = 8, pt = 16, pb = 20;
-    let lo = Math.min(...vals), hi = Math.max(...vals); const g = (hi - lo) * 0.12; lo -= g; hi += g;
-    const x = (i) => pl + (i / (DAYS - 1)) * (W - pl - pr), y = (v) => pt + (H - pt - pb) * (1 - (v - lo) / (hi - lo));
-    const pts = vals.map((v, i) => [x(i), y(v)]);
-    let s = [0, 1, 2].map((k) => `<line x1="${pl}" x2="${W - pr}" y1="${y(lo + g + ((hi - lo - 2 * g) * k) / 2)}" y2="${y(lo + g + ((hi - lo - 2 * g) * k) / 2)}" stroke="${G}" stroke-dasharray="2 5"/>`).join('');
-    s += `<path d="${line(pts)}L${pts[pts.length - 1][0]} ${H - pb}L${pts[0][0]} ${H - pb}Z" fill="${E}" opacity=".16"/><path d="${line(pts)}" fill="none" stroke="${E}" stroke-width="2.4" stroke-linejoin="round"/>`;
-    const last = pts[pts.length - 1];
-    s += `<circle cx="${last[0]}" cy="${last[1]}" r="4.5" fill="${E}"/><text x="${last[0]}" y="${last[1] - 10}" text-anchor="end" style="fill:var(--ink);font-size:12px">${rs(vals[vals.length - 1])}</text>`;
-    s += `<text x="${pts[0][0]}" y="${pts[0][1] - 10}" style="font-size:12px">${rs(vals[0])}</text>`;
-    [1, 10, 20, 30].forEach((d) => { s += `<text x="${x(d - 1)}" y="${H - 4}" text-anchor="${d === 1 ? 'start' : d === DAYS ? 'end' : 'middle'}">${d}</text>`; });
+    const W = width('ov-bal', 240), H = Math.max(140, $('ov-bal').clientHeight || 0), pl = 30, pr = 6, pt = 18, pb = 20;
+    const max = Math.max(...perDay.map((d) => d.spend), avg), step = max > 2500 ? 1000 : 500, hi = Math.ceil(max / step) * step;
+    const y = (v) => pt + (H - pt - pb) * (1 - v / hi), band = (W - pl - pr) / DAYS, bw = Math.max(3, Math.min(14, band * 0.62));
+    let s = '';
+    for (let v = 0; v <= hi; v += step * (hi / step > 3 ? 2 : 1)) s += `<line x1="${pl}" x2="${W - pr}" y1="${y(v)}" y2="${y(v)}" stroke="${G}" stroke-dasharray="2 5"/><text x="${pl - 6}" y="${y(v) + 4}" text-anchor="end">${compact(v)}</text>`;
+    perDay.forEach((d, i) => {
+      if (d.future || d.spend <= 0) return;
+      const x = pl + i * band + (band - bw) / 2, base = y(0), top0 = y(d.spend), r = Math.min(bw / 2, base - top0);
+      s += `<path d="M${x},${base}V${top0 + r}A${r},${r} 0 0 1 ${x + r},${top0}H${x + bw - r}A${r},${r} 0 0 1 ${x + bw},${top0 + r}V${base}Z" fill="${shadeOf(d.spend, max)}"><title>${d.day} Sep · ${rs(d.spend)}</title></path>`;
+      if (top.includes(d.day)) s += `<text x="${x + bw / 2}" y="${top0 - 6}" text-anchor="middle" style="fill:var(--ink);font-size:12px">${compact(d.spend)}</text>`;
+    });
+    s += `<line x1="${pl}" x2="${W - pr}" y1="${y(avg)}" y2="${y(avg)}" stroke="${L}" stroke-dasharray="4 4"/><text x="${W - pr}" y="${y(avg) - 5}" text-anchor="end">average ${compact(avg)}</text>`;
+    [1, 10, 20, 30].forEach((d) => { s += `<text x="${pl + (d - 0.5) * band}" y="${H - 4}" text-anchor="middle">${d}</text>`; });
     draw('ov-bal', W, H, s);
   });
 })();
@@ -584,7 +590,7 @@ renderOverview();
   $('w-note').textContent = 'Records start on 19 Aug. September is so far.';
   $('widget').dataset.label = 'Monthly budget against spending';
   chart(() => {
-    const W = width('widget', 220), H = 150, pl = 12, pr = 12, pt = 12, pb = 22, hi = 36000;
+    const W = width('widget', 220), H = Math.max(150, $('widget').clientHeight), pl = 12, pr = 12, pt = 12, pb = 22, hi = 36000;
     const x = (i) => pl + 14 + (i / (MONTHS.length - 1)) * (W - pl - pr - 28), y = (v) => pt + (H - pt - pb) * (1 - v / hi);
     let s = [0, 15000, 30000].map((t) => `<line x1="${pl}" x2="${W - pr}" y1="${y(t)}" y2="${y(t)}" stroke="${G}" stroke-dasharray="2 5"/>`).join('');
     s += `<line x1="${pl}" x2="${W - pr}" y1="${y(BUDGET)}" y2="${y(BUDGET)}" stroke="${B}" stroke-width="2.2"/>`;
@@ -646,7 +652,7 @@ renderDeposits();
     const v = new FormData(form);
     if (!(dt(v.get('end')) > dt(v.get('start')))) { form.end.setCustomValidity('Maturity has to be after the start date.'); form.end.reportValidity(); form.end.oninput = () => form.end.setCustomValidity(''); return; }
     FDS.push({ n: (v.get('n') || '').trim() || `FD ${FDS.length + 1}`, p: +v.get('p'), r: +v.get('r'), start: v.get('start'), end: v.get('end') });
-    dlg.close(); renderDeposits(); renderOverview(); redraws.forEach((f) => f());
+    dlg.close(); renderDeposits(); redraws.forEach((f) => f());
   });
 })();
 
@@ -684,7 +690,7 @@ renderDeposits();
   $('pace').dataset.label = 'Cumulative spending against an even pace and the budget';
   let run = 0; const act = perDay.slice(0, TODAY).map((d) => (run += d.spend));
   chart(() => {
-    const W = width('pace', 220), H = 200, pl = 34, pb = 20, max = Math.ceil(Math.max(BUDGET, projected) * 1.12 / 10000) * 10000;
+    const W = width('pace', 220), H = Math.max(200, $('pace').clientHeight), pl = 34, pb = 20, max = Math.ceil(Math.max(BUDGET, projected) * 1.12 / 10000) * 10000;
     const x = (d) => pl + ((d - 1) / (DAYS - 1)) * (W - pl - 8), y = (n) => H - pb - (n / max) * (H - pb - 10);
     let s = '';
     for (let t = 0; t <= max; t += 10000) s += `<line x1="${pl}" x2="${W}" y1="${y(t)}" y2="${y(t)}" stroke="${G}" stroke-dasharray="2 5"/><text x="0" y="${y(t) + 4}">${compact(t)}</text>`;
@@ -708,13 +714,13 @@ renderDeposits();
   html('pu-head', `You spend most on <span class="hl">${WDLONG[dayTotals.indexOf(Math.max(...dayTotals))]}s</span>, and your busiest hour is <span class="hl">${WDLONG[peak[0]]} around ${hourName(peak[1])}</span>.`);
   $('punch').dataset.label = 'Spending by weekday and hour';
   chart(() => {
-    const W = width('punch', 320), narrow = W < 520, lw = 36, cw = (W - lw) / 24, ch = narrow ? 24 : 32, H = ch * 7 + 24;
+    const W = width('punch', 320), narrow = W < 520, lw = 36, cw = (W - lw) / 24, H = Math.max(narrow ? 190 : 240, $('punch').clientHeight), ch = (H - 24) / 7;
     let s = WD.map((d, r) => `<text x="0" y="${r * ch + ch / 2 + 4}">${d}</text>`).join('');
     for (let k = 0; k < 8; k += narrow ? 2 : 1) s += `<text x="${lw + k * 3 * cw + cw / 2}" y="${H - 4}" text-anchor="middle">${hourName(k * 3)}</text>`;
     for (let r = 0; r < 7; r++) for (let h = 0; h < 24; h++) {
       const cx = lw + h * cw + cw / 2, cy = r * ch + ch / 2, hit = hits.find((q) => q[0] === r && q[1] === h);
       s += hit
-        ? `<g class="pcell"><title>${WD[r]} ${hourName(h)} · ${rs(hit[2])}</title><circle class="hit" cx="${cx}" cy="${cy}" r="${ch / 2}"/><circle class="pc" cx="${cx}" cy="${cy}" r="${2.5 + Math.sqrt(hit[2] / max) * (ch / 2 - 3)}" fill="${shadeOf(hit[2], max)}"/></g>`
+        ? `<g class="pcell"><title>${WD[r]} ${hourName(h)} · ${rs(hit[2])}</title><circle class="hit" cx="${cx}" cy="${cy}" r="${ch / 2}"/><circle class="pc" cx="${cx}" cy="${cy}" r="${2.5 + Math.sqrt(hit[2] / max) * (Math.min(ch / 2, cw * 0.9) - 3)}" fill="${shadeOf(hit[2], max)}"/></g>`
         : `<circle class="pc-empty" cx="${cx}" cy="${cy}" r="1.5"/>`;
     }
     draw('punch', W, H, s);
