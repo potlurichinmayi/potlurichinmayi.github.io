@@ -226,17 +226,30 @@
   .big { display: flex; align-items: baseline; gap: 8px; font-family: var(--serif); font-size: 42px; line-height: 1; white-space: nowrap; }
   .big small { font-family: var(--sans); font-size: 17px; font-weight: 400; letter-spacing: 0.04em; color: var(--ink-2); }
   .zone .line { margin-top: 10px; font-size: 16px; color: var(--ink-2); }
-  .weather-now { display: flex; align-items: center; gap: 10px; }
-  .weather-now .ic { width: 30px; height: 30px; stroke-width: 1.2; color: var(--ember); }
+  .glance .zone { display: flex; flex-direction: column; justify-content: space-between; gap: 14px; min-height: 215px; }
+  .glance .zone > div { min-width: 0; }
+  .greet { margin-bottom: 10px; font-size: 17px; font-style: italic; color: var(--ink-2); }
+  .zone .num { display: block; font-family: var(--serif); font-size: 76px; line-height: 0.9; letter-spacing: -0.02em; white-space: nowrap; }
+  .zone .num sup { margin-left: 6px; position: relative; top: 8px; vertical-align: top; font-size: 16px; letter-spacing: 0.12em; color: var(--ember); }
+  .zone .num.deg sup { margin-left: 0; font-size: 30px; letter-spacing: 0; }
+  .zone .date { font-size: 19px; font-style: italic; color: var(--ink-2); }
+  .weather-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .weather-top .ic { width: 34px; height: 34px; stroke-width: 1.2; color: var(--ember); }
+  .zone .sub { font-size: 15px; color: var(--ink-3); }
+  .range { position: relative; height: 6px; margin: 16px 0 8px; border-radius: 999px; background: linear-gradient(90deg, #93aee0, var(--ink) 50%, var(--ember)); opacity: 0.85; }
+  .range i { position: absolute; top: 50%; width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 3px solid var(--ground); box-shadow: 0 0 0 1.5px var(--ember); transform: translate(-50%, -50%); }
+  .range-lbl { display: flex; justify-content: space-between; font-size: 14px; color: var(--ink-3); }
   .month-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 12px; }
-  .month-top strong { font-family: var(--serif); font-weight: 400; font-size: 26px; line-height: 1.1; }
-  .month-top span { font-size: 16px; color: var(--ink-2); }
-  .ticks { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 2px; align-items: end; height: 26px; margin-top: 14px; }
-  .ticks i { display: block; height: 55%; border-radius: 999px; background: var(--rule); transform-origin: bottom; }
-  .ticks i.past { background: var(--ink-3); }
-  .ticks i.now { height: 100%; background: var(--ember); }
-  .ticks.intro i { animation: tick-in 0.5s var(--ease) both; animation-delay: calc(var(--i) * 16ms); }
-  @keyframes tick-in { from { transform: scaleY(0); opacity: 0; } }
+  .month-top strong { font-family: var(--serif); font-weight: 400; font-style: italic; font-size: 44px; line-height: 1; }
+  .month-top span { font-size: 16px; color: var(--ink-3); }
+  .week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; text-align: center; }
+  .week span { display: grid; gap: 2px; padding: 6px 0; border-radius: 12px; font-size: 11px; letter-spacing: 0.08em; color: var(--ink-3); }
+  .week span b { font-weight: 400; font-size: 17px; letter-spacing: 0; color: var(--ink-2); }
+  .week span.today { background: var(--ember); color: var(--on-ember); }
+  .week span.today b { color: var(--on-ember); }
+  .month-bar { height: 3px; margin-top: 14px; border-radius: 999px; background: var(--rule); overflow: hidden; }
+  .month-bar i { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--ember); transition: width 0.9s var(--ease); }
+  #month-left { margin-top: 8px; font-size: 15px; color: var(--ink-3); }
 
   .skeleton { border-radius: 6px; background: linear-gradient(90deg, var(--raise), var(--raise-2), var(--raise)); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
   @keyframes shimmer { to { background-position: -200% 0; } }
@@ -725,15 +738,28 @@
     .brand img { width: 44px; height: 44px; }
     .panel { padding: 16px 16px 18px; }
     .glance { gap: 8px; }
-    .zone { min-height: 110px; padding: 14px 12px 16px; }
+    .zone { padding: 14px 12px 16px; }
     .zone .line { font-size: 14px; }
     .big { font-size: 30px; gap: 4px; }
     .big small { font-size: 12px; }
-    .weather-now { gap: 6px; }
-    .weather-now .ic { width: 22px; height: 22px; }
-    .month-top strong { font-size: 19px; }
-    .month-top span { font-size: 13px; }
-    .ticks { gap: 1px; }
+    .glance .zone { min-height: 150px; gap: 10px; }
+    .greet { margin-bottom: 6px; font-size: 12px; line-height: 1.2; }
+    .zone .num { font-size: 36px; }
+    .zone .num sup { margin-left: 3px; top: 3px; font-size: 10px; }
+    .zone .num.deg sup { font-size: 16px; }
+    .zone .date { font-size: 13px; line-height: 1.2; }
+    .zone .sub { font-size: 12px; line-height: 1.25; }
+    .weather-top .ic { width: 20px; height: 20px; }
+    .range { margin: 10px 0 6px; }
+    .range i { width: 11px; height: 11px; border-width: 2px; }
+    .range-lbl { font-size: 11px; }
+    .month-top strong { font-size: 22px; }
+    .month-top span { font-size: 11px; }
+    .week { gap: 1px; }
+    .week span { padding: 4px 0; font-size: 8px; letter-spacing: 0; border-radius: 8px; }
+    .week span b { font-size: 11px; }
+    .month-bar { margin-top: 10px; }
+    #month-left { font-size: 11px; }
     .board { grid-template-columns: minmax(0, 1fr); }
     .col { min-height: 130px; padding: 24px 20px; }
     .col-head { justify-content: flex-start; }
@@ -1171,21 +1197,27 @@
     <section class="glance a-glance" aria-label="Right now">
       <div class="zone">
         <h2>Hyderabad time</h2>
-        <p class="big"><span id="clock">--:--</span><small id="clock-ampm"></small></p>
-        <p class="line" id="clock-date">&nbsp;</p>
+        <div>
+          <p class="greet" id="greeting">&nbsp;</p>
+          <p class="num"><span id="clock">--:--</span><sup id="clock-ampm"></sup></p>
+        </div>
+        <p class="date" id="clock-date">&nbsp;</p>
       </div>
       <div class="zone" aria-live="polite">
         <h2>Weather</h2>
-        <div id="weather">
+        <div id="weather" style="display:contents">
           <div class="skeleton" style="width:120px;height:54px"></div>
-          <div class="skeleton" style="width:180px;height:16px;margin-top:14px"></div>
+          <div class="skeleton" style="width:180px;height:16px"></div>
         </div>
       </div>
       <div class="zone month">
         <h2>This month</h2>
         <div class="month-top"><strong id="month-name"></strong><span id="month-day"></span></div>
-        <div class="ticks intro" id="month-ticks" role="img"></div>
-        <p class="line" id="month-left"></p>
+        <div>
+          <div class="week" id="month-week" role="img"></div>
+          <div class="month-bar" aria-hidden="true"><i id="month-fill"></i></div>
+          <p id="month-left"></p>
+        </div>
       </div>
     </section>
 
@@ -2089,6 +2121,7 @@ hr.rule { margin: 36px 0; }
   document.documentElement.classList.add('js');
 
   const CONFIG = {
+    name: 'Chinmayi',
     place: { name: 'Hyderabad', lat: 17.385, lon: 78.4867, tz: 'Asia/Kolkata' },
     // Firebase project. Set to null to keep everything in this browser instead.
     firebase: {
@@ -2394,6 +2427,10 @@ hr.rule { margin: 36px 0; }
       $('clock-ampm').textContent = get('dayPeriod').toUpperCase();
       $('clock-date').textContent = fmtLong.format(parseKey(todayKey()));
     }
+    const hour = Number(parts.find((p) => p.type === 'hour').value) % 12 + (get('dayPeriod').toLowerCase() === 'pm' ? 12 : 0);
+    const part = hour < 5 ? 'night' : hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
+    const greeting = `Good ${part}, ${CONFIG.name}`;
+    if ($('greeting').textContent !== greeting) $('greeting').textContent = greeting;
   }
 
   const WEATHER = {
@@ -2420,12 +2457,18 @@ hr.rule { margin: 36px 0; }
       const data = await res.json();
       const [label, glyph] = WEATHER[data.current.weather_code] || ['Hyderabad', 'cloud'];
       const night = data.current.is_day === 0 && glyph === 'sun';
+      const now = Math.round(data.current.temperature_2m);
+      const hi = Math.round(data.daily.temperature_2m_max[0]);
+      const lo = Math.round(data.daily.temperature_2m_min[0]);
+      const at = hi > lo ? Math.min(1, Math.max(0, (data.current.temperature_2m - lo) / (hi - lo))) : 0.5;
       $('weather').replaceChildren(
-        el('div', { class: 'weather-now' }, icon(night ? 'moon' : glyph),
-          el('p', { class: 'big' }, `${Math.round(data.current.temperature_2m)}°`)),
-        el('p', { class: 'line' }, `${label}, feels like ${Math.round(data.current.apparent_temperature)}°`),
-        el('p', { class: 'line', style: 'margin-top:2px;color:var(--ink-3)' },
-          `High ${Math.round(data.daily.temperature_2m_max[0])}° · Low ${Math.round(data.daily.temperature_2m_min[0])}°`));
+        el('div', { class: 'weather-top' },
+          el('p', { class: 'num deg' }, `${now}`, el('sup', {}, '°')),
+          icon(night ? 'moon' : glyph)),
+        el('div', {},
+          el('p', { class: 'sub' }, `${label} · feels like ${Math.round(data.current.apparent_temperature)}°`),
+          el('div', { class: 'range', role: 'img', 'aria-label': `Now ${now}°, low ${lo}°, high ${hi}°` }, el('i', { style: `left:${(at * 100).toFixed(1)}%` })),
+          el('div', { class: 'range-lbl' }, el('span', {}, `Low ${lo}°`), el('span', {}, `High ${hi}°`))));
       weatherLoaded = true;
     } catch (err) {
       console.error('Weather fetch failed:', err);
@@ -2444,9 +2487,15 @@ hr.rule { margin: 36px 0; }
     $('month-name').textContent = fmtMonth.format(parseKey(today));
     $('month-day').textContent = `Day ${day} of ${days}`;
     $('month-left').textContent = left === 0 ? 'Last day of the month' : `${left} day${left === 1 ? '' : 's'} left`;
-    $('month-ticks').setAttribute('aria-label', `Day ${day} of ${days}`);
-    $('month-ticks').replaceChildren(...Array.from({ length: days }, (_, i) =>
-      el('i', { class: i + 1 < day ? 'past' : i + 1 === day ? 'now' : '', style: `--i:${i}` })));
+    const week = $('month-week');
+    week.setAttribute('aria-label', `Day ${day} of ${days}`);
+    const start = weekStartKey();
+    week.replaceChildren(...Array.from({ length: 7 }, (_, i) => {
+      const key = addDays(start, i);
+      return el('span', { class: key === today ? 'today' : '' },
+        'MTWTFSS'[i], el('b', {}, String(Number(key.slice(8)))));
+    }));
+    $('month-fill').style.width = `${(day / days * 100).toFixed(1)}%`;
   }
 
   /* =====================================================================
@@ -5279,7 +5328,6 @@ hr.rule { margin: 36px 0; }
     if (today === lastDay) return;
     if (calSelected === lastDay) { calSelected = today; calView = today.slice(0, 7); }
     lastDay = today;
-    $('month-ticks').classList.remove('intro');
     renderMonth();
     resetWeeklyIfNeeded();
     renderAll();
