@@ -1065,20 +1065,28 @@
      Glass: every card is frosted navy over the picture, no border
      ===================================================================== */
   .panel, .zone, .col {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 45%), color-mix(in srgb, var(--ground) 36%, transparent);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 45%), color-mix(in srgb, var(--ground) 64%, transparent);
     -webkit-backdrop-filter: blur(26px) saturate(1.5); backdrop-filter: blur(26px) saturate(1.5);
     border-radius: 20px;
     box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
   }
   .panel:not(.no-lift):hover, .zone:hover, .col:hover { box-shadow: 0 18px 46px rgba(0, 0, 0, 0.32); }
 
+  /* privacy veil: finance numbers stay blurred until their card is clicked, or "Unblur all" is on */
+  [data-veil="on"] #tx-summary:not(.open), [data-veil="on"] #tx-list:not(.open),
+  [data-veil="on"] .fin-grid .panel:not(.open) > :not(.ptitle) { filter: blur(9px); user-select: none; cursor: pointer; }
+  #tx-summary, #tx-list, .fin-grid .panel > * { transition: filter 0.3s; }
+  .veil-btn { gap: 6px; min-height: 34px; padding: 0 14px; border: 0; border-radius: 999px; font-size: 15px; display: inline-flex; align-items: center; color: var(--ink-2);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 60%), color-mix(in srgb, var(--ground) 64%, transparent);
+    -webkit-backdrop-filter: blur(26px) saturate(1.5); backdrop-filter: blur(26px) saturate(1.5); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22); }
+  .veil-btn:hover { color: #fff; }
   /* the finance sub-bar: glass tab pills, a small menu button, a small month switcher */
   .fin-head { gap: 8px 18px; margin: 4px 0 18px; position: relative; z-index: 30; }
   .fin-tabs { gap: 6px; padding: 0; background: none; box-shadow: none; }
   .fin-tabs .tab-pill { display: none; }
   .fin-tabs a, .menu-btn {
     color: var(--ink-2);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 60%), color-mix(in srgb, var(--ground) 36%, transparent);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 60%), color-mix(in srgb, var(--ground) 64%, transparent);
     -webkit-backdrop-filter: blur(26px) saturate(1.5); backdrop-filter: blur(26px) saturate(1.5);
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
   }
@@ -1336,6 +1344,8 @@ button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
 :focus-visible { outline: 2px solid var(--ember); outline-offset: 2px; }
 @media (max-width: 719px) { :host { --gap: 14px; } }
+:host([data-veil="on"]) .panel:not(.open) > :not(.kicker), :host([data-veil="on"]) .tile:not(.open) > * { filter: blur(9px); user-select: none; cursor: pointer; }
+.panel > *, .tile > * { transition: filter 0.3s; }
 .s3 { grid-column: span 3; }
 .savings { position: relative; }
 .savings .foot { position: absolute; top: 14px; right: 18px; padding: 0; margin: 0; }
@@ -1711,7 +1721,7 @@ hr.rule { margin: 36px 0; }
 .owed-card.from { grid-column: 5 / 8; }
 }
 .panel, .tile {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 45%), rgba(9, 16, 42, 0.34);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 45%), color-mix(in srgb, var(--ground) 64%, transparent);
     backdrop-filter: blur(26px) saturate(1.5);
     -webkit-backdrop-filter: blur(26px) saturate(1.5);
     border-radius: 20px;
@@ -1792,6 +1802,7 @@ hr.rule { margin: 36px 0; }
         <button class="link-btn" type="button" id="vendors-open" role="menuitem">Vendors &amp; categories</button>
       </div>
     </div>
+    <button class="veil-btn" type="button" id="veil-all" aria-pressed="true">Unblur all</button>
     <div class="fin-month">
       <button class="icon-btn" type="button" id="fm-prev" aria-label="Previous month"><svg class="ic" aria-hidden="true"><use href="#i-left"/></svg></button>
       <h2 id="fm-label" aria-live="polite"></h2>
@@ -1872,13 +1883,21 @@ hr.rule { margin: 36px 0; }
       </div>
     </fieldset>
     <div class="field">
-      <label for="entry-date">Date (optional)</label>
+      <label for="entry-start">Start date (optional)</label>
+      <div class="date-row">
+        <input type="date" id="entry-start">
+        <button class="chip" type="button" data-start="clear">No start</button>
+      </div>
+    </div>
+    <div class="field">
+      <label for="entry-date">End date (optional)</label>
       <div class="date-row">
         <input type="date" id="entry-date">
         <button class="chip" type="button" data-date="0">Today</button>
         <button class="chip" type="button" data-date="1">Tomorrow</button>
-        <button class="chip" type="button" data-date="clear">No date</button>
+        <button class="chip" type="button" data-date="clear">No end</button>
       </div>
+      <p class="err" id="entry-range-err" hidden>The end date is before the start date.</p>
     </div>
     <div class="sheet-actions">
       <button class="btn danger" type="button" id="entry-delete" hidden><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg>Delete</button>
@@ -2487,9 +2506,13 @@ hr.rule { margin: 36px 0; }
   function sorted(docs) {
     return [...docs].sort((a, b) =>
       (a.status === 'done') - (b.status === 'done')
-      || (a.date || '9999').localeCompare(b.date || '9999')
+      || (spanOf(a).from || '9999').localeCompare(spanOf(b).from || '9999')
       || a.createdAt - b.createdAt);
   }
+  // a task can have a start, an end, both or neither; with one of them it is a single day
+  const spanOf = (doc) => ({ from: doc.start || doc.date || null, to: doc.date || doc.start || null });
+  const coversDay = (doc, key) => { const { from, to } = spanOf(doc); return Boolean(from) && from <= key && key <= to; };
+  const hasDates = (doc) => Boolean(doc.start || doc.date);
   const isOverdue = (doc) => Boolean(doc.date) && doc.date < todayKey() && doc.status !== 'done';
   const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
 
@@ -2510,7 +2533,11 @@ hr.rule { margin: 36px 0; }
     const bits = [];
     if (label) bits.push(el('span', {}, label));
     if (doc.status === 'doing') bits.push(el('span', { class: 'doing' }, 'In progress'));
-    if (doc.date && showDate) {
+    if (doc.start && doc.date && doc.start !== doc.date && !(showDate && isOverdue(doc))) {
+      bits.push(el('span', {}, `${dueLabel(doc.start)} – ${dueLabel(doc.date)}`));
+    } else if (doc.start && !doc.date) {
+      if (showDate) bits.push(el('span', {}, `From ${dueLabel(doc.start)}`));
+    } else if (doc.date && showDate) {
       bits.push(isOverdue(doc)
         ? el('span', { class: 'overdue' }, grouped ? `Since ${dueLabel(doc.date) === 'Yesterday' ? 'yesterday' : dueLabel(doc.date)}` : overdueText(doc.date))
         : el('span', {}, dueLabel(doc.date)));
@@ -2579,7 +2606,7 @@ hr.rule { margin: 36px 0; }
       ...state.tasks.map((doc) => ({ collection: 'tasks', doc })),
       ...state.projects.map((doc) => ({ collection: 'projects', doc })),
       ...state.goals.map((doc) => ({ collection: 'goals', doc })),
-    ].filter((e) => e.doc.date).map((e) => ({ ...e, label: labelFor(e.collection, e.doc) }));
+    ].filter((e) => hasDates(e.doc)).map((e) => ({ ...e, label: labelFor(e.collection, e.doc) }));
   }
   const sortEntries = (entries) => {
     const order = sorted(entries.map((e) => e.doc));
@@ -2590,7 +2617,7 @@ hr.rule { margin: 36px 0; }
     const today = todayKey();
     const all = datedEntries();
     const overdue = sortEntries(all.filter((e) => isOverdue(e.doc)));
-    const due = sortEntries(all.filter((e) => e.doc.date === today));
+    const due = sortEntries(all.filter((e) => coversDay(e.doc, today)));
     const openCount = overdue.length + due.filter((e) => e.doc.status !== 'done').length;
     $('today-sub').textContent = overdue.length + due.length ? (openCount ? `${openCount} to do` : 'All done') : '';
 
@@ -2692,10 +2719,13 @@ hr.rule { margin: 36px 0; }
 
     const perDay = new Map();
     for (const { doc } of datedEntries()) {
-      const tally = perDay.get(doc.date) || { total: 0, open: 0 };
-      tally.total += 1;
-      if (doc.status !== 'done') tally.open += 1;
-      perDay.set(doc.date, tally);
+      const { from, to } = spanOf(doc);
+      for (let key = from, n = 0; key <= to && n < 400; key = addDays(key, 1), n++) {
+        const tally = perDay.get(key) || { total: 0, open: 0 };
+        tally.total += 1;
+        if (doc.status !== 'done') tally.open += 1;
+        perDay.set(key, tally);
+      }
     }
 
     // six weeks, starting on the Monday on or before the 1st
@@ -2726,7 +2756,7 @@ hr.rule { margin: 36px 0; }
     }
 
     document.querySelector('.agenda').hidden = !calPicked;
-    const entries = sortEntries(datedEntries().filter((e) => e.doc.date === calSelected));
+    const entries = sortEntries(datedEntries().filter((e) => coversDay(e.doc, calSelected)));
     $('agenda-title').textContent = calSelected === today ? `Today, ${fmtShort.format(parseKey(today))}` : fmtLong.format(parseKey(calSelected));
     $('agenda-body').replaceChildren(entries.length
       ? listEl('agenda', entries, { showDate: false })
@@ -2889,7 +2919,9 @@ hr.rule { margin: 36px 0; }
     if (doc?.projectId || projectId) $('entry-project').value = doc?.projectId || projectId;
     $('entry-title').value = doc?.title || '';
     entryForm.elements.status.value = doc?.status || '';
+    $('entry-start').value = doc?.start || '';
     $('entry-date').value = doc?.date || date || '';
+    $('entry-range-err').hidden = true;
     $('entry-save').textContent = doc ? 'Save' : 'Add';
     $('entry-delete').hidden = !doc;
     setTitleError(false);
@@ -2900,6 +2932,7 @@ hr.rule { margin: 36px 0; }
 
   entryForm.addEventListener('change', (e) => { if (e.target.name === 'type') syncEntry(); });
   $('entry-title').addEventListener('input', () => setTitleError(false));
+  entryForm.querySelector('[data-start]').addEventListener('click', () => { $('entry-start').value = ''; });
   entryForm.querySelectorAll('[data-date]').forEach((chip) => chip.addEventListener('click', () => {
     $('entry-date').value = chip.dataset.date === 'clear' ? '' : addDays(todayKey(), Number(chip.dataset.date));
   }));
@@ -2909,7 +2942,11 @@ hr.rule { margin: 36px 0; }
     const title = $('entry-title').value.trim();
     if (!title) { setTitleError(true); $('entry-title').focus(); return; }
     const type = TYPES[entryType()];
-    const data = { title, status: entryForm.elements.status.value || null, date: $('entry-date').value || null };
+    const start = $('entry-start').value || null;
+    const end = $('entry-date').value || null;
+    if (start && end && start > end) { $('entry-range-err').hidden = false; return; }
+    $('entry-range-err').hidden = true;
+    const data = { title, status: entryForm.elements.status.value || null, start, date: end };
     if (type.collection === 'tasks') {
       data.kind = type.kind;
       data.projectId = type.kind === 'project' ? $('entry-project').value : null;
@@ -3306,6 +3343,7 @@ hr.rule { margin: 36px 0; }
     if (finTab === 'spending') renderSpendingTab();
     if (finTab === 'transactions') renderTransactionsTab();
     if (finTab === 'budget') renderBudgetTab();
+    applyVeil();
     if (animate) {
       const panel = $(`tab-${finTab}`);
       const grid = panel.querySelector('.fin-grid');
@@ -3315,6 +3353,57 @@ hr.rule { margin: 36px 0; }
       countUp(panel);
     }
   }
+
+
+  /* ---------- Privacy veil: numbers blurred until a card is clicked ---------- */
+  const VEIL_KEY = 'tracker:veil';
+  let veilOn = true;
+  try { veilOn = localStorage.getItem(VEIL_KEY) !== 'off'; } catch {}
+  const veilOpen = new Set();   // cards revealed one at a time, kept across redraws
+  const VEIL_SEL = {
+    spending: '.panel > :not(.kicker), .tile > *',
+    transactions: '#tx-summary, #tx-list',
+    budget: '.fin-grid .panel > :not(.ptitle)',
+  };
+  const veilCards = (root, tab) => (tab === 'transactions' ? [...root.querySelectorAll('#tx-summary, #tx-list')]
+    : [...root.querySelectorAll(tab === 'budget' ? '.fin-grid .panel' : '.panel, .tile')]);
+
+  function applyVeil() {
+    for (const tab of ['spending', 'transactions', 'budget']) {
+      const host = $(`tab-${tab}`);
+      host.dataset.veil = veilOn ? 'on' : 'off';
+      const root = tab === 'spending' ? (SP.sr || host) : host;
+      veilCards(root, tab).forEach((card, i) => card.classList.toggle('open', veilOpen.has(`${tab}:${i}`)));
+    }
+    const btn = $('veil-all');
+    btn.textContent = veilOn ? 'Unblur all' : 'Blur all';
+    btn.setAttribute('aria-pressed', String(!veilOn));
+  }
+
+  // first click on a blurred card only reveals it; it does not trigger what is underneath
+  function veilClick(tab, root) {
+    root.addEventListener('click', (e) => {
+      if (!veilOn) return;
+      const hit = e.target.closest?.(VEIL_SEL[tab]);
+      if (!hit) return;
+      const cards = veilCards(root, tab);
+      const index = cards.findIndex((c) => c === hit || c.contains(hit));
+      if (index < 0 || cards[index].classList.contains('open')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      veilOpen.add(`${tab}:${index}`);
+      applyVeil();
+    }, true);
+  }
+  veilClick('transactions', $('tab-transactions'));
+  veilClick('budget', $('tab-budget'));
+
+  $('veil-all').addEventListener('click', () => {
+    veilOn = !veilOn;
+    veilOpen.clear();
+    try { localStorage.setItem(VEIL_KEY, veilOn ? 'on' : 'off'); } catch {}
+    applyVeil();
+  });
 
   function ago(ms) {
     const minutes = Math.round((Date.now() - ms) / 60000);
@@ -3704,6 +3793,7 @@ hr.rule { margin: 36px 0; }
     dlg.innerHTML = SP_DIALOGS;
     sr.append(body, dlg);
     SP.sr = sr;
+    veilClick('spending', sr);
     spDialogs();
     if (window.ResizeObserver) new ResizeObserver(spAgain).observe($('tab-spending'));
     if (document.fonts) document.fonts.ready.then(spAgain);
@@ -5271,6 +5361,13 @@ hr.rule { margin: 36px 0; }
   document.addEventListener('close', closeTimePop, true);
   document.querySelectorAll('input[type="time"]').forEach(enhanceTime);
 
+  /* one-time: everything that was a weekly task becomes a personal task */
+  async function moveWeeklyToPersonal() {
+    if (state.meta.some((m) => m.id === 'weeklyMoved')) return;
+    for (const task of state.tasks.filter((t) => t.kind === 'weekly')) await store.update('tasks', task.id, { kind: 'personal' });
+    await store.set('meta', 'weeklyMoved', { done: true });
+  }
+
   /* =====================================================================
      Weekly reset: routines stay, their ticks clear each Monday
      ===================================================================== */
@@ -5300,7 +5397,7 @@ hr.rule { margin: 36px 0; }
   renderMonth();
   renderAll();
   route();
-  store.onLoaded(() => copyLocalToAccount().then(resetWeeklyIfNeeded).then(seedDeposits));
+  store.onLoaded(() => copyLocalToAccount().then(moveWeeklyToPersonal).then(resetWeeklyIfNeeded).then(seedDeposits));
   loadWeather();
 
   setInterval(renderClock, 1000);
