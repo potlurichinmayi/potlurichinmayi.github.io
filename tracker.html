@@ -574,23 +574,36 @@
 
   /* ---------- Sign-in page (shown instead of the tracker until signed in) ---------- */
   body.locked .bar, body.locked .page, body.locked .foot, body.locked .fab { display: none; }
-  .gate { display: none; }
-  body.locked .gate { display: grid; place-items: center; min-height: 100vh; min-height: 100dvh; padding: 24px 16px; }
-  .gate-card {
-    width: min(100%, 400px);
-    padding: 44px 36px 36px;
-    text-align: center;
-    background: var(--panel);
-    border-radius: 18px;
-    box-shadow: 0 30px 60px -24px rgba(1, 3, 14, 0.9);
-    animation: sheet-in 0.5s var(--ease);
-  }
-  .gate-card img { width: 88px; height: 88px; margin: 0 auto 18px; border-radius: 50%; }
-  .gate-card h1 { font-family: var(--serif); font-size: 26px; letter-spacing: 0.06em; text-transform: uppercase; }
-  .gate-card p { margin-top: 10px; font-size: 17px; color: var(--ink-2); }
-  .gate-card .btn { width: 100%; min-height: 48px; margin-top: 28px; font-size: 17px; }
-  .gate-card small { display: block; margin-top: 16px; font-size: 14px; color: var(--ink-3); text-wrap: balance; }
-  .gate-wait { margin-top: 28px; }
+  .gate { display: none; position: fixed; inset: 0; z-index: 100; place-items: center; padding: 0 24px; text-align: center; background: var(--ground); }
+  body.locked .gate, .gate.leaving { display: grid; }
+  .gate-art { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+  .gate-art::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 45% at 50% 50%, rgba(6, 10, 26, 0.62), rgba(6, 10, 26, 0.15) 70%, transparent), linear-gradient(to top, rgba(6, 10, 26, 0.7), transparent 30%); }
+  .gate-pic { position: absolute; inset: -4%; background: var(--bg-image) center 35% / cover no-repeat; animation: gate-drift 28s ease-in-out infinite alternate, gate-burn 2.8s var(--ease); }
+  /* warm light floods in like a film light leak, burns the picture into view, then settles */
+  .gate-leak { position: absolute; inset: -25%; z-index: 1; mix-blend-mode: screen; opacity: 0.28; transform: translateX(8%) scale(1.1);
+    background: radial-gradient(38% 50% at 18% 42%, rgba(255, 130, 50, 0.95), transparent 70%), radial-gradient(34% 44% at 82% 62%, rgba(255, 80, 110, 0.75), transparent 70%), radial-gradient(30% 40% at 56% 18%, rgba(255, 215, 130, 0.85), transparent 70%);
+    animation: gate-leak 3.2s var(--ease); transition: opacity 1.1s ease, transform 1.4s ease; }
+  .gate-grain { position: absolute; inset: -60%; z-index: 1; opacity: 0.16; mix-blend-mode: overlay; pointer-events: none; animation: gate-grain 0.7s steps(1) infinite;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.1 -.15'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>"); }
+  .gate-copy { position: relative; z-index: 3; width: 100%; text-shadow: 0 2px 24px rgba(4, 7, 20, 0.7); transition: opacity 0.45s; }
+  .gate-copy h1 { display: flex; justify-content: center; padding-left: 0.5em; font-family: var(--serif); font-weight: 400; font-size: clamp(40px, 9vw, 84px); letter-spacing: 0.5em; text-transform: uppercase; }
+  .gate-copy h1 span { opacity: 0; animation: gate-rise 0.9s var(--ease) forwards; animation-delay: calc(0.3s + var(--i) * 0.09s); }
+  .gate-rule { width: min(220px, 50vw); height: 1px; margin: 26px auto 0; background: var(--ember); opacity: 0.7; animation: gate-grow 1.2s 0.9s var(--ease) both; }
+  .gate-under { display: grid; place-items: center; height: 34px; margin-top: 22px; opacity: 0; animation: gate-fade 0.8s 1.4s forwards; }
+  .gate-wait { font-style: italic; font-size: 20px; color: var(--ink-3); animation: gate-breathe 1.8s ease-in-out infinite; }
+  .gate-link { padding: 6px 2px; border: 0; border-bottom: 1px solid transparent; background: none; color: var(--ink); font: italic 20px var(--serif); cursor: pointer; transition: color 0.2s, border-color 0.2s, letter-spacing 0.3s; }
+  .gate-link:hover, .gate-link:focus-visible { color: var(--ember-hi); border-color: var(--ember); letter-spacing: 0.03em; outline: none; }
+  .gate.leaving { opacity: 0; pointer-events: none; transition: opacity 1.2s ease 0.35s; }
+  .gate.leaving .gate-copy { opacity: 0; }
+  .gate.leaving .gate-leak { opacity: 1; transform: translateX(0) scale(1.7); }
+  @keyframes gate-leak { 0% { opacity: 0; transform: translateX(-18%) scale(0.7); } 38% { opacity: 1; transform: translateX(-2%) scale(1); } 100% { opacity: 0.28; transform: translateX(8%) scale(1.1); } }
+  @keyframes gate-burn { from { filter: brightness(2.6) saturate(0.35) contrast(0.7); opacity: 0; } 45% { opacity: 1; } }
+  @keyframes gate-drift { from { transform: scale(1); } to { transform: scale(1.07) translateY(-1.2%); } }
+  @keyframes gate-grain { 0% { transform: translate(0, 0); } 20% { transform: translate(-4%, 3%); } 40% { transform: translate(3%, -5%); } 60% { transform: translate(-6%, -2%); } 80% { transform: translate(5%, 4%); } }
+  @keyframes gate-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  @keyframes gate-fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes gate-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  @keyframes gate-breathe { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
 
   /* ---------- Footer ---------- */
   .foot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; max-width: 1366px; margin: 0 auto; padding: 18px var(--pad) calc(28px + env(safe-area-inset-bottom)); font-size: 15px; color: var(--ink-2); }
@@ -1096,13 +1109,15 @@
 <body class="locked">
 
 <div class="gate" id="gate">
-  <div class="gate-card">
-    <img src="tracker-assets/eye.png" alt="" width="88" height="88">
-    <h1>Potluri</h1>
-    <p>Sign in to open your tracker.</p>
-    <p class="gate-wait" id="gate-wait" aria-live="polite">Opening…</p>
-    <button class="btn primary" type="button" id="signin-btn" hidden>Sign in with Google</button>
-    <small id="gate-note" hidden>Private. Only the owner’s Google account can open it.</small>
+  <div class="gate-art" aria-hidden="true"><div class="gate-pic"></div><div class="gate-leak"></div></div>
+  <div class="gate-grain" aria-hidden="true"></div>
+  <div class="gate-copy">
+    <h1 aria-label="Potluri"><span aria-hidden="true" style="--i:0">P</span><span aria-hidden="true" style="--i:1">O</span><span aria-hidden="true" style="--i:2">T</span><span aria-hidden="true" style="--i:3">L</span><span aria-hidden="true" style="--i:4">U</span><span aria-hidden="true" style="--i:5">R</span><span aria-hidden="true" style="--i:6">I</span></h1>
+    <div class="gate-rule"></div>
+    <div class="gate-under">
+      <span class="gate-wait" id="gate-wait" aria-live="polite">Opening</span>
+      <button class="gate-link" type="button" id="signin-btn" hidden>Enter with Google →</button>
+    </div>
   </div>
 </div>
 
@@ -4481,10 +4496,15 @@ hr.rule { margin: 36px 0; }
 
   if (!CONFIG.firebase) document.body.classList.remove('locked');
   store.onAccount((user) => {
+    const gate = $('gate');
+    if (user && document.body.classList.contains('locked')) {
+      // the light-leak flares and the gate fades away over the tracker
+      gate.classList.add('leaving');
+      setTimeout(() => gate.classList.remove('leaving'), 1700);
+    }
     document.body.classList.toggle('locked', !user);
     $('gate-wait').hidden = true;
     $('signin-btn').hidden = false;
-    $('gate-note').hidden = false;
     $('signout-btn').hidden = !user;
     $('storage-note').textContent = user
       ? `Synced to ${user.email || 'your Google account'}.`
