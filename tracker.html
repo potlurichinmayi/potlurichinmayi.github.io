@@ -4521,20 +4521,24 @@ hr.rule { margin: 36px 0; }
 
 
   if (!CONFIG.firebase) document.body.classList.remove('locked');
+  // the opening screen always plays through (letters, rule, line) before it hands over, however fast sign-in resolves
+  const gateOpen = new Promise((resolve) => setTimeout(resolve, Math.max(0, 2800 - performance.now())));
   store.onAccount((user) => {
-    const gate = $('gate');
-    if (user && document.body.classList.contains('locked')) {
-      // the light-leak flares and the gate fades away over the tracker
-      gate.classList.add('leaving');
-      setTimeout(() => gate.classList.remove('leaving'), 1700);
-    }
-    document.body.classList.toggle('locked', !user);
-    $('gate-wait').hidden = true;
-    $('signin-btn').hidden = false;
     $('signout-btn').hidden = !user;
     $('storage-note').textContent = user
       ? `Synced to ${user.email || 'your Google account'}.`
       : 'Not signed in. Sign in to see your tracker.';
+    gateOpen.then(() => {
+      const gate = $('gate');
+      if (user && document.body.classList.contains('locked')) {
+        // the light-leak flares and the gate fades away over the tracker
+        gate.classList.add('leaving');
+        setTimeout(() => gate.classList.remove('leaving'), 1700);
+      }
+      document.body.classList.toggle('locked', !user);
+      $('gate-wait').hidden = true;
+      $('signin-btn').hidden = Boolean(user);  // never offered to someone already signed in
+    });
   });
   $('signin-btn').addEventListener('click', () => store.signIn());
   $('signout-btn').addEventListener('click', () => store.signOut());
