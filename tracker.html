@@ -226,27 +226,25 @@
   .big { display: flex; align-items: baseline; gap: 8px; font-family: var(--serif); font-size: 42px; line-height: 1; white-space: nowrap; }
   .big small { font-family: var(--sans); font-size: 17px; font-weight: 400; letter-spacing: 0.04em; color: var(--ink-2); }
   .zone .line { margin-top: 10px; font-size: 16px; color: var(--ink-2); }
-  .glance .zone { display: flex; flex-direction: column; justify-content: space-between; gap: 28px; min-height: 210px; padding: 26px 30px 24px; }
+  .glance .zone { container-type: inline-size; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; min-height: 122px; padding: 14px 16px 13px; }
   .glance .zone > div { min-width: 0; }
-  .eyebrow { margin-bottom: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; line-height: 1.3; font-style: italic; color: var(--ink-3); }
-  .zone .num { display: block; height: 50px; font-family: var(--serif); font-size: 48px; line-height: 50px; letter-spacing: -0.01em; white-space: nowrap; }
-  .zone .num sup { margin-left: 6px; position: relative; top: 5px; vertical-align: top; font-size: 12px; line-height: 1; letter-spacing: 0.14em; color: var(--ember); }
-  .zone .num.deg sup { margin-left: 1px; font-size: 20px; letter-spacing: 0; }
-  .zone .num.name { font-style: italic; letter-spacing: 0; }
-  .zone .foot { font-size: 13px; line-height: 16px; color: var(--ink-3); }
-  .zone .foot.date { font-style: italic; }
-  .weather-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
-  .weather-top .ic { width: 24px; height: 24px; margin-top: 6px; stroke-width: 1.2; color: var(--ember); }
-  .range { position: relative; height: 4px; margin: 0 0 10px; border-radius: 999px; background: linear-gradient(90deg, #93aee0, var(--ink) 50%, var(--ember)); opacity: 0.9; }
-  .range i { position: absolute; top: 50%; width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 2.5px solid var(--ground); box-shadow: 0 0 0 1.5px var(--ember); transform: translate(-50%, -50%); }
-  .range-lbl { display: flex; justify-content: space-between; font-size: 13px; line-height: 16px; color: var(--ink-3); }
-  .week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; margin-bottom: 14px; text-align: center; }
-  .week span { display: grid; gap: 3px; padding: 0 0 6px; font-size: 10px; letter-spacing: 0.1em; color: var(--ink-3); border-bottom: 1px solid transparent; }
-  .week span b { font-weight: 400; font-size: 14px; letter-spacing: 0; color: var(--ink-2); }
-  .week span.today { color: var(--ember); border-bottom-color: var(--ember); }
-  .week span.today b { color: var(--ink); }
-  .month-bar { height: 4px; margin-bottom: 10px; border-radius: 999px; background: var(--rule); overflow: hidden; }
-  .month-bar i { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--ember); transition: width 0.9s var(--ease); }
+  .g-eyebrow { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11.5px; line-height: 14px; font-style: italic; color: var(--ink-3); }
+  .g-num { display: block; height: 32px; margin-top: 3px; font-size: 30px; line-height: 32px; letter-spacing: -0.01em; white-space: nowrap; }
+  .g-num sup { margin-left: 3px; position: relative; top: 3px; vertical-align: top; font-size: 9px; line-height: 1; letter-spacing: 0.14em; color: var(--ember); }
+  .g-num.deg sup { margin-left: 1px; font-size: 14px; letter-spacing: 0; }
+  .g-num.name { height: 28px; margin: 0; font-size: 25px; line-height: 28px; font-style: italic; letter-spacing: 0; }
+  .g-foot { font-size: 11px; line-height: 13px; color: var(--ink-3); }
+  .g-foot.date { font-style: italic; }
+  .g-row { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; }
+  .g-row.top { align-items: flex-start; }
+  .g-row .ic { width: 18px; height: 18px; margin-top: 6px; stroke-width: 1.2; color: var(--ember); }
+  .g-range { position: relative; height: 3px; margin-bottom: 7px; border-radius: 999px; background: linear-gradient(90deg, #93aee0, var(--ink) 50%, var(--ember)); opacity: 0.9; }
+  .g-range i { position: absolute; top: 50%; width: 10px; height: 10px; border-radius: 50%; background: #fff; border: 2px solid var(--ground); box-shadow: 0 0 0 1.5px var(--ember); transform: translate(-50%, -50%); }
+  .g-lbl { display: flex; justify-content: space-between; gap: 6px; font-size: 11px; line-height: 13px; color: var(--ink-3); }
+  .g-bar { height: 3px; margin-bottom: 7px; border-radius: 999px; background: var(--rule); overflow: hidden; }
+  .g-bar i { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--ember); transition: width 0.9s var(--ease); }
+  .g-wx-cond { margin-bottom: 7px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  @container (max-width: 190px) { .g-full { display: none; } }
 
   .skeleton { border-radius: 6px; background: linear-gradient(90deg, var(--raise), var(--raise-2), var(--raise)); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
   @keyframes shimmer { to { background-position: -200% 0; } }
@@ -739,19 +737,17 @@
     .zone .line { font-size: 14px; }
     .big { font-size: 30px; gap: 4px; }
     .big small { font-size: 12px; }
-    .glance .zone { min-height: 150px; gap: 14px; padding: 16px 12px 14px; }
-    .eyebrow { margin-bottom: 8px; font-size: 10px; white-space: normal; }
-    .zone .num { height: 30px; font-size: 28px; line-height: 30px; }
-    .zone .num sup { margin-left: 2px; top: 2px; font-size: 8px; }
-    .zone .num.deg sup { font-size: 13px; }
-    .zone .foot, .range-lbl { font-size: 10px; line-height: 13px; }
-    .weather-top .ic { width: 16px; height: 16px; margin-top: 4px; }
-    .range { height: 3px; margin-bottom: 8px; }
-    .range i { width: 9px; height: 9px; border-width: 2px; }
-    .week { gap: 0; margin-bottom: 10px; }
-    .week span { padding-bottom: 4px; font-size: 7px; letter-spacing: 0; }
-    .week span b { font-size: 9px; }
-    .month-bar { height: 3px; margin-bottom: 8px; }
+    .glance .zone { min-height: 104px; gap: 6px; padding: 10px 10px 9px; }
+    .g-eyebrow, .g-foot, .g-lbl { font-size: 9px; line-height: 11px; }
+    .g-num { height: 24px; font-size: 22px; line-height: 24px; }
+    .g-num sup { top: 2px; font-size: 7px; }
+    .g-num.deg sup { font-size: 11px; }
+    .g-num.name { height: 22px; font-size: 18px; line-height: 22px; }
+    .g-row .ic { width: 14px; height: 14px; margin-top: 4px; }
+    .g-range { height: 2px; margin-bottom: 6px; }
+    .g-range i { width: 8px; height: 8px; border-width: 1.5px; }
+    .g-bar { height: 2px; margin-bottom: 6px; }
+    .g-wx-cond { margin-bottom: 5px; }
     .board { grid-template-columns: minmax(0, 1fr); }
     .col { min-height: 130px; padding: 24px 20px; }
     .col-head { justify-content: flex-start; }
@@ -1190,28 +1186,24 @@
       <div class="zone">
         <h2>Hyderabad time</h2>
         <div>
-          <p class="eyebrow" id="greeting">&nbsp;</p>
-          <p class="num"><span id="clock">--:--</span><sup id="clock-ampm"></sup></p>
+          <p class="g-eyebrow" id="greeting">&nbsp;</p>
+          <p class="g-num"><span id="clock">--:--</span><sup id="clock-ampm"></sup></p>
         </div>
-        <p class="foot date" id="clock-date">&nbsp;</p>
+        <p class="g-foot date" id="clock-date">&nbsp;</p>
       </div>
       <div class="zone" aria-live="polite">
         <h2>Weather</h2>
         <div id="weather" style="display:contents">
-          <div class="skeleton" style="width:120px;height:54px"></div>
-          <div class="skeleton" style="width:180px;height:16px"></div>
+          <div class="skeleton" style="width:80px;height:32px"></div>
+          <div class="skeleton" style="width:120px;height:13px"></div>
         </div>
       </div>
       <div class="zone month">
         <h2>This month</h2>
+        <div class="g-row"><p class="g-num name" id="month-name"></p><span class="g-foot" id="month-day"></span></div>
         <div>
-          <p class="eyebrow" id="month-day"></p>
-          <p class="num name" id="month-name"></p>
-        </div>
-        <div>
-          <div class="week" id="month-week" role="img"></div>
-          <div class="month-bar" aria-hidden="true"><i id="month-fill"></i></div>
-          <div class="range-lbl"><span>1</span><span id="month-left"></span><span id="month-end"></span></div>
+          <div class="g-bar" role="img" id="month-bar"><i id="month-fill"></i></div>
+          <div class="g-lbl"><span id="month-count"></span><span id="month-left"></span></div>
         </div>
       </div>
     </section>
@@ -2424,8 +2416,10 @@ hr.rule { margin: 36px 0; }
     }
     const hour = Number(parts.find((p) => p.type === 'hour').value) % 12 + (get('dayPeriod').toLowerCase() === 'pm' ? 12 : 0);
     const part = hour < 5 ? 'night' : hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
-    const greeting = `Good ${part}, ${CONFIG.name}`;
-    if ($('greeting').textContent !== greeting) $('greeting').textContent = greeting;
+    const greeting = `Good ${part}`;
+    if ($('greeting').firstChild?.textContent !== greeting) {
+      $('greeting').replaceChildren(greeting, el('span', { class: 'g-full' }, `, ${CONFIG.name}`));
+    }
   }
 
   const WEATHER = {
@@ -2457,14 +2451,13 @@ hr.rule { margin: 36px 0; }
       const lo = Math.round(data.daily.temperature_2m_min[0]);
       const at = hi > lo ? Math.min(1, Math.max(0, (data.current.temperature_2m - lo) / (hi - lo))) : 0.5;
       $('weather').replaceChildren(
+        el('div', { class: 'g-row top' },
+          el('p', { class: 'g-num deg', style: 'margin:0' }, `${now}`, el('sup', {}, '°')),
+          icon(night ? 'moon' : glyph)),
         el('div', {},
-          el('p', { class: 'eyebrow' }, `${label} · feels like ${Math.round(data.current.apparent_temperature)}°`),
-          el('div', { class: 'weather-top' },
-            el('p', { class: 'num deg' }, `${now}`, el('sup', {}, '°')),
-            icon(night ? 'moon' : glyph))),
-        el('div', {},
-          el('div', { class: 'range', role: 'img', 'aria-label': `Now ${now}°, low ${lo}°, high ${hi}°` }, el('i', { style: `left:${(at * 100).toFixed(1)}%` })),
-          el('div', { class: 'range-lbl' }, el('span', {}, `Low ${lo}°`), el('span', {}, `High ${hi}°`))));
+          el('p', { class: 'g-foot g-wx-cond' }, `${label} · feels like ${Math.round(data.current.apparent_temperature)}°`),
+          el('div', { class: 'g-range', role: 'img', 'aria-label': `Now ${now}°, low ${lo}°, high ${hi}°` }, el('i', { style: `left:${(at * 100).toFixed(1)}%` })),
+          el('div', { class: 'g-lbl' }, el('span', {}, `${lo}°`), el('span', {}, `${hi}°`))));
       weatherLoaded = true;
     } catch (err) {
       console.error('Weather fetch failed:', err);
@@ -2481,17 +2474,10 @@ hr.rule { margin: 36px 0; }
     const days = new Date(Date.UTC(year, month, 0)).getUTCDate();
     const left = days - day;
     $('month-name').textContent = fmtMonth.format(parseKey(today));
-    $('month-day').textContent = `Day ${day} of ${days}`;
-    $('month-end').textContent = String(days);
-    $('month-left').textContent = left === 0 ? 'Last day of the month' : `${left} day${left === 1 ? '' : 's'} left`;
-    const week = $('month-week');
-    week.setAttribute('aria-label', `Day ${day} of ${days}`);
-    const start = weekStartKey();
-    week.replaceChildren(...Array.from({ length: 7 }, (_, i) => {
-      const key = addDays(start, i);
-      return el('span', { class: key === today ? 'today' : '' },
-        'MTWTFSS'[i], el('b', {}, String(Number(key.slice(8)))));
-    }));
+    $('month-day').textContent = `${day} / ${days}`;
+    $('month-count').textContent = `Day ${day}`;
+    $('month-left').textContent = left === 0 ? 'Last day' : `${left} day${left === 1 ? '' : 's'} left`;
+    $('month-bar').setAttribute('aria-label', `Day ${day} of ${days}`);
     $('month-fill').style.width = `${(day / days * 100).toFixed(1)}%`;
   }
 
