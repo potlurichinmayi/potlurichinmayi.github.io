@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tracker · Glance row options</title>
+<link rel="icon" href="../tracker-assets/cat.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ground: #0a1128; --ember: #e9a26c; --ink: #f0e8d9; --on-ember: #0b1230;
+    --ink-2: color-mix(in srgb, var(--ink) 76%, transparent);
+    --ink-3: color-mix(in srgb, var(--ink) 58%, transparent);
+    --rule: color-mix(in srgb, var(--ink) 14%, transparent);
+    --rule-2: color-mix(in srgb, var(--ink) 34%, transparent);
+    --serif: 'Baskervville', 'Baskerville', Georgia, serif;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { background: var(--ground); color-scheme: dark; }
+  body { margin: 0; font-family: var(--serif); font-size: 16px; line-height: 1.3; color: var(--ink); font-variant-numeric: lining-nums tabular-nums; -webkit-font-smoothing: antialiased; }
+  p, h1, h2, h3 { margin: 0; font-weight: 400; }
+  .bg { position: fixed; inset: 0; z-index: -1; background: url('../tracker-assets/bg2.png') center / cover no-repeat; opacity: .9; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 40px 24px 80px; }
+  .intro { color: var(--ink-2); max-width: 60ch; margin: 6px 0 44px; }
+  h1 { font-size: 30px; }
+  .opt { margin-bottom: 56px; }
+  .opt-label { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+  .opt-label b { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--ember); font-weight: 400; }
+  .opt-label h2 { font-size: 22px; }
+  .opt-note { color: var(--ink-3); margin-bottom: 14px; max-width: 70ch; }
+
+  /* shared glass (matches tracker.html .zone) */
+  .glass {
+    background: linear-gradient(135deg, rgba(255,255,255,.09), rgba(255,255,255,0) 45%), color-mix(in srgb, var(--ground) 36%, transparent);
+    -webkit-backdrop-filter: blur(26px) saturate(1.5); backdrop-filter: blur(26px) saturate(1.5);
+    border-radius: 20px; box-shadow: 0 14px 40px rgba(0,0,0,.28);
+  }
+  .row3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
+  .card { min-width: 0; min-height: 165px; padding: 20px 22px 22px; position: relative; overflow: hidden; }
+  .big { display: flex; align-items: baseline; gap: 8px; font-size: 42px; line-height: 1; white-space: nowrap; }
+  .big small { font-size: 17px; letter-spacing: .04em; color: var(--ink-2); }
+  .line { margin-top: 10px; font-size: 16px; color: var(--ink-2); }
+  .dim { color: var(--ink-3); }
+  .eyebrow { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 12px; }
+  .ic { width: 30px; height: 30px; fill: none; stroke: var(--ember); stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .ticks { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0,1fr); gap: 2px; align-items: end; height: 26px; margin-top: 14px; }
+  .ticks i { display: block; height: 55%; border-radius: 999px; background: var(--rule); }
+  .ticks i.past { background: var(--ink-3); }
+  .ticks i.now { height: 100%; background: var(--ember); }
+
+  /* ---------- A · one strip ---------- */
+  .strip { display: grid; grid-template-columns: 1.1fr 1fr 1.1fr; padding: 26px 0; }
+  .strip > div { padding: 0 30px; }
+  .strip > div + div { border-left: 1px solid var(--rule); }
+  .strip .big { font-size: 56px; }
+  .strip .wx { display: flex; align-items: center; gap: 14px; }
+  .strip .wx .ic { width: 38px; height: 38px; }
+
+  /* ---------- B · rings ---------- */
+  .ringcard { display: flex; align-items: center; gap: 20px; }
+  .ring { position: relative; width: 112px; height: 112px; flex: none; }
+  .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .ring circle { fill: none; stroke-width: 5; stroke-linecap: round; }
+  .ring .trk { stroke: var(--rule); }
+  .ring .val { stroke: var(--ember); }
+  .ring .mid { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; font-size: 26px; line-height: 1; }
+  .ring .mid small { display: block; margin-top: 4px; font-size: 12px; color: var(--ink-3); letter-spacing: .08em; }
+  .ringcard .txt .big { font-size: 34px; }
+  .ringcard .txt .line { margin-top: 8px; font-size: 15px; }
+
+  /* ---------- C · range & week ---------- */
+  .range { position: relative; height: 6px; border-radius: 999px; margin: 18px 0 8px; background: linear-gradient(90deg, #93aee0, #f0e8d9 50%, #e9a26c); opacity: .85; }
+  .range i { position: absolute; top: 50%; width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 3px solid var(--ground); transform: translate(-50%,-50%); box-shadow: 0 0 0 1.5px var(--ember); }
+  .range-lbl { display: flex; justify-content: space-between; font-size: 14px; color: var(--ink-3); }
+  .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 16px; text-align: center; }
+  .week span { display: grid; gap: 4px; padding: 6px 0 7px; border-radius: 12px; font-size: 12px; color: var(--ink-3); letter-spacing: .06em; }
+  .week span b { font-weight: 400; font-size: 17px; color: var(--ink-2); }
+  .week span.today { background: var(--ember); color: var(--on-ember); }
+  .week span.today b { color: var(--on-ember); }
+  .week span.gone b { color: var(--ink-3); }
+  .greet { font-style: italic; color: var(--ink-2); margin-bottom: 10px; font-size: 17px; }
+
+  /* ---------- D · sky arc ---------- */
+  .arc { position: relative; margin-top: 4px; }
+  .arc svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .arc .path { fill: none; stroke: var(--rule-2); stroke-width: 1.2; stroke-dasharray: 2 5; stroke-linecap: round; }
+  .arc .done { fill: none; stroke: var(--ember); stroke-width: 1.8; stroke-linecap: round; }
+  .arc .hz { stroke: var(--rule); stroke-width: 1; }
+  .arc-times { display: flex; justify-content: space-between; font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+  .glow { position: absolute; width: 220px; height: 220px; right: -60px; top: -80px; border-radius: 50%; background: radial-gradient(closest-side, rgba(233,162,108,.38), transparent); pointer-events: none; }
+  .today-hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+  .daynum { font-size: 84px; line-height: .85; letter-spacing: -.02em; }
+  .daynum small { font-size: 22px; letter-spacing: 0; color: var(--ink-3); margin-left: 4px; }
+
+  /* ---------- E · editorial (type-led) ---------- */
+  .edi { display: flex; flex-direction: column; justify-content: space-between; }
+  .edi .time { font-size: 76px; line-height: .9; letter-spacing: -.02em; }
+  .edi .time sup { font-size: 16px; letter-spacing: .12em; color: var(--ember); vertical-align: top; margin-left: 6px; position: relative; top: 8px; }
+  .edi .date { font-style: italic; font-size: 19px; color: var(--ink-2); margin-top: 12px; }
+  .edi .temp { font-size: 76px; line-height: .9; letter-spacing: -.02em; }
+  .edi .temp sup { font-size: 30px; color: var(--ember); vertical-align: top; position: relative; top: 8px; }
+  .edi .cond { display: flex; align-items: center; gap: 10px; margin-top: 12px; color: var(--ink-2); font-size: 18px; }
+  .edi .cond .ic { width: 22px; height: 22px; }
+  .bar { height: 3px; border-radius: 999px; background: var(--rule); margin-top: 18px; overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 16.1%; background: var(--ember); border-radius: 999px; }
+  .bar-lbl { display: flex; justify-content: space-between; margin-top: 8px; font-size: 14px; color: var(--ink-3); }
+  .mo { font-size: 44px; line-height: 1; font-style: italic; }
+
+
+  /* ---------- F · day ribbon ---------- */
+  .row-f { display: grid; grid-template-columns: minmax(0,2fr) minmax(0,1fr); gap: 14px; }
+  .ribbon-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+  .ribbon-top .r { text-align: right; }
+  .curve { position: relative; margin-top: 8px; }
+  .curve svg { width: 100%; height: 96px; display: block; overflow: visible; }
+  .curve .night { fill: rgba(147,174,224,.10); }
+  .curve .line-t { fill: none; stroke: var(--ink-3); stroke-width: 1.6; }
+  .curve .line-d { fill: none; stroke: var(--ember); stroke-width: 2.2; stroke-linecap: round; }
+  .curve .nowline { stroke: var(--rule-2); stroke-dasharray: 2 4; }
+  .hours { display: flex; justify-content: space-between; font-size: 12px; letter-spacing: .08em; color: var(--ink-3); margin-top: 6px; }
+  .band { height: 5px; border-radius: 999px; margin-top: 10px; background: linear-gradient(90deg, #1a2550 0%, #1a2550 22%, #e9a26c 27%, #f0e8d9 45%, #f0e8d9 62%, #e9a26c 76%, #1a2550 82%, #1a2550 100%); opacity: .8; position: relative; }
+  .band i { position: absolute; left: 68%; top: 50%; width: 11px; height: 11px; border-radius: 50%; background: #fff; transform: translate(-50%,-50%); box-shadow: 0 0 0 3px rgba(233,162,108,.4); }
+  .dots { display: grid; grid-template-columns: repeat(7, 1fr); gap: 7px 0; justify-items: center; margin-top: 12px; }
+  .dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--rule); }
+  .dots i.past { background: var(--ink-3); }
+  .dots i.now { background: var(--ember); box-shadow: 0 0 0 4px rgba(233,162,108,.28), 0 0 14px rgba(233,162,108,.7); }
+  .dots i.pad { background: none; }
+  .dow { display: grid; grid-template-columns: repeat(7,1fr); text-align: center; font-size: 11px; letter-spacing: .1em; color: var(--ink-3); margin-top: 12px; }
+
+  /* ---------- G · analog ---------- */
+  .analog { display: flex; align-items: center; gap: 18px; }
+  .face { position: relative; width: 118px; height: 118px; flex: none; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--rule-2), inset 0 0 30px rgba(233,162,108,.10); background: radial-gradient(closest-side, rgba(255,255,255,.04), transparent); }
+  .face .mk { position: absolute; left: 50%; top: 50%; width: 1.5px; height: 6px; margin-left: -.75px; background: var(--ink-3); transform-origin: 50% 59px; transform: translateY(-59px) rotate(calc(var(--a) * 1deg)); }
+  .face .mk.q { height: 10px; background: var(--ink); }
+  .face .h, .face .m { position: absolute; left: 50%; bottom: 50%; transform-origin: 50% 100%; border-radius: 999px; }
+  .face .h { width: 3.5px; height: 30px; margin-left: -1.75px; background: var(--ink); transform: rotate(131deg); }
+  .face .m { width: 2px; height: 44px; margin-left: -1px; background: var(--ember); transform: rotate(132deg); }
+  .face .pin { position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; margin: -4px; border-radius: 50%; background: var(--ember); }
+  .thermo { display: flex; align-items: stretch; gap: 16px; }
+  .tube { position: relative; width: 14px; flex: none; border-radius: 999px; background: var(--rule); overflow: hidden; min-height: 112px; }
+  .tube i { position: absolute; left: 0; right: 0; bottom: 0; height: 78%; border-radius: 999px; background: linear-gradient(0deg, #93aee0, #f0e8d9 55%, #e9a26c); }
+  .tube::after { content:''; position:absolute; left:-2px; right:-2px; bottom: 78%; height: 2px; background:#fff; }
+  .thermo .col { display: flex; flex-direction: column; justify-content: space-between; }
+
+  /* ---------- H · month calendar dots ---------- */
+  .dotcal-wrap { display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: center; }
+  .dotcal-wrap .dots { margin-top: 0; gap: 8px 9px; }
+  .dotcal-wrap .dots i { width: 10px; height: 10px; }
+
+  /* ---------- I · sentence ---------- */
+  .sentence { padding: 34px 38px; font-size: 34px; line-height: 1.28; color: var(--ink-2); text-wrap: balance; }
+  .sentence em { font-style: italic; color: var(--ink); }
+  .sentence .chip { display: inline-flex; align-items: center; gap: 8px; vertical-align: .08em; padding: 0 14px 2px; margin: 0 2px; border-radius: 999px; background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 1px var(--rule); color: var(--ink); font-size: .86em; line-height: 1.25; }
+  .sentence .chip .ic { width: 22px; height: 22px; }
+  .sentence .chip.em { background: color-mix(in srgb, var(--ember) 24%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ember) 45%, transparent); }
+  .sentence .mini { display: inline-grid; grid-auto-flow: column; gap: 2px; align-items: end; height: 20px; vertical-align: -3px; }
+  .sentence .mini i { width: 3px; height: 11px; border-radius: 99px; background: var(--ink-3); }
+  .sentence .mini i.n { height: 20px; background: var(--ember); }
+  .sentence .mini i.f { background: var(--rule); }
+
+  /* ---------- J · living sky ---------- */
+  .sky { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); gap: 14px; }
+  .skycard { padding: 22px 24px; background: linear-gradient(160deg, rgba(120,150,220,.20) 0%, rgba(233,162,108,.22) 70%, rgba(207,96,36,.30) 100%), color-mix(in srgb, var(--ground) 40%, transparent); }
+  .skycard .top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+  .hourly { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; align-items: end; margin-top: 22px; text-align: center; font-size: 13px; color: var(--ink-3); }
+  .hourly div { display: grid; gap: 6px; justify-items: center; }
+  .hourly b { font-weight: 400; color: var(--ink); font-size: 15px; }
+  .hourly .bar-h { width: 100%; max-width: 26px; border-radius: 8px; background: rgba(240,232,217,.22); }
+  .hourly .now .bar-h { background: var(--ember); }
+  .hourly .now { color: var(--ember); }
+  @media (max-width: 860px) { .row-f, .sky { grid-template-columns: 1fr; } .sentence { font-size: 24px; padding: 24px; } .hourly { font-size: 11px; } }
+
+  @media (max-width: 860px) {
+    .row3 { grid-template-columns: 1fr; }
+    .strip { grid-template-columns: 1fr; gap: 20px; }
+    .strip > div + div { border-left: 0; border-top: 1px solid var(--rule); padding-top: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></symbol>
+</svg>
+
+<div class="wrap">
+  <h1>Glance row · ten options</h1>
+  <p class="intro">Same data as today (time, Hyderabad weather, month progress), same glass and palette. Each option rethinks hierarchy and adds one idea. A–E are refinements; F–J are bolder, inspired by hourly-forecast, sun-path, watch-face and calendar widgets. Tell me the letter. I can also mix, e.g. A's layout with D's weather card.</p>
+
+  <!-- A -->
+  <section class="opt">
+    <div class="opt-label"><b>A</b><h2>One quiet strip</h2></div>
+    <p class="opt-note">Three separate cards become one glass slab with hairline dividers. Bigger numerals, less box noise. Closest to a tidy refinement of what you have.</p>
+    <div class="glass strip">
+      <div>
+        <p class="big">4:22<small>PM</small></p>
+        <p class="line">Monday 5 October</p>
+      </div>
+      <div>
+        <div class="wx"><svg class="ic"><use href="#sun"/></svg><p class="big">32°</p></div>
+        <p class="line">Clear, feels like 31°</p>
+        <p class="line dim" style="margin-top:2px">High 34° · Low 25°</p>
+      </div>
+      <div>
+        <p class="big" style="font-size:34px">October</p>
+        <p class="line" style="margin-top:6px">Day 5 of 31 · 26 days left</p>
+        <div class="ticks" data-ticks></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- B -->
+  <section class="opt">
+    <div class="opt-label"><b>B</b><h2>Rings</h2></div>
+    <p class="opt-note">Every card gets a progress ring: how much of the waking day is gone, where the temperature sits today, how far through the month. Glanceable without reading.</p>
+    <div class="row3">
+      <div class="glass card ringcard">
+        <div class="ring">
+          <svg viewBox="0 0 112 112"><circle class="trk" cx="56" cy="56" r="50"/><circle class="val" cx="56" cy="56" r="50" stroke-dasharray="314" stroke-dashoffset="150"/></svg>
+          <div class="mid"><div>4:22<small>PM</small></div></div>
+        </div>
+        <div class="txt"><p class="eyebrow">Today</p><p class="big">Mon 5</p><p class="line">October · 52% of day</p></div>
+      </div>
+      <div class="glass card ringcard">
+        <div class="ring">
+          <svg viewBox="0 0 112 112"><circle class="trk" cx="56" cy="56" r="50"/><circle class="val" cx="56" cy="56" r="50" stroke-dasharray="314" stroke-dashoffset="100" style="stroke:#f0e8d9"/></svg>
+          <div class="mid"><div>32°<small>FEELS 31°</small></div></div>
+        </div>
+        <div class="txt"><p class="eyebrow">Hyderabad</p><p class="big" style="font-size:28px">Clear</p><p class="line">25° – 34° today</p></div>
+      </div>
+      <div class="glass card ringcard">
+        <div class="ring">
+          <svg viewBox="0 0 112 112"><circle class="trk" cx="56" cy="56" r="50"/><circle class="val" cx="56" cy="56" r="50" stroke-dasharray="314" stroke-dashoffset="263"/></svg>
+          <div class="mid"><div>5<small>OF 31</small></div></div>
+        </div>
+        <div class="txt"><p class="eyebrow">Month</p><p class="big" style="font-size:30px">October</p><p class="line">26 days left</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- C -->
+  <section class="opt">
+    <div class="opt-label"><b>C</b><h2>Useful context</h2></div>
+    <p class="opt-note">Adds a small instrument to each card: a greeting on the clock, a low-to-high range marker showing where the temperature is now, and the current week strip on the month card.</p>
+    <div class="row3">
+      <div class="glass card">
+        <p class="greet">Good afternoon, Chinmayi</p>
+        <p class="big">4:22<small>PM</small></p>
+        <p class="line">Monday 5 October</p>
+      </div>
+      <div class="glass card">
+        <div style="display:flex;align-items:center;gap:10px"><svg class="ic"><use href="#sun"/></svg><p class="big">32°</p><p class="dim" style="margin-left:auto;font-size:15px;text-align:right">Clear<br>feels 31°</p></div>
+        <div class="range"><i style="left:78%"></i></div>
+        <div class="range-lbl"><span>Low 25°</span><span>High 34°</span></div>
+      </div>
+      <div class="glass card">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><p class="big" style="font-size:30px">October</p><span class="dim">Day 5 of 31</span></div>
+        <div class="week">
+          <span class="today">M<b>5</b></span><span>T<b>6</b></span><span>W<b>7</b></span><span>T<b>8</b></span><span>F<b>9</b></span><span>S<b>10</b></span><span>S<b>11</b></span>
+        </div>
+        <p class="line dim" style="margin-top:12px;font-size:15px">26 days left</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- D -->
+  <section class="opt">
+    <div class="opt-label"><b>D</b><h2>Sky</h2></div>
+    <p class="opt-note">The weather card shows the sun on its path between sunrise and sunset with a warm glow, the clock stays big and simple, and the month leads with the day number.</p>
+    <div class="row3">
+      <div class="glass card">
+        <p class="big" style="font-size:54px">4:22<small>PM</small></p>
+        <p class="line">Monday 5 October</p>
+        <p class="line dim" style="margin-top:2px">Sunset in 1h 52m</p>
+      </div>
+      <div class="glass card">
+        <div class="glow"></div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;position:relative">
+          <p class="big">32°</p><p class="dim" style="font-size:15px">Clear · feels 31° · 25–34°</p>
+        </div>
+        <div class="arc" style="margin-top:14px">
+          <svg viewBox="0 0 300 80">
+            <line class="hz" x1="0" y1="72" x2="300" y2="72"/>
+            <path class="path" d="M20 72 A130 110 0 0 1 280 72"/>
+            <path class="done" d="M20 72 A130 110 0 0 1 207 29"/>
+            <circle cx="207" cy="29" r="9" fill="#e9a26c" opacity=".25"/>
+            <circle cx="207" cy="29" r="5" fill="#e9a26c"/>
+          </svg>
+          <div class="arc-times"><span>6:04 AM</span><span>6:14 PM</span></div>
+        </div>
+      </div>
+      <div class="glass card">
+        <div class="today-hero">
+          <p class="daynum">5<small>/ 31</small></p>
+          <p style="text-align:right;color:var(--ink-2)"><span style="font-size:24px;display:block;color:var(--ink)">October</span>26 days left</p>
+        </div>
+        <div class="ticks" data-ticks></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- E -->
+  <section class="opt">
+    <div class="opt-label"><b>E</b><h2>Editorial</h2></div>
+    <p class="opt-note">Type does the work: oversized numerals, italic date, tiny ember accents, and a single hairline progress bar for the month. Fewest decorations, most character.</p>
+    <div class="row3">
+      <div class="glass card edi" style="min-height:190px">
+        <p class="time">4:22<sup>PM</sup></p>
+        <p class="date">Monday, 5 October</p>
+      </div>
+      <div class="glass card edi" style="min-height:190px">
+        <p class="temp">32<sup>°</sup></p>
+        <div>
+          <p class="cond"><svg class="ic"><use href="#sun"/></svg>Clear, feels like 31°</p>
+          <p class="dim" style="margin-top:6px;font-size:15px">↑ 34° &nbsp; ↓ 25°</p>
+        </div>
+      </div>
+      <div class="glass card edi" style="min-height:190px">
+        <div><p class="mo">October</p><p class="line dim" style="margin-top:6px">Day 5 of 31</p></div>
+        <div>
+          <div class="bar"><i></i></div>
+          <div class="bar-lbl"><span>1</span><span style="color:var(--ember)">26 days left</span><span>31</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="opt">
+    <div class="opt-label"><b>F</b><h2>Day ribbon</h2></div>
+    <p class="opt-note">Time and weather share one wide card. A temperature curve runs across the 24 hours with the past part in ember and a dashed &ldquo;now&rdquo;, over a night&rarr;day band. The month becomes a dot calendar with a glowing today. (Idea from hourly-forecast and sun-path widgets.)</p>
+
+    <div class="row-f">
+      <div class="glass card" style="min-height:230px">
+        <div class="ribbon-top">
+          <div><p class="big" style="font-size:54px">4:22<small>PM</small></p><p class="line">Monday 5 October</p></div>
+          <div class="r"><p class="big" style="justify-content:flex-end"><svg class="ic"><use href="#sun"/></svg>32°</p><p class="line">Clear &middot; feels like 31&deg;</p></div>
+        </div>
+        <div class="curve">
+          <svg viewBox="0 0 600 96" preserveAspectRatio="none">
+            <rect class="night" x="0" y="0" width="132" height="96"/><rect class="night" x="492" y="0" width="108" height="96"/>
+            <path class="line-t" d="M0 78 C60 80 110 84 150 70 S250 18 330 12 S430 30 470 52 S560 76 600 78"/>
+            <path class="line-d" d="M0 78 C60 80 110 84 150 70 S250 18 330 12 S400 22 408 26"/>
+            <line class="nowline" x1="408" y1="0" x2="408" y2="96"/>
+            <circle cx="408" cy="26" r="6" fill="#e9a26c"/>
+          </svg>
+          <div class="hours"><span>12A</span><span>6A</span><span>12P</span><span>6P</span><span>12A</span></div>
+        </div>
+        <div class="band"><i></i></div>
+      </div>
+      <div class="glass card" style="min-height:230px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><p class="big" style="font-size:30px">October</p><span class="dim">5 / 31</span></div>
+        <div class="dow"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+        <div class="dots" data-dots></div>
+        <p class="line dim" style="font-size:15px;margin-top:14px">26 days left</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="opt">
+    <div class="opt-label"><b>G</b><h2>Instruments</h2></div>
+    <p class="opt-note">Tiny physical objects: an analog clock face with an ember minute hand, a thermometer tube showing today&rsquo;s position in the day&rsquo;s range, and a month ring of 31 beads. Calm, tactile, a bit watch-face.</p>
+
+    <div class="row3">
+      <div class="glass card analog">
+        <div class="face"><span class="mk q" style="--a:0"></span><span class="mk" style="--a:30"></span><span class="mk" style="--a:60"></span><span class="mk q" style="--a:90"></span><span class="mk" style="--a:120"></span><span class="mk" style="--a:150"></span><span class="mk q" style="--a:180"></span><span class="mk" style="--a:210"></span><span class="mk" style="--a:240"></span><span class="mk q" style="--a:270"></span><span class="mk" style="--a:300"></span><span class="mk" style="--a:330"></span><span class="h"></span><span class="m"></span><span class="pin"></span></div>
+        <div><p class="big" style="font-size:38px">4:22<small>PM</small></p><p class="line" style="font-size:15px">Monday<br>5 October</p></div>
+      </div>
+      <div class="glass card thermo">
+        <div class="tube"><i></i></div>
+        <div class="col">
+          <div><p class="big">32°</p><p class="line" style="margin-top:6px">Clear, feels like 31°</p></div>
+          <p class="dim" style="font-size:15px">Low 25° &nbsp;&middot;&nbsp; High 34°</p>
+        </div>
+      </div>
+      <div class="glass card" style="display:grid;place-items:center">
+        <div class="ring" style="width:132px;height:132px">
+          <svg viewBox="0 0 132 132" id="beads"></svg>
+          <div class="mid"><div style="font-size:24px">October<small>DAY 5 &middot; 26 LEFT</small></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="opt">
+    <div class="opt-label"><b>H</b><h2>Calendar-native</h2></div>
+    <p class="opt-note">The month card is a real month: dots laid out Mon&ndash;Sun with the weekday columns, so you see which weekday the 31st lands on and how many weekends remain. Clock and weather stay classic but slimmer.</p>
+
+    <div class="row3">
+      <div class="glass card"><p class="big">4:22<small>PM</small></p><p class="line">Monday 5 October</p><p class="line dim" style="margin-top:2px">Sunset 6:14 PM</p></div>
+      <div class="glass card"><div style="display:flex;align-items:center;gap:10px"><svg class="ic"><use href="#sun"/></svg><p class="big">32°</p></div><p class="line">Clear, feels like 31°</p><p class="line dim" style="margin-top:2px">High 34° &middot; Low 25°</p></div>
+      <div class="glass card dotcal-wrap">
+        <div><p class="big" style="font-size:30px">Oct</p><p class="line" style="margin-top:6px;font-size:15px">Day 5 of 31</p><p class="line dim" style="margin-top:2px;font-size:15px">26 left<br>4 weekends</p></div>
+        <div><div class="dow" style="margin-top:0;margin-bottom:6px"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div><div class="dots" data-dots></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="opt">
+    <div class="opt-label"><b>I</b><h2>Sentence</h2></div>
+    <p class="opt-note">One wide card that reads as a sentence, with inline chips holding the live values. It answers &ldquo;what is it like right now&rdquo; in one read and collapses nicely on a phone. Different from every dashboard tile pattern.</p>
+
+    <div class="glass sentence">
+      It&rsquo;s <span class="chip em">4:22 PM</span> on a <em>clear Monday</em> in Hyderabad, <span class="chip"><svg class="ic"><use href="#sun"/></svg>32°</span> now and easing to <em>25°</em> tonight. You&rsquo;re on <span class="chip">day 5 of 31<span class="mini" data-mini></span></span> of October, with <em>26 days</em> to go.
+    </div>
+  </section>
+
+  <section class="opt">
+    <div class="opt-label"><b>J</b><h2>Living sky</h2></div>
+    <p class="opt-note">The weather card is tinted by the time of day (amber for late afternoon, which would shift to blue at noon and deep navy at night) and carries the next eight hours as bars. The clock sits beside it, big and clean. Month is a single hairline bar.</p>
+
+    <div class="sky">
+      <div class="glass card skycard" style="min-height:215px">
+        <div class="top">
+          <div><p class="big" style="font-size:54px">32°</p><p class="line">Clear, feels like 31°</p></div>
+          <div style="text-align:right"><svg class="ic" style="width:40px;height:40px"><use href="#sun"/></svg><p class="line dim" style="font-size:15px">H 34° &middot; L 25°</p></div>
+        </div>
+        <div class="hourly"><div class="now"><b>31°</b><span class="bar-h" style="height:63px"></span><span>Now</span></div><div class=""><b>30°</b><span class="bar-h" style="height:56px"></span><span>5P</span></div><div class=""><b>28°</b><span class="bar-h" style="height:42px"></span><span>6P</span></div><div class=""><b>27°</b><span class="bar-h" style="height:35px"></span><span>7P</span></div><div class=""><b>26°</b><span class="bar-h" style="height:28px"></span><span>8P</span></div><div class=""><b>26°</b><span class="bar-h" style="height:28px"></span><span>9P</span></div><div class=""><b>25°</b><span class="bar-h" style="height:21px"></span><span>10P</span></div><div class=""><b>25°</b><span class="bar-h" style="height:21px"></span><span>11P</span></div></div>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="glass card" style="min-height:0;padding:18px 22px"><p class="big" style="font-size:46px">4:22<small>PM</small></p><p class="line" style="margin-top:6px">Monday 5 October</p></div>
+        <div class="glass card edi" style="min-height:0;padding:18px 22px"><div style="display:flex;justify-content:space-between;align-items:baseline"><p class="mo" style="font-size:30px">October</p><span class="dim">Day 5</span></div><div class="bar"><i></i></div><div class="bar-lbl"><span>1</span><span style="color:var(--ember)">26 days left</span><span>31</span></div></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  document.querySelectorAll('[data-ticks]').forEach((el) => {
+    for (let i = 1; i <= 31; i++) {
+      const t = document.createElement('i');
+      t.className = i < 5 ? 'past' : i === 5 ? 'now' : '';
+      el.appendChild(t);
+    }
+  });
+
+  // dot calendars: October 2026 starts on Thursday (Mon-first offset 3)
+  document.querySelectorAll('[data-dots]').forEach((el) => {
+    for (let i = 0; i < 3; i++) { const p = document.createElement('i'); p.className = 'pad'; el.appendChild(p); }
+    for (let d = 1; d <= 31; d++) { const t = document.createElement('i'); t.className = d < 5 ? 'past' : d === 5 ? 'now' : ''; el.appendChild(t); }
+  });
+  document.querySelectorAll('[data-mini]').forEach((el) => {
+    for (let d = 1; d <= 16; d++) { const t = document.createElement('i'); t.className = d <= 2 ? '' : d === 3 ? 'n' : 'f'; el.appendChild(t); }
+  });
+  const beads = document.getElementById('beads');
+  if (beads) for (let d = 1; d <= 31; d++) {
+    const a = (d - 1) / 31 * Math.PI * 2, c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', 66 + 58 * Math.cos(a)); c.setAttribute('cy', 66 + 58 * Math.sin(a));
+    c.setAttribute('r', d === 5 ? 4.6 : 2.6);
+    c.setAttribute('fill', d < 5 ? '#f0e8d9' : d === 5 ? '#e9a26c' : 'rgba(240,232,217,.18)');
+    if (d < 5) c.setAttribute('opacity', '.58');
+    beads.appendChild(c);
+  }
+</script>
+</body>
+</html>
