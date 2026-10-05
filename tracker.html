@@ -2718,11 +2718,11 @@ hr.rule { margin: 36px 0; }
       class: f[name] ? 'on' : '',
       onchange: (e) => { f[name] = e.target.value; filterRender[filterOwner.key](); fillFilterPop(); },
     }, el('option', { value: '' }, 'Any'), ...options.map(([value, text]) => el('option', { value, selected: f[name] === value }, text)))) : null;
-    filterPop.replaceChildren(
+    filterPop.replaceChildren(...[
       field('status', 'Status', Object.entries(STATUS_NAMES)),
       field('project', 'Project', sorted(state.projects).map((p) => [p.id, p.title])),
       field('label', 'Label', allLabels().map((l) => [l, l])),
-      filterActive(f) ? el('button', { class: 'link-btn', type: 'button', onclick: () => { Object.keys(f).forEach((k) => delete f[k]); filterRender[filterOwner.key](); fillFilterPop(); } }, 'Clear filters') : null);
+      filterActive(f) ? el('button', { class: 'link-btn', type: 'button', onclick: () => { Object.keys(f).forEach((k) => delete f[k]); filterRender[filterOwner.key](); fillFilterPop(); } }, 'Clear filters') : null].filter(Boolean));
   }
 
   // show the funnel only when there is something to filter, and light it while a filter is on
@@ -2732,6 +2732,7 @@ hr.rule { margin: 36px 0; }
     btn.classList.toggle('on', filterActive(filters[key]));
   }
 
+  window.addEventListener('scroll', () => { if (filterPop.matches(':popover-open')) filterPop.hidePopover(); }, { passive: true });   // it is placed once, so it closes rather than float away
   document.querySelectorAll('[data-filter]').forEach((btn) => btn.addEventListener('click', () => {
     if (filterPop.matches(':popover-open') && filterOwner?.btn === btn) { filterPop.hidePopover(); return; }
     filterOwner = { key: btn.dataset.filter, btn };
