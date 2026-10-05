@@ -1240,6 +1240,14 @@
   .prop-dates .pl { min-height: 38px; }
   .prop .err { margin: 2px 8px 4px; }
   @media (max-width: 560px) { .prop { grid-template-columns: 96px minmax(0, 1fr); } .prop-row.dates { flex-wrap: wrap; } }
+
+  /* the finance tab has its own mark: the cat and "Generational wealth" */
+  .brand .mark-fin { display: none; }
+  body[data-view="finance"] .brand .mark-tr { display: none; }
+  body[data-view="finance"] .brand img.mark-fin { display: block; }
+  body[data-view="finance"] .brand span.mark-fin { display: inline; }
+  .brand img.mark-fin { width: auto; height: 52px; border-radius: 0; }
+  @media (max-width: 719px) { .brand img.mark-fin { width: auto; height: 44px; } .brand span.mark-fin { font-size: 17px; } }
 </style>
 <script>
   /* the last look (colours, background) is cached so the page never flashes the default one */
@@ -1303,8 +1311,10 @@
 <span id="top"></span>
 <header class="bar" id="bar">
   <a class="brand" href="#top">
-    <img src="tracker-assets/eye.png" alt="" width="52" height="52">
-    <span>Potluri</span>
+    <img class="mark-tr" src="tracker-assets/eye.png" alt="" width="52" height="52">
+    <span class="mark-tr">Potluri</span>
+    <img class="mark-fin" src="tracker-assets/cat.png" alt="" width="36" height="52">
+    <span class="mark-fin">Generational wealth</span>
   </a>
   <nav class="views" aria-label="Sections">
     <a href="#overview" data-view="tracker" aria-label="Overview" title="Overview"><svg class="ic" aria-hidden="true"><use href="#i-overview"/></svg></a>
