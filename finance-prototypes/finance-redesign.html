@@ -45,9 +45,9 @@
 
   /* masthead: the cat sits on the rule */
   .bar { display: flex; align-items: flex-end; gap: 22px; max-width: 1366px; margin: 0 auto; padding: 22px var(--pad) 0; }
-  .bar-in { display: flex; align-items: flex-end; gap: 22px; flex: 1; border-bottom: 1px solid var(--line); }
-  .bar img { width: 82px; height: auto; margin-bottom: -1px; }
-  .bar h1 { padding-bottom: 12px; font-size: 34px; line-height: 1; letter-spacing: 0.02em; text-transform: uppercase; }
+  .bar-in { display: flex; align-items: center; gap: 12px; flex: 1; border-bottom: 1px solid var(--line); }
+  .bar img { width: 52px; height: auto; margin-bottom: -1px; }   /* the same 52px mark and 21px wordmark as the Overview */
+  .bar h1 { padding: 0; font-size: 21px; line-height: 1; letter-spacing: 0.02em; text-transform: uppercase; }
   .proto-note { margin-left: auto; padding-bottom: 14px; font-size: 13px; color: var(--ink-3); }
 
   .page { max-width: 1366px; margin: 0 auto; padding: 22px var(--pad) 72px; }
@@ -272,7 +272,7 @@
   }
   @media (max-width: 719px) {
     :root { --pad: 16px; --gap: 14px; }
-    .bar img { width: 62px; } .bar h1 { font-size: 22px; padding-bottom: 8px; } .proto-note { display: none; }
+    .bar img { width: 52px; } .bar h1 { font-size: 21px; padding-bottom: 0; } .proto-note { display: none; }
     .panel { padding: 16px; }
     .finding.xl { font-size: 26px; } .finding { font-size: 20px; }
     .midcol { flex-direction: column; } .money img { max-width: 260px; }
