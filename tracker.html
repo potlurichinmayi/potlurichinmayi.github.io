@@ -230,6 +230,8 @@
   .glance .zone > div { min-width: 0; }
   .g-num { display: block; height: 36px; margin: 0; font-size: 34px; line-height: 36px; letter-spacing: -0.01em; white-space: nowrap; }
   .g-num sup { margin-left: 3px; position: relative; top: 4px; vertical-align: top; font-size: 10px; line-height: 1; letter-spacing: 0.14em; color: var(--ember); }
+  .g-num.time { position: relative; top: -4px; font-size: 48px; }
+  .g-num.time sup { top: 7px; }
   .g-num.deg sup { margin-left: 1px; font-size: 16px; letter-spacing: 0; }
   .g-num.name { font-style: italic; letter-spacing: 0; }
   .g-foot { font-size: 11px; line-height: 13px; color: var(--ink-3); }
@@ -740,6 +742,8 @@
     .g-foot, .g-lbl { font-size: 9px; line-height: 11px; }
     .g-num { height: 26px; font-size: 24px; line-height: 26px; }
     .g-num sup { top: 3px; font-size: 7px; }
+    .g-num.time { top: -3px; font-size: 34px; }
+    .g-num.time sup { top: 5px; }
     .g-num.deg sup { font-size: 11px; }
     #month-day { display: none; }
     .g-row .ic { width: 14px; height: 14px; margin-top: 6px; }
@@ -1184,7 +1188,7 @@
     <section class="glance a-glance" aria-label="Right now">
       <div class="zone">
         <h2>Hyderabad time</h2>
-        <p class="g-num"><span id="clock">--:--</span><sup id="clock-ampm"></sup></p>
+        <p class="g-num time"><span id="clock">--:--</span><sup id="clock-ampm"></sup></p>
         <p class="g-foot date" id="clock-date">&nbsp;</p>
       </div>
       <div class="zone" aria-live="polite">
