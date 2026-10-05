@@ -226,30 +226,30 @@
   .big { display: flex; align-items: baseline; gap: 8px; font-family: var(--serif); font-size: 42px; line-height: 1; white-space: nowrap; }
   .big small { font-family: var(--sans); font-size: 17px; font-weight: 400; letter-spacing: 0.04em; color: var(--ink-2); }
   .zone .line { margin-top: 10px; font-size: 16px; color: var(--ink-2); }
-  .glance .zone { display: flex; flex-direction: column; justify-content: space-between; gap: 14px; min-height: 215px; }
+  .glance .zone { display: flex; flex-direction: column; justify-content: space-between; gap: 24px; min-height: 200px; padding: 28px 30px 26px; }
   .glance .zone > div { min-width: 0; }
-  .greet { margin-bottom: 10px; font-size: 17px; font-style: italic; color: var(--ink-2); }
-  .zone .num { display: block; font-family: var(--serif); font-size: 76px; line-height: 0.9; letter-spacing: -0.02em; white-space: nowrap; }
-  .zone .num sup { margin-left: 6px; position: relative; top: 8px; vertical-align: top; font-size: 16px; letter-spacing: 0.12em; color: var(--ember); }
-  .zone .num.deg sup { margin-left: 0; font-size: 30px; letter-spacing: 0; }
-  .zone .date { font-size: 19px; font-style: italic; color: var(--ink-2); }
+  .greet { margin-bottom: 14px; font-size: 14px; font-style: italic; color: var(--ink-3); }
+  .zone .num { display: block; font-family: var(--serif); font-size: 52px; line-height: 0.95; letter-spacing: -0.01em; white-space: nowrap; }
+  .zone .num sup { margin-left: 6px; position: relative; top: 5px; vertical-align: top; font-size: 12px; letter-spacing: 0.14em; color: var(--ember); }
+  .zone .num.deg sup { margin-left: 1px; font-size: 20px; letter-spacing: 0; }
+  .zone .date { font-size: 15px; font-style: italic; color: var(--ink-3); }
   .weather-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
-  .weather-top .ic { width: 34px; height: 34px; stroke-width: 1.2; color: var(--ember); }
-  .zone .sub { font-size: 15px; color: var(--ink-3); }
-  .range { position: relative; height: 6px; margin: 16px 0 8px; border-radius: 999px; background: linear-gradient(90deg, #93aee0, var(--ink) 50%, var(--ember)); opacity: 0.85; }
-  .range i { position: absolute; top: 50%; width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 3px solid var(--ground); box-shadow: 0 0 0 1.5px var(--ember); transform: translate(-50%, -50%); }
-  .range-lbl { display: flex; justify-content: space-between; font-size: 14px; color: var(--ink-3); }
+  .weather-top .ic { width: 24px; height: 24px; stroke-width: 1.2; color: var(--ember); }
+  .zone .sub { font-size: 14px; color: var(--ink-3); }
+  .range { position: relative; height: 1px; margin: 22px 0 10px; background: var(--rule-2); }
+  .range i { position: absolute; top: 50%; width: 7px; height: 7px; border-radius: 50%; background: var(--ember); transform: translate(-50%, -50%); }
+  .range-lbl { display: flex; justify-content: space-between; font-size: 13px; color: var(--ink-3); }
   .month-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 12px; }
-  .month-top strong { font-family: var(--serif); font-weight: 400; font-style: italic; font-size: 44px; line-height: 1; }
-  .month-top span { font-size: 16px; color: var(--ink-3); }
-  .week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; text-align: center; }
-  .week span { display: grid; gap: 2px; padding: 6px 0; border-radius: 12px; font-size: 11px; letter-spacing: 0.08em; color: var(--ink-3); }
-  .week span b { font-weight: 400; font-size: 17px; letter-spacing: 0; color: var(--ink-2); }
-  .week span.today { background: var(--ember); color: var(--on-ember); }
-  .week span.today b { color: var(--on-ember); }
-  .month-bar { height: 3px; margin-top: 14px; border-radius: 999px; background: var(--rule); overflow: hidden; }
-  .month-bar i { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--ember); transition: width 0.9s var(--ease); }
-  #month-left { margin-top: 8px; font-size: 15px; color: var(--ink-3); }
+  .month-top strong { font-family: var(--serif); font-weight: 400; font-style: italic; font-size: 30px; line-height: 1; }
+  .month-top span { font-size: 14px; color: var(--ink-3); }
+  .week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; text-align: center; }
+  .week span { display: grid; gap: 3px; padding: 0 0 6px; font-size: 10px; letter-spacing: 0.1em; color: var(--ink-3); border-bottom: 1px solid transparent; }
+  .week span b { font-weight: 400; font-size: 14px; letter-spacing: 0; color: var(--ink-2); }
+  .week span.today { color: var(--ember); border-bottom-color: var(--ember); }
+  .week span.today b { color: var(--ink); }
+  .month-bar { height: 1px; margin-top: 16px; background: var(--rule-2); }
+  .month-bar i { display: block; height: 3px; margin-top: -1px; width: 0; border-radius: 999px; background: var(--ember); transition: width 0.9s var(--ease); }
+  #month-left { margin-top: 10px; font-size: 13px; color: var(--ink-3); }
 
   .skeleton { border-radius: 6px; background: linear-gradient(90deg, var(--raise), var(--raise-2), var(--raise)); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
   @keyframes shimmer { to { background-position: -200% 0; } }
@@ -742,24 +742,24 @@
     .zone .line { font-size: 14px; }
     .big { font-size: 30px; gap: 4px; }
     .big small { font-size: 12px; }
-    .glance .zone { min-height: 150px; gap: 10px; }
-    .greet { margin-bottom: 6px; font-size: 12px; line-height: 1.2; }
-    .zone .num { font-size: 36px; }
-    .zone .num sup { margin-left: 3px; top: 3px; font-size: 10px; }
-    .zone .num.deg sup { font-size: 16px; }
-    .zone .date { font-size: 13px; line-height: 1.2; }
-    .zone .sub { font-size: 12px; line-height: 1.25; }
-    .weather-top .ic { width: 20px; height: 20px; }
-    .range { margin: 10px 0 6px; }
-    .range i { width: 11px; height: 11px; border-width: 2px; }
-    .range-lbl { font-size: 11px; }
-    .month-top strong { font-size: 22px; }
-    .month-top span { font-size: 11px; }
-    .week { gap: 1px; }
-    .week span { padding: 4px 0; font-size: 8px; letter-spacing: 0; border-radius: 8px; }
-    .week span b { font-size: 11px; }
+    .glance .zone { min-height: 150px; gap: 14px; padding: 16px 12px 14px; }
+    .greet { margin-bottom: 8px; font-size: 10px; line-height: 1.2; }
+    .zone .num { font-size: 28px; }
+    .zone .num sup { margin-left: 2px; top: 2px; font-size: 8px; }
+    .zone .num.deg sup { font-size: 13px; }
+    .zone .date { font-size: 11px; line-height: 1.25; }
+    .zone .sub { font-size: 10px; line-height: 1.3; }
+    .weather-top .ic { width: 16px; height: 16px; }
+    .range { margin: 14px 0 6px; }
+    .range i { width: 6px; height: 6px; }
+    .range-lbl { font-size: 9px; }
+    .month-top strong { font-size: 18px; }
+    .month-top span { font-size: 9px; }
+    .week { gap: 0; }
+    .week span { padding-bottom: 4px; font-size: 7px; letter-spacing: 0; }
+    .week span b { font-size: 9px; }
     .month-bar { margin-top: 10px; }
-    #month-left { font-size: 11px; }
+    #month-left { margin-top: 6px; font-size: 9px; }
     .board { grid-template-columns: minmax(0, 1fr); }
     .col { min-height: 130px; padding: 24px 20px; }
     .col-head { justify-content: flex-start; }
