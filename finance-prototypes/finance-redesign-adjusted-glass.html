@@ -200,6 +200,15 @@
   .tabs button { padding: 4px 13px; border: 0; border-radius: 999px; background: none; font-size: 14px; color: var(--ink-3); transition: background-color 0.18s, color 0.18s; }
   .tabs button:hover { color: var(--ink); }
   .tabs button.on { background: var(--raise-2); color: var(--ink); }
+  /* glass pills, like the cards; the open tab picks up an ember tint */
+  .tabs { gap: 6px; }
+  .tabs button { padding: 6px 18px; color: var(--ink-2);
+    background: linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0) 60%), rgba(9,16,42,0.34);
+    backdrop-filter: blur(26px) saturate(1.5); -webkit-backdrop-filter: blur(26px) saturate(1.5);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.22); }
+  .tabs button:hover { color: #fff; }
+  .tabs button.on { color: #fff; background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0) 60%), color-mix(in srgb, #e8742f 72%, transparent);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.22), inset 0 0 0 1px rgba(255,200,150,0.18); backdrop-filter: blur(26px) saturate(2); -webkit-backdrop-filter: blur(26px) saturate(2); }
   .quiet { display: flex; flex-wrap: wrap; gap: 2px 14px; margin-left: auto; }
   .quiet .link-btn { font-size: 13.5px; }
   .monthnav { display: flex; align-items: center; gap: 2px; }
@@ -282,7 +291,7 @@
     .bigcal-week, .bigcal { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
     .wk, .bigcal-week span:last-child { display: none; }
     .bday { min-height: 52px; padding: 4px; } .bday .amt { font-size: 11px; } .bday .n { font-size: 11px; } .bday.today .n::after { content: ''; }
-    .subbar { gap: 8px 12px; } .quiet { margin-left: 0; order: 3; width: 100%; }
+    .subbar { gap: 8px 12px; }
     .stack-legend { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .owed .tri b { font-size: 20px; } .owed .tri small { font-size: 12px; }
     .owed .cols { grid-template-columns: minmax(0, 1fr); }
@@ -304,8 +313,8 @@
     .midcol { grid-column: 5; grid-row: 1; gap: 12px; }
     .fd { grid-column: 7; grid-row: 1; }
     .grid > .savings { grid-column: 1; grid-row: 2; }
-    .grid > .pace { grid-column: 3; grid-row: 2; }
-    .grid > .punch { grid-column: 5 / 8; grid-row: 2; }
+    .grid > .punch { grid-column: 3; grid-row: 2; }
+    .grid > .pace { grid-column: 5 / 8; grid-row: 2; }
     .mid { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1.1fr) minmax(0, 0.85fr); gap: 32px; }
     .tiles { gap: 14px; }
     .tile { min-height: 160px; }
@@ -348,19 +357,10 @@
 
     /* savings box and budget pace: shorter cards, tighter content */
     .grid > .savings .sub, .grid > .pace .sub { display: none; }
-    .savings .goals { flex-direction: row; gap: 8px; margin: 0 0 10px; }
-    .savings .goal { flex: 1; min-width: 0; flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px; }
-    .savings .goal svg { width: 40px; }
-    .savings .goal svg text { font-size: 13px; }
-    .savings .goal b { font-size: 14px; line-height: 1.1; }
-    .savings .goal span { display: block; font-size: 11px; line-height: 1.25; }
     .savings .addbox { gap: 6px; }
     .savings .addbox input { flex: 1 1 60px; }
     .savings .addbox select { flex: 1 1 70px; min-width: 0; }
-    .savings .addbox #sugg { flex: 1 1 100%; text-align: left; }
     .savings .addbox input, .savings .addbox select { padding: 6px 10px; font-size: 14px; }
-    .savings .addbox .pill { font-size: 13px; padding: 5px 11px; }
-    .savings .msg { display: none; }
     .pace #bp-stats { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 8px; margin: 0 0 8px; }
     .pace .stats b { font-size: 15px; }
     .pace .stats span { font-size: 11px; line-height: 1.2; display: block; }
@@ -514,7 +514,58 @@
     .owed-card { padding: 14px 22px; }
     .owed-card > .big { font-size: 34px; line-height: 1; }
     .owed-card > .add { min-height: 22px; font-size: 14px; white-space: nowrap; }
+    /* fixed height: a long list scrolls inside the card instead of stretching it */
+    .owed-card { height: 136px; grid-template-rows: auto auto auto minmax(0, 1fr); }
+    .owed-card > ul { align-self: stretch; min-height: 0; contain: size; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--rule-2) transparent; }
   }
+  /* budget pace in the wide slot: legend beside the title, figures in one tidy row, chart takes the rest */
+  @media (min-width: 1101px) {
+    .grid > .pace { position: relative; }
+    .pace .kicker { margin-bottom: 2px; }
+    .pace .finding { font-size: 20px; margin-bottom: 8px; }
+    .pace #bp-stats { display: flex !important; gap: 0; margin: 0 0 6px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+    .pace #bp-stats > div { flex: 1; padding: 6px 0 6px 14px; border-left: 1px solid var(--rule); }
+    .pace #bp-stats > div:first-child { padding-left: 0; border-left: 0; }
+    .pace .stats b { font-size: 18px; line-height: 1.15; }
+    .pace .stats span { font-size: 12px; }
+    .pace .keys { position: absolute; top: 20px; right: 20px; margin: 0; font-size: 12px; gap: 4px 14px; }
+    .pace .keys i { width: 14px; }
+  }
+  /* menu: a glass circle with a hamburger, opening a glass card */
+  .subbar { position: relative; z-index: 30; }
+  .quiet { position: relative; display: block; margin-left: -12px; }
+  .monthnav { margin-left: auto; }
+  .menu-btn { display: inline-grid; place-items: center; width: 34px; height: 34px; padding: 0; border: 0; border-radius: 50%; color: var(--ink-2);
+    background: linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0) 60%), rgba(9,16,42,0.34);
+    backdrop-filter: blur(26px) saturate(1.5); -webkit-backdrop-filter: blur(26px) saturate(1.5); box-shadow: 0 6px 18px rgba(0,0,0,0.22); }
+  .menu-btn:hover, .menu-btn[aria-expanded="true"] { color: #fff; }
+  .menu-btn[aria-expanded="true"] { background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0) 60%), color-mix(in srgb, #e8742f 72%, transparent); }
+  .menu-btn svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+  .menu { position: absolute; top: calc(100% + 8px); left: 0; min-width: 210px; padding: 8px; border-radius: 20px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0) 45%), rgba(9,16,42,0.62);
+    backdrop-filter: blur(30px) saturate(1.5); -webkit-backdrop-filter: blur(30px) saturate(1.5); box-shadow: 0 14px 40px rgba(0,0,0,0.28); }
+  .menu[hidden] { display: none; }
+  @media (max-width: 560px) { .quiet { position: static; } .menu { left: auto; right: 0; top: 44px; } }
+  .menu .link-btn { display: block; width: 100%; padding: 10px 14px; border-radius: 12px; text-align: left; font-size: 15px; color: var(--ink-2); }
+  .menu .link-btn:hover { background: var(--raise-2); color: #fff; }
+  /* savings box: the total first, a split bar, then the goals */
+  .sb-total { display: block; margin-top: 2px; font-size: 38px; line-height: 1; }
+  .sb-cap { margin: 4px 0 12px; font-size: 13px; color: var(--ink-3); }
+  .sb-split { display: flex; gap: 4px; height: 12px; }
+  .sb-split i { min-width: 8px; border-radius: 999px; }
+  .sb-list { list-style: none; margin: 12px 0 0; padding: 0; }
+  .sb-list li { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto auto; align-items: baseline; column-gap: 8px; padding: 4px 0; font-size: 15px; }
+  .sb-list li i { width: 9px; height: 9px; border-radius: 50%; align-self: center; }
+  .sb-list li small { font-size: 12px; color: var(--ink-3); }
+  .sb-list li em { min-width: 30px; font-style: normal; font-size: 12px; color: var(--ember); text-align: right; }
+  .savings .addbox { flex-wrap: nowrap; gap: 6px; padding-top: 8px; margin-top: auto; align-items: center; }
+  .savings .addbox input { flex: 1 1 60px; padding: 6px 12px; font-size: 14px; }
+  .savings .addbox select { flex: 1 1 70px; padding: 6px 30px 6px 14px; font-size: 14px; appearance: none; -webkit-appearance: none; text-overflow: ellipsis;
+    background: var(--raise) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5l3.5 3.5 3.5-3.5' fill='none' stroke='%23f0e8d9' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center / 12px; }
+  .savings .circ { flex: none; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 50%; background: var(--ember); color: var(--on-ember); font-size: 20px; line-height: 1; display: inline-grid; place-items: center; }
+  .savings .msg { margin-top: 4px; min-height: 0; font-size: 12px; }
+  .savings .msg:empty { display: none; }
+  #fd-add { width: 23px; height: 23px; padding: 0; border-radius: 50%; display: inline-grid; place-items: center; font-size: 17px; line-height: 1; flex: none; }
 </style>
 </head>
 <body>
@@ -536,9 +587,12 @@
       <button type="button" role="tab" data-tab="budget" aria-selected="false">Budget</button>
     </nav>
     <div class="quiet">
-      <button class="link-btn" type="button">Set balance</button>
-      <button class="link-btn" type="button">Add cash</button>
-      <button class="link-btn" type="button">Vendors &amp; categories</button>
+      <button class="menu-btn" type="button" id="menu-btn" aria-label="More actions" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14M5 12h14M5 16h14"/></svg></button>
+      <div class="menu" id="menu" role="menu" hidden>
+        <button class="link-btn" type="button" role="menuitem">Set balance</button>
+        <button class="link-btn" type="button" role="menuitem">Add cash</button>
+        <button class="link-btn" type="button" role="menuitem">Vendors &amp; categories</button>
+      </div>
     </div>
     <div class="monthnav">
       <button type="button" id="m-prev" aria-label="Previous month" disabled title="This prototype only has September"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg></button>
@@ -581,21 +635,27 @@
       <p class="sub" id="fd-sub"></p>
       <div class="chart" id="fd-chart"></div>
       <div class="fdrows" id="fd-rows"></div>
-      <div class="foot"><button class="pill go" type="button" id="fd-add">+ Add deposit</button><span>Principal, rate, start and maturity dates.</span></div>
+      <div class="foot"><button class="pill go" type="button" id="fd-add" aria-label="Add deposit" title="Add deposit">+</button><span>Principal, rate, start and maturity dates.</span></div>
     </section>
 
     <section class="panel s3 savings" aria-label="Savings box">
       <p class="kicker">Savings box</p>
-      <h2 class="finding" id="sb-head"></h2>
-      <p class="sub">Put away whatever you did not spend, in any amount.</p>
-      <div class="goals" id="goals"></div>
+      <span class="sb-total" id="sb-total"></span>
+      <p class="sb-cap" id="sb-cap"></p>
+      <div class="sb-split" id="sb-split" role="img"></div>
+      <ul class="sb-list" id="goals"></ul>
       <div class="addbox">
-        <input id="amt" type="number" inputmode="numeric" placeholder="Amount in ₹" aria-label="Amount">
+        <input id="amt" type="number" inputmode="numeric" placeholder="₹ Amount" aria-label="Amount">
         <select id="gsel" aria-label="Goal"></select>
-        <button class="pill go" id="add-btn" type="button">Add to box</button>
-        <button class="pill" id="sugg" type="button"></button>
+        <button class="circ" id="add-btn" type="button" aria-label="Add to box" title="Add to box">+</button>
       </div>
       <p class="msg" id="msg" aria-live="polite"></p>
+    </section>
+
+    <section class="panel s6 punch" aria-label="When you pay">
+      <p class="kicker">When you pay</p>
+      <h2 class="finding" id="pu-head"></h2>
+      <div class="chart fill" id="punch"></div>
     </section>
 
     <section class="panel s3 pace" aria-label="Budget pace">
@@ -608,12 +668,6 @@
         <span><i></i>Actual</span><span><i class="d" style="border-color:var(--rule-2)"></i>Even pace</span>
         <span><i class="d"></i>Projected</span><span><i style="border-color:var(--danger)"></i>Budget cap</span>
       </div>
-    </section>
-
-    <section class="panel s6 punch" aria-label="When you pay">
-      <p class="kicker">When you pay</p>
-      <h2 class="finding" id="pu-head"></h2>
-      <div class="chart fill" id="punch"></div>
     </section>
   </div>
 
@@ -813,7 +867,7 @@ const fdFinal = (f) => fdValue(f, dt(f.end));
     let s = [0, 15000, 30000].map((t) => `<line x1="${pl}" x2="${W - pr}" y1="${y(t)}" y2="${y(t)}" stroke="${G}" stroke-dasharray="2 5"/>`).join('');
     s += `<line x1="${pl}" x2="${W - pr}" y1="${y(BUDGET)}" y2="${y(BUDGET)}" stroke="${B}" stroke-width="2.2"/>`;
     const sp = MONTHS.map((q, i) => [x(i), y(q.v)]);
-    if (sp.length > 1) s += `<path d="${line(sp)}" fill="none" stroke="${E}" stroke-width="2.2" stroke-linejoin="round"/>`;
+    if (sp.length > 1) s += `<defs><linearGradient id="wfill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${E}" stop-opacity="0.38"/><stop offset="1" stop-color="${E}" stop-opacity="0.02"/></linearGradient></defs><path d="${line(sp)}L${sp[sp.length - 1][0]},${y(0)}L${sp[0][0]},${y(0)}Z" fill="url(#wfill)"/><path d="${line(sp)}" fill="none" stroke="${E}" stroke-width="2.2" stroke-linejoin="round"/>`;
     sp.forEach((q, i) => { s += `<circle cx="${q[0]}" cy="${q[1]}" r="4.5" fill="${E}"/><text x="${q[0]}" y="${q[1] - 10}" text-anchor="middle" style="fill:var(--ink);font-size:12px">${compact(MONTHS[i].v)}</text>`; });
     MONTHS.forEach((q, i) => { s += `<text x="${x(i)}" y="${H - 4}" text-anchor="middle" style="font-size:12px">${q.m}</text>`; });
     draw('widget', W, H, s);
@@ -882,22 +936,22 @@ renderDeposits();
 /* ---------------------------------------------------------------- 4 · savings box */
 (function savings() {
   const GOALS = [{ n: 'Laptop', t: 60000, s: 24500, by: 'Dec 2026' }, { n: 'Goa trip', t: 25000, s: 18200, by: 'Nov 2026' }, { n: 'Emergency fund', t: 100000, s: 31000, by: 'Mar 2027' }];
-  const unspent = Math.max(0, Math.round(BUDGET / DAYS - perDay[TODAY - 1].spend));
+  const SH = ['#cf6024', '#e08b55', '#efb68c'];
   const paint = () => {
-    html('sb-head', `${rs(GOALS.reduce((a, g) => a + g.s, 0))} set aside across ${GOALS.length} goals.`);
-    html('goals', GOALS.map((g) => {
-      const p = Math.min(1, g.s / g.t), r = 22, c = 2 * Math.PI * r;
-      return `<div class="goal"><svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="${r}" fill="none" stroke="${G}" stroke-width="6"/><circle cx="28" cy="28" r="${r}" fill="none" stroke="${p > 0.7 ? D : E}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${c * p} ${c}" transform="rotate(-90 28 28)"/><text x="28" y="32" text-anchor="middle">${Math.round(p * 100)}%</text></svg><div><b>${g.n}</b><span>${rs(g.s)} of ${rs(g.t)} · by ${g.by}</span></div></div>`;
-    }).join(''));
+    const sum = GOALS.reduce((a, g) => a + g.s, 0), keep = $('gsel').value;
+    $('sb-total').textContent = rs(sum);
+    $('sb-cap').textContent = `set aside across ${GOALS.length} goals`;
+    html('sb-split', GOALS.map((g, k) => `<i style="flex:${g.s};background:${SH[k]}" title="${g.n} · ${rs(g.s)}"></i>`).join(''));
+    $('sb-split').setAttribute('aria-label', GOALS.map((g) => `${g.n} ${rs(g.s)}`).join(', '));
+    html('goals', GOALS.map((g, k) => `<li><i style="background:${SH[k]}"></i>${g.n}<small>${rs(g.s)}</small><em>${Math.round(Math.min(1, g.s / g.t) * 100)}%</em></li>`).join(''));
     $('gsel').innerHTML = GOALS.map((g, i) => `<option value="${i}">${g.n}</option>`).join('');
+    if (keep) $('gsel').value = keep;
   };
   const put = (a, i) => {
     if (!(a > 0)) return;
     GOALS[i].s += a; paint(); $('gsel').value = i;
     $('msg').textContent = `Added ${rs(a)} to ${GOALS[i].n}.`;
   };
-  $('sugg').textContent = `Unspent today: ${rs(unspent)}. Move to Goa trip?`;
-  $('sugg').onclick = () => put(unspent, 1);
   $('add-btn').onclick = () => { put(+$('amt').value, +$('gsel').value); $('amt').value = ''; };
   paint();
 })();
@@ -913,7 +967,7 @@ renderDeposits();
   $('pace').dataset.label = 'Cumulative spending against an even pace and the budget';
   let run = 0; const act = perDay.slice(0, TODAY).map((d) => (run += d.spend));
   chart(() => {
-    const W = width('pace', 220), H = Math.max(200, $('pace').clientHeight), pl = 34, pb = 20, max = Math.ceil(Math.max(BUDGET, projected) * 1.12 / 10000) * 10000;
+    const W = width('pace', 220), H = Math.max(110, $('pace').clientHeight), pl = 34, pb = 20, max = Math.ceil(Math.max(BUDGET, projected) * 1.12 / 10000) * 10000;
     const x = (d) => pl + ((d - 1) / (DAYS - 1)) * (W - pl - 8), y = (n) => H - pb - (n / max) * (H - pb - 10);
     let s = '';
     for (let t = 0; t <= max; t += 10000) s += `<line x1="${pl}" x2="${W}" y1="${y(t)}" y2="${y(t)}" stroke="${G}" stroke-dasharray="2 5"/><text x="0" y="${y(t) + 4}">${compact(t)}</text>`;
@@ -1079,6 +1133,14 @@ renderDeposits();
 })();
 
 /* ---------------------------------------------------------------- sub-tabs */
+(function menu() {
+  const btn = $('menu-btn'), box = $('menu');
+  const set = (open) => { box.hidden = !open; btn.setAttribute('aria-expanded', String(open)); };
+  btn.addEventListener('click', (e) => { e.stopPropagation(); set(box.hidden); });
+  box.addEventListener('click', () => set(false));
+  document.addEventListener('click', (e) => { if (!box.contains(e.target)) set(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { set(false); btn.focus(); } });
+})();
 document.querySelectorAll('.tabs button').forEach((b) => b.addEventListener('click', () => {
   document.querySelectorAll('.tabs button').forEach((o) => { const on = o === b; o.classList.toggle('on', on); o.setAttribute('aria-selected', String(on)); $('tab-' + o.dataset.tab).hidden = !on; });
   redraws.forEach((f) => f());   // charts are measured once they are visible
