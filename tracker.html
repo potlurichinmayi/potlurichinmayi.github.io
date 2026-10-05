@@ -285,6 +285,12 @@
   .meta span + span::before { content: '·'; margin: 0 7px; color: var(--ink-3); }
   .meta .overdue { color: var(--danger); }
   .meta .doing { color: var(--ember); }
+  .meta .blocked { color: var(--danger); }
+  .meta .tag { display: inline-flex; align-items: center; gap: 4px; }
+  .meta .tag .ic { width: 12px; height: 12px; flex: none; }
+  .meta .pill { margin-left: 6px; padding: 0 8px; border-radius: 999px; font-size: 12px; line-height: 18px; box-shadow: inset 0 0 0 1px var(--rule-2); }
+  .meta .pill::before { display: none; }
+  .check[data-state="blocked"] .ring { border-color: var(--danger); background: linear-gradient(var(--danger), var(--danger)) center / 9px 2px no-repeat; }
 
   .group-label { margin: 10px 0 2px; font-size: 14px; font-weight: 400; color: var(--ink-3); }
   .group-label:first-child { margin-top: 0; }
@@ -646,10 +652,8 @@
   .seg { border: 0; margin: 0 0 18px; padding: 0; min-width: 0; }
   .seg legend, .field label { display: block; padding: 0; margin-bottom: 6px; font-size: 15px; color: var(--ink-2); }
   .seg-opts { display: grid; gap: 8px; }
-  .seg-types .seg-opts { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-  .seg-types label { grid-column: span 2; }
-  .seg-types label:nth-child(n+4) { grid-column: span 3; }
-  .seg-status .seg-opts { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .seg-types .seg-opts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .seg-status .seg-opts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .seg-opts label { position: relative; margin: 0; cursor: pointer; }
   .seg-opts input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
   .seg-opts span { display: grid; place-items: center; min-height: 40px; padding: 4px 6px; font-size: 15px; text-align: center; line-height: 1.15; color: var(--ink-2); border-radius: 999px; box-shadow: inset 0 0 0 1px var(--rule-2); transition: background-color 0.18s, color 0.18s, box-shadow 0.18s; }
@@ -1188,6 +1192,18 @@
   .capture textarea:focus-visible { outline: 2px solid var(--ember); }
   .cap-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
   .cap-foot .ic { width: 18px; height: 18px; color: var(--ink-3); }
+
+  /* filters (Today, Personal tasks, calendar day) and labels */
+  .filters { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 10px; }
+  .filters select { min-height: 32px; max-width: 100%; padding: 0 10px; border: 0; border-radius: 999px; background: var(--raise); font-size: 13px; color: var(--ink-2); box-shadow: inset 0 0 0 1px var(--rule-2); cursor: pointer; }
+  .filters select.on { color: var(--ink); box-shadow: inset 0 0 0 1px var(--ember); }
+  .filters .link-btn { min-height: 32px; font-size: 13px; }
+  .label-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .label-chips:empty { display: none; }
+  .label-chip { display: inline-flex; align-items: center; gap: 2px; padding: 2px 4px 2px 12px; border-radius: 999px; font-size: 14px; box-shadow: inset 0 0 0 1px var(--rule-2); }
+  .label-chip button { display: grid; place-items: center; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--ink-3); }
+  .label-chip button:hover { color: var(--ink); }
+  .label-chip .ic { width: 11px; height: 11px; }
 </style>
 <script>
   /* the last look (colours, background) is cached so the page never flashes the default one */
@@ -1230,6 +1246,8 @@
     <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16zM13 7l4 4"/></symbol>
     <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13M10 11v5M14 11v5"/></symbol>
     <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.500h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.200"/></symbol>
     <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.500 10.500z"/></symbol>
     <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18.500h10a4 4 0 0 0 .6-7.950A5.500 5.500 0 0 0 7.100 9.600 4.500 4.500 0 0 0 7 18.500z"/></symbol>
     <symbol id="i-rain" viewBox="0 0 24 24"><path d="M7 15h10a4 4 0 0 0 .6-7.950A5.500 5.500 0 0 0 7.100 6.100 4.500 4.500 0 0 0 7 15zM8.500 18l-1 3M12.500 18l-1 3M16.500 18l-1 3"/></symbol>
@@ -1935,10 +1953,9 @@ hr.rule { margin: 36px 0; }
     <fieldset class="seg seg-types" id="entry-types">
       <legend class="sr">What are you adding?</legend>
       <div class="seg-opts">
-        <label><input type="radio" name="type" value="personal" checked><span>Personal task</span></label>
+        <label><input type="radio" name="type" value="task" checked><span>Task</span></label>
         <label><input type="radio" name="type" value="goal"><span>Goal</span></label>
         <label><input type="radio" name="type" value="project"><span>Project</span></label>
-        <label><input type="radio" name="type" value="projectTask"><span>Project task</span></label>
       </div>
     </fieldset>
     <div class="field">
@@ -1950,9 +1967,19 @@ hr.rule { margin: 36px 0; }
       <label for="entry-sub">Subtitle (optional)</label>
       <input type="text" id="entry-sub" maxlength="120" autocomplete="off" placeholder="e.g. Meditate, hydrate">
     </div>
+    <div class="field" id="entry-project-field" hidden>
+      <label for="entry-project">Project (optional)</label>
+      <select id="entry-project"></select>
+    </div>
     <div class="field" id="entry-goal-field" hidden>
       <label for="entry-goal">Goal (optional)</label>
       <select id="entry-goal"></select>
+    </div>
+    <div class="field" id="entry-labels-field" hidden>
+      <label for="entry-label-input">Labels (optional)</label>
+      <div class="label-chips" id="entry-label-chips"></div>
+      <input type="text" id="entry-label-input" maxlength="30" list="label-options" placeholder="Type a label, press Enter" autocomplete="off" enterkeyhint="done">
+      <datalist id="label-options"></datalist>
     </div>
     <div class="field" id="entry-goalnums" hidden>
       <label for="entry-target">Progress (optional)</label>
@@ -1962,17 +1989,13 @@ hr.rule { margin: 36px 0; }
         <input type="text" id="entry-unit" maxlength="16" placeholder="Unit, e.g. km" aria-label="Unit" autocomplete="off">
       </div>
     </div>
-    <div class="field" id="entry-project-field" hidden>
-      <label for="entry-project">Project</label>
-      <select id="entry-project"></select>
-      <p class="err" id="entry-project-hint" hidden>There are no projects yet. Add a project first, then give it tasks.</p>
-    </div>
     <fieldset class="seg seg-status">
       <legend>Status (optional)</legend>
       <div class="seg-opts">
         <label><input type="radio" name="status" value="" checked><span>None</span></label>
         <label><input type="radio" name="status" value="todo"><span>To-do</span></label>
         <label><input type="radio" name="status" value="doing"><span>In progress</span></label>
+        <label id="status-blocked"><input type="radio" name="status" value="blocked"><span>Blocked</span></label>
         <label><input type="radio" name="status" value="done"><span>Completed</span></label>
       </div>
     </fieldset>
@@ -2277,14 +2300,14 @@ hr.rule { margin: 36px 0; }
   /* =====================================================================
      Storage
      Flat collections of documents, shaped for Firestore:
-       tasks    { id, title, kind: 'personal' | 'weekly' | 'project', projectId, status, date, createdAt, updatedAt }
+       tasks    { id, title, sub, kind, projectId, goalId, labels[], status, start, date, time, createdAt, updatedAt }
        projects { id, title, status, date, createdAt, updatedAt }
        goals    { id, title, status, date, createdAt, updatedAt }
        notes    { id, title, body, pinned, createdAt, updatedAt }
        meta     { id: 'weekly', weekStart } and { id: 'finance', lastSync }
        transactions { id: gmail message id, amount, type: 'debit' | 'credit' | 'unknown', description,
                   account, channel, date, time, subject, excerpt, needsReview }   (written by tracker-scripts/axis-alerts.gs)
-     status: 'todo' | 'doing' | 'done' | null      date: 'YYYY-MM-DD' | null
+     status: 'todo' | 'doing' | 'blocked' | 'done' | null      date: 'YYYY-MM-DD' | null
      The app only ever calls the five methods below.
      ===================================================================== */
   const COLLECTIONS = ['tasks', 'projects', 'goals', 'notes', 'meta', 'transactions', 'payees', 'txmeta', 'budgets', 'cash', 'debts', 'deposits', 'savings', 'profiles', 'backgrounds', 'looks', 'habits', 'habitlog'];
@@ -2621,15 +2644,19 @@ hr.rule { margin: 36px 0; }
   const coversDay = (doc, key) => { const { from, to } = spanOf(doc); return Boolean(from) && from <= key && key <= to; };
   const hasDates = (doc) => Boolean(doc.start || doc.date);
   const isOverdue = (doc) => Boolean(doc.date) && doc.date < todayKey() && doc.status !== 'done';
+  const labelsOf = (doc) => (Array.isArray(doc.labels) ? doc.labels : doc.labels ? Object.values(doc.labels) : []);
+  const allLabels = () => {
+    const seen = new Map();
+    state.tasks.forEach((t) => labelsOf(t).forEach((l) => { if (!seen.has(l.toLowerCase())) seen.set(l.toLowerCase(), l); }));
+    return [...seen.values()].sort((a, b) => a.localeCompare(b));
+  };
+  const STATUS_NAMES = { todo: 'To-do', doing: 'In progress', blocked: 'Blocked', done: 'Completed' };
   const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
 
   function labelFor(collection, doc) {
     if (collection === 'projects') return 'Project';
     if (collection === 'goals') return 'Goal';
-    const goal = doc.goalId ? state.goals.find((g) => g.id === doc.goalId) : null;
-    const base = doc.kind === 'weekly' ? 'Weekly'
-      : doc.kind === 'project' ? (state.projects.find((p) => p.id === doc.projectId)?.title || 'Project') : 'Personal';
-    return goal ? `${base} · ${goal.title}` : base;
+    return doc.projectId || doc.goalId ? '' : 'Personal';
   }
 
   function overdueText(key) {
@@ -2637,10 +2664,15 @@ hr.rule { margin: 36px 0; }
     return `Overdue, ${label === 'Yesterday' ? 'yesterday' : label}`;
   }
 
-  function metaBits(doc, label, showDate = true, grouped = false) {
+  function metaBits(doc, label, showDate = true, grouped = false, inProject = false) {
     const bits = [];
     if (label) bits.push(el('span', {}, label));
     if (doc.status === 'doing') bits.push(el('span', { class: 'doing' }, 'In progress'));
+    if (doc.status === 'blocked') bits.push(el('span', { class: 'blocked' }, 'Blocked'));
+    const project = doc.projectId && !inProject ? state.projects.find((p) => p.id === doc.projectId) : null;
+    if (project) bits.push(el('span', { class: 'tag' }, icon('folder'), project.title));
+    const goal = doc.goalId ? state.goals.find((g) => g.id === doc.goalId) : null;
+    if (goal) bits.push(el('span', { class: 'tag' }, icon('target'), goal.title));
     if (doc.start && doc.date && doc.start !== doc.date && !(showDate && isOverdue(doc))) {
       bits.push(el('span', {}, `${dueLabel(doc.start)} – ${dueLabel(doc.date)}`));
     } else if (doc.start && !doc.date) {
@@ -2650,7 +2682,32 @@ hr.rule { margin: 36px 0; }
         ? el('span', { class: 'overdue' }, grouped ? `Since ${dueLabel(doc.date) === 'Yesterday' ? 'yesterday' : dueLabel(doc.date)}` : overdueText(doc.date))
         : el('span', {}, dueLabel(doc.date)));
     }
+    labelsOf(doc).forEach((l) => bits.push(el('span', { class: 'pill' }, l)));
     return bits.length ? el('span', { class: 'meta' }, bits) : null;
+  }
+
+  /* ---------- Filters: status, project and label, one set each for Today, Personal tasks and the calendar day ---------- */
+  const filters = { today: {}, personal: {}, agenda: {} };
+  const filterActive = (f) => Boolean(f.status || f.project || f.label);
+  function matchesFilter(entry, f) {
+    const { doc } = entry;
+    const isTask = entry.collection === 'tasks';
+    if (f.status && (doc.status || 'todo') !== f.status) return false;
+    if (f.project && !(isTask && doc.projectId === f.project)) return false;
+    if (f.label && !(isTask && labelsOf(doc).some((l) => l.toLowerCase() === f.label.toLowerCase()))) return false;
+    return true;
+  }
+  function filterBar(key, rerender) {
+    const f = filters[key];
+    const select = (name, title, options) => options.length ? el('select', {
+      'aria-label': `Filter by ${title.toLowerCase()}`, class: f[name] ? 'on' : '',
+      onchange: (e) => { f[name] = e.target.value; rerender(); },
+    }, el('option', { value: '' }, title), ...options.map(([value, text]) => el('option', { value, selected: f[name] === value }, text))) : null;
+    return el('div', { class: 'filters' },
+      select('status', 'Status', Object.entries(STATUS_NAMES)),
+      select('project', 'Project', sorted(state.projects).map((p) => [p.id, p.title])),
+      select('label', 'Label', allLabels().map((l) => [l, l])),
+      filterActive(f) ? el('button', { class: 'link-btn', type: 'button', onclick: () => { Object.keys(f).forEach((k) => delete f[k]); rerender(); } }, 'Clear') : null);
   }
 
   let justDone = null;   // id whose tick should animate on the next render
@@ -2661,8 +2718,8 @@ hr.rule { margin: 36px 0; }
     store.update(collection, doc.id, { status: done ? 'todo' : 'done' });
   }
 
-  function rowEl(listId, collection, doc, { label, showDate, grouped, timeline } = {}) {
-    const status = doc.status === 'done' ? 'done' : doc.status === 'doing' ? 'doing' : 'todo';
+  function rowEl(listId, collection, doc, { label, showDate, grouped, timeline, inProject } = {}) {
+    const status = doc.status === 'done' ? 'done' : doc.status === 'doing' ? 'doing' : doc.status === 'blocked' ? 'blocked' : 'todo';
     return el('li', { class: 'row' + (status === 'done' ? ' is-done' : '') + (timeline ? ' timed' : ''), 'data-flip': `${listId}:${doc.id}` },
       timeline ? el('span', { class: 'row-time' }, doc.time ? fmtClock(doc.time) : '') : null,
       el('button', {
@@ -2675,7 +2732,7 @@ hr.rule { margin: 36px 0; }
         onclick: () => toggleDone(collection, doc),
       }, el('span', { class: 'ring' }, icon('check'))),
       el('button', { class: 'row-main', type: 'button', onclick: () => openEntry({ collection, doc }) },
-        el('span', { class: 'row-title' }, doc.title), doc.sub ? el('span', { class: 'row-sub' }, doc.sub) : null, metaBits(doc, label, showDate, grouped)));
+        el('span', { class: 'row-title' }, doc.title), doc.sub ? el('span', { class: 'row-sub' }, doc.sub) : null, metaBits(doc, label, showDate, grouped, inProject)));
   }
 
   const listEl = (listId, entries, options) =>
@@ -2724,17 +2781,21 @@ hr.rule { margin: 36px 0; }
 
   function renderToday() {
     const today = todayKey();
-    const all = datedEntries();
+    const every = datedEntries();
+    const all = every.filter((e) => matchesFilter(e, filters.today));
     const overdue = sortEntries(all.filter((e) => isOverdue(e.doc)));
     const due = sortEntries(all.filter((e) => coversDay(e.doc, today)));
+    const anyToday = every.some((e) => isOverdue(e.doc) || coversDay(e.doc, today));
     const openCount = overdue.length + due.filter((e) => e.doc.status !== 'done').length;
     $('today-sub').textContent = overdue.length + due.length ? (openCount ? `${openCount} to do` : 'All done') : '';
 
     const timeline = [...overdue, ...due].some((e) => e.doc.time);   // the time column only appears when something has a time
     const byTime = (list) => [...list].sort((a, b) => (a.doc.status === 'done') - (b.doc.status === 'done') || (a.doc.time || '99:99').localeCompare(b.doc.time || '99:99'));
     due.splice(0, due.length, ...byTime(due));
-    const kids = [];
-    if (!overdue.length && !due.length) {
+    const kids = anyToday ? [filterBar('today', renderToday)] : [];
+    if (!overdue.length && !due.length && anyToday) {
+      kids.push(el('p', { class: 'quiet' }, 'Nothing today matches these filters.'));
+    } else if (!overdue.length && !due.length) {
       kids.push(emptyEl('Nothing is due today. Anything you give today’s date shows up here.',
         'Add for today', () => openEntry({ date: today })));
     } else {
@@ -2818,11 +2879,14 @@ hr.rule { margin: 36px 0; }
   });
 
   function renderPersonal() {
-    const docs = state.tasks.filter((t) => t.kind === 'personal');
-    const open = docs.filter((t) => t.status !== 'done').length;
-    $('personal-sub').textContent = docs.length ? `${open} open` : '';
-    renderFolded('personal-body', 'personal', 'tasks', docs,
-      emptyEl('One-off things to get done, with a date if they have one.', 'Add a personal task', () => openEntry({ type: 'personal' })));
+    const all = state.tasks;
+    const docs = all.filter((t) => matchesFilter({ collection: 'tasks', doc: t }, filters.personal));
+    const open = all.filter((t) => t.status !== 'done').length;
+    $('personal-sub').textContent = all.length ? `${open} open` : '';
+    renderFolded('personal-body', 'personal', 'tasks', docs, all.length
+      ? el('p', { class: 'quiet' }, 'No tasks match these filters.')
+      : emptyEl('Things to get done, with a date, project, goal or labels if they have them.', 'Add a task', () => openEntry({ type: 'task' })));
+    if (all.length) $('personal-body').prepend(filterBar('personal', renderPersonal));
   }
 
   // linked tasks drive the bar when there are any; otherwise the typed-in numbers do
@@ -2887,14 +2951,14 @@ hr.rule { margin: 36px 0; }
       }
       body.replaceChildren(...projects.map((shown) => {
         const project = state.projects.find((p) => p.id === shown.id);
-        const tasks = sorted(state.tasks.filter((t) => t.kind === 'project' && t.projectId === project.id));
+        const tasks = sorted(state.tasks.filter((t) => t.projectId === project.id));
         const doneCount = tasks.filter((t) => t.status === 'done').length;
         const card = el('article', { class: 'proj', draggable: 'true', 'data-flip': `proj:${project.id}` },
           el('button', { class: 'proj-title', type: 'button', onclick: () => openEntry({ collection: 'projects', doc: project }) }, project.title),
           metaBits({ ...project, status: status === 'done' ? 'done' : null }, tasks.length ? `${doneCount} of ${plural(tasks.length, 'task')}` : ''),
           tasks.length ? el('div', { class: 'bar-track' }, el('div', { class: 'bar-fill', style: `width:${(doneCount / tasks.length) * 100}%` })) : null,
-          tasks.length ? listEl('ptask', tasks.map((doc) => ({ collection: 'tasks', doc }))) : null,
-          el('button', { class: 'link-btn', type: 'button', onclick: () => openEntry({ type: 'projectTask', projectId: project.id }) }, icon('plus'), 'Add task'));
+          tasks.length ? listEl('ptask', tasks.map((doc) => ({ collection: 'tasks', doc })), { inProject: true }) : null,
+          el('button', { class: 'link-btn', type: 'button', onclick: () => openEntry({ type: 'task', projectId: project.id }) }, icon('plus'), 'Add task'));
         card.addEventListener('dragstart', (e) => {
           e.dataTransfer.setData('text/plain', project.id);
           e.dataTransfer.effectAllowed = 'move';
@@ -2930,7 +2994,8 @@ hr.rule { margin: 36px 0; }
     $('cal-title').replaceChildren(fmtMonth.format(parseKey(first)), el('span', {}, String(year)));
 
     const perDay = new Map();
-    for (const { doc } of datedEntries()) {
+    for (const entry of datedEntries().filter((e) => matchesFilter(e, filters.agenda))) {
+      const { doc } = entry;
       const { from, to } = spanOf(doc);
       for (let key = from, n = 0; key <= to && n < 400; key = addDays(key, 1), n++) {
         const tally = perDay.get(key) || { total: 0, open: 0 };
@@ -2968,11 +3033,13 @@ hr.rule { margin: 36px 0; }
     }
 
     document.querySelector('.agenda').hidden = !calPicked;
-    const entries = sortEntries(datedEntries().filter((e) => coversDay(e.doc, calSelected)));
+    const dayAll = datedEntries().filter((e) => coversDay(e.doc, calSelected));
+    const entries = sortEntries(dayAll.filter((e) => matchesFilter(e, filters.agenda)));
     $('agenda-title').textContent = calSelected === today ? `Today, ${fmtShort.format(parseKey(today))}` : fmtLong.format(parseKey(calSelected));
-    $('agenda-body').replaceChildren(entries.length
-      ? listEl('agenda', entries, { showDate: false })
-      : el('p', { class: 'quiet' }, 'Nothing on this day.'));
+    $('agenda-body').replaceChildren(
+      ...(dayAll.length ? [filterBar('agenda', () => renderCalendar())] : []),
+      entries.length ? listEl('agenda', entries, { showDate: false })
+        : el('p', { class: 'quiet' }, dayAll.length ? 'Nothing here matches these filters.' : 'Nothing on this day.'));
   }
 
   function selectDay(key, focus) {
@@ -3104,40 +3171,52 @@ hr.rule { margin: 36px 0; }
      Add / edit sheet
      ===================================================================== */
   const TYPES = {
-    personal:    { label: 'personal task', collection: 'tasks', kind: 'personal' },
-    weekly:      { label: 'weekly task',   collection: 'tasks', kind: 'weekly' },
-    projectTask: { label: 'project task',  collection: 'tasks', kind: 'project' },
+    task:        { label: 'task',          collection: 'tasks', kind: 'personal' },
     project:     { label: 'project',       collection: 'projects' },
     goal:        { label: 'goal',          collection: 'goals' },
   };
   const entry = $('entry');
   const entryForm = $('entry-form');
   let editing = null;        // { collection, doc } while editing
-  let lastType = 'personal';
+  let lastType = 'task';
+  let entryLabels = [];
 
   const entryType = () => entryForm.elements.type.value;
 
   function typeOf(collection, doc) {
     if (collection === 'projects') return 'project';
     if (collection === 'goals') return 'goal';
-    return doc.kind === 'project' ? 'projectTask' : doc.kind;
+    return 'task';
   }
 
   function syncEntry() {
-    const needsProject = entryType() === 'projectTask';
-    const noProjects = needsProject && state.projects.length === 0;
     const type = entryType();
-    const isTask = type === 'personal' || type === 'weekly' || type === 'projectTask';
-    $('entry-project-field').hidden = !needsProject;
-    $('entry-goal-field').hidden = !(type === 'personal' || type === 'projectTask');
+    const isTask = type === 'task';
+    ['entry-project-field', 'entry-goal-field', 'entry-labels-field', 'entry-time-field', 'entry-sub-field'].forEach((id) => { $(id).hidden = !isTask; });
     $('entry-goalnums').hidden = type !== 'goal';
-    $('entry-time-field').hidden = !isTask;
-    $('entry-sub-field').hidden = !isTask;
-    $('entry-project').hidden = noProjects;
-    $('entry-project-hint').hidden = !noProjects;
-    $('entry-save').disabled = noProjects;
-    $('entry-h').textContent = `${editing ? 'Edit' : 'Add'} ${TYPES[entryType()].label}`;
+    $('status-blocked').hidden = !isTask;
+    if (!isTask && entryForm.elements.status.value === 'blocked') entryForm.elements.status.value = '';
+    $('entry-h').textContent = `${editing ? 'Edit' : 'Add'} ${TYPES[type].label}`;
   }
+
+  /* labels: chips you add by typing and pressing Enter; earlier labels are offered as suggestions */
+  function drawLabelChips() {
+    $('entry-label-chips').replaceChildren(...entryLabels.map((l) => el('span', { class: 'label-chip' }, l,
+      el('button', { type: 'button', 'aria-label': `Remove label ${l}`, onclick: () => { entryLabels = entryLabels.filter((x) => x !== l); drawLabelChips(); } }, icon('x')))));
+  }
+  function addLabel(text) {
+    const clean = text.replace(/^#+/, '').trim().slice(0, 30);
+    if (!clean || entryLabels.some((l) => l.toLowerCase() === clean.toLowerCase())) return;
+    entryLabels.push(allLabels().find((l) => l.toLowerCase() === clean.toLowerCase()) || clean);
+    drawLabelChips();
+  }
+  $('entry-label-input').addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ',') return;
+    e.preventDefault();
+    addLabel($('entry-label-input').value);
+    $('entry-label-input').value = '';
+  });
+  $('entry-label-input').addEventListener('change', () => { addLabel($('entry-label-input').value); $('entry-label-input').value = ''; });
 
   function setTitleError(show) {
     $('entry-title-err').hidden = !show;
@@ -3149,10 +3228,15 @@ hr.rule { margin: 36px 0; }
     if (!store.signedIn) { store.signIn(); return; }
     editing = doc ? { collection, doc } : null;
     entryForm.reset();
-    entryForm.elements.type.value = doc ? typeOf(collection, doc) : (type || lastType);
+    const asType = type === 'personal' || type === 'projectTask' || type === 'weekly' ? 'task' : type;
+    entryForm.elements.type.value = doc ? typeOf(collection, doc) : (asType || lastType);
     $('entry-types').hidden = Boolean(doc);
-    $('entry-project').replaceChildren(...sorted(state.projects).map((p) => el('option', { value: p.id }, p.title)));
-    if (doc?.projectId || projectId) $('entry-project').value = doc?.projectId || projectId;
+    $('entry-project').replaceChildren(el('option', { value: '' }, 'No project'), ...sorted(state.projects).map((p) => el('option', { value: p.id }, p.title)));
+    $('entry-project').value = doc?.projectId || projectId || '';
+    entryLabels = doc ? [...labelsOf(doc)] : [];
+    drawLabelChips();
+    $('entry-label-input').value = '';
+    $('label-options').replaceChildren(...allLabels().map((l) => el('option', { value: l })));
     $('entry-title').value = doc?.title || '';
     $('entry-sub').value = doc?.sub || '';
     $('entry-time').value = doc?.time || '';
@@ -3192,13 +3276,16 @@ hr.rule { margin: 36px 0; }
     $('entry-range-err').hidden = true;
     const data = { title, status: entryForm.elements.status.value || null, start, date: end };
     const num = (id) => (Number($(id).value) > 0 ? Number($(id).value) : null);
-    data.sub = entryType() === 'goal' || entryType() === 'project' ? null : ($('entry-sub').value.trim() || null);
-    data.time = entryType() === 'goal' || entryType() === 'project' ? null : ($('entry-time').value || null);
+    const isTaskType = entryType() === 'task';
+    data.sub = isTaskType ? ($('entry-sub').value.trim() || null) : null;
+    data.time = isTaskType ? ($('entry-time').value || null) : null;
+    addLabel($('entry-label-input').value);
     if (type.collection === 'goals') { data.current = num('entry-current'); data.target = num('entry-target'); data.unit = $('entry-unit').value.trim() || null; }
     if (type.collection === 'tasks') {
-      data.goalId = type.kind === 'weekly' ? null : ($('entry-goal').value || null);
+      data.goalId = $('entry-goal').value || null;
       data.kind = type.kind;
-      data.projectId = type.kind === 'project' ? $('entry-project').value : null;
+      data.projectId = $('entry-project').value || null;
+      data.labels = entryLabels.length ? [...entryLabels] : null;
     }
     if (editing) {
       if (data.status === 'done' && editing.doc.status !== 'done') justDone = editing.doc.id;
