@@ -226,25 +226,24 @@
   .big { display: flex; align-items: baseline; gap: 8px; font-family: var(--serif); font-size: 42px; line-height: 1; white-space: nowrap; }
   .big small { font-family: var(--sans); font-size: 17px; font-weight: 400; letter-spacing: 0.04em; color: var(--ink-2); }
   .zone .line { margin-top: 10px; font-size: 16px; color: var(--ink-2); }
-  .glance .zone { container-type: inline-size; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; min-height: 122px; padding: 14px 16px 13px; }
+  .glance .zone { container-type: inline-size; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; min-height: 122px; padding: 20px 16px 13px; }
   .glance .zone > div { min-width: 0; }
-  .g-eyebrow { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11.5px; line-height: 14px; font-style: italic; color: var(--ink-3); }
-  .g-num { display: block; height: 32px; margin-top: 3px; font-size: 30px; line-height: 32px; letter-spacing: -0.01em; white-space: nowrap; }
-  .g-num sup { margin-left: 3px; position: relative; top: 3px; vertical-align: top; font-size: 9px; line-height: 1; letter-spacing: 0.14em; color: var(--ember); }
-  .g-num.deg sup { margin-left: 1px; font-size: 14px; letter-spacing: 0; }
-  .g-num.name { height: 28px; margin: 0; font-size: 25px; line-height: 28px; font-style: italic; letter-spacing: 0; }
+  .g-num { display: block; height: 36px; margin: 0; font-size: 34px; line-height: 36px; letter-spacing: -0.01em; white-space: nowrap; }
+  .g-num sup { margin-left: 3px; position: relative; top: 4px; vertical-align: top; font-size: 10px; line-height: 1; letter-spacing: 0.14em; color: var(--ember); }
+  .g-num.deg sup { margin-left: 1px; font-size: 16px; letter-spacing: 0; }
+  .g-num.name { font-style: italic; letter-spacing: 0; }
   .g-foot { font-size: 11px; line-height: 13px; color: var(--ink-3); }
   .g-foot.date { font-style: italic; }
   .g-row { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; }
   .g-row.top { align-items: flex-start; }
-  .g-row .ic { width: 18px; height: 18px; margin-top: 6px; stroke-width: 1.2; color: var(--ember); }
+  .g-row > .g-foot { align-self: flex-start; margin-top: 18px; }
+  .g-row .ic { width: 18px; height: 18px; margin-top: 8px; stroke-width: 1.2; color: var(--ember); }
   .g-range { position: relative; height: 3px; margin-bottom: 7px; border-radius: 999px; background: linear-gradient(90deg, #93aee0, var(--ink) 50%, var(--ember)); opacity: 0.9; }
   .g-range i { position: absolute; top: 50%; width: 10px; height: 10px; border-radius: 50%; background: #fff; border: 2px solid var(--ground); box-shadow: 0 0 0 1.5px var(--ember); transform: translate(-50%, -50%); }
   .g-lbl { display: flex; justify-content: space-between; gap: 6px; font-size: 11px; line-height: 13px; color: var(--ink-3); }
   .g-bar { height: 3px; margin-bottom: 7px; border-radius: 999px; background: var(--rule); overflow: hidden; }
   .g-bar i { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--ember); transition: width 0.9s var(--ease); }
   .g-wx-cond { margin-bottom: 7px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  @container (max-width: 190px) { .g-full { display: none; } }
 
   .skeleton { border-radius: 6px; background: linear-gradient(90deg, var(--raise), var(--raise-2), var(--raise)); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
   @keyframes shimmer { to { background-position: -200% 0; } }
@@ -737,13 +736,13 @@
     .zone .line { font-size: 14px; }
     .big { font-size: 30px; gap: 4px; }
     .big small { font-size: 12px; }
-    .glance .zone { min-height: 104px; gap: 6px; padding: 10px 10px 9px; }
-    .g-eyebrow, .g-foot, .g-lbl { font-size: 9px; line-height: 11px; }
-    .g-num { height: 24px; font-size: 22px; line-height: 24px; }
-    .g-num sup { top: 2px; font-size: 7px; }
+    .glance .zone { min-height: 104px; gap: 6px; padding: 14px 10px 9px; }
+    .g-foot, .g-lbl { font-size: 9px; line-height: 11px; }
+    .g-num { height: 26px; font-size: 24px; line-height: 26px; }
+    .g-num sup { top: 3px; font-size: 7px; }
     .g-num.deg sup { font-size: 11px; }
-    .g-num.name { height: 22px; font-size: 18px; line-height: 22px; }
-    .g-row .ic { width: 14px; height: 14px; margin-top: 4px; }
+    #month-day { display: none; }
+    .g-row .ic { width: 14px; height: 14px; margin-top: 6px; }
     .g-range { height: 2px; margin-bottom: 6px; }
     .g-range i { width: 8px; height: 8px; border-width: 1.5px; }
     .g-bar { height: 2px; margin-bottom: 6px; }
@@ -1185,10 +1184,7 @@
     <section class="glance a-glance" aria-label="Right now">
       <div class="zone">
         <h2>Hyderabad time</h2>
-        <div>
-          <p class="g-eyebrow" id="greeting">&nbsp;</p>
-          <p class="g-num"><span id="clock">--:--</span><sup id="clock-ampm"></sup></p>
-        </div>
+        <p class="g-num"><span id="clock">--:--</span><sup id="clock-ampm"></sup></p>
         <p class="g-foot date" id="clock-date">&nbsp;</p>
       </div>
       <div class="zone" aria-live="polite">
@@ -2413,12 +2409,6 @@ hr.rule { margin: 36px 0; }
       $('clock').textContent = text;
       $('clock-ampm').textContent = get('dayPeriod').toUpperCase();
       $('clock-date').textContent = fmtLong.format(parseKey(todayKey()));
-    }
-    const hour = Number(parts.find((p) => p.type === 'hour').value) % 12 + (get('dayPeriod').toLowerCase() === 'pm' ? 12 : 0);
-    const part = hour < 5 ? 'night' : hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
-    const greeting = `Good ${part}`;
-    if ($('greeting').firstChild?.textContent !== greeting) {
-      $('greeting').replaceChildren(greeting, el('span', { class: 'g-full' }, `, ${CONFIG.name}`));
     }
   }
 
