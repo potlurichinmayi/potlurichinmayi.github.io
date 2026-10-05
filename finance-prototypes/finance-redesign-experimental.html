@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Generational Wealth · Finance redesign prototype (adjusted, glass cards)</title>
+<title>Generational Wealth · Finance redesign prototype (experimental glass)</title>
 <link rel="icon" href="../tracker-assets/cat.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,7 +40,7 @@
 
   /* the photograph, same treatment as the tracker */
   .bg-layer { position: absolute; z-index: -1; top: 0; left: 0; right: 0; height: min(3177px, 100%); overflow: hidden; pointer-events: none; }
-  .bg-layer i { position: absolute; top: 0; left: 50%; width: 2826px; height: 3177px; transform: translateX(-50%); background: url('../tracker-assets/bg-4403.webp') center / cover no-repeat; }
+  .bg-layer i { position: absolute; top: 0; left: 50%; width: 2826px; height: 3177px; transform: translateX(-50%); background: url('../tracker-assets/bg-full.webp') center / cover no-repeat; }
   .bg-layer i::after { content: ''; position: absolute; inset: auto 0 0 0; height: 360px; background: linear-gradient(to bottom, transparent, var(--ground)); }
 
   /* masthead: the cat sits on the rule */
@@ -379,29 +379,42 @@
     .tiles { gap: 14px; }
   }
 
-  /* ---- navy glass cards: frosted and dark, no border, no highlight edges (size comes from the layout) ---- */
-  .panel, .tile {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 45%), rgba(9, 16, 42, 0.34);
-    backdrop-filter: blur(26px) saturate(1.5);
-    -webkit-backdrop-filter: blur(26px) saturate(1.5);
-    border-radius: 20px;
-    border: 0;
-    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
-    position: relative;
-    overflow: hidden;
+  /* ---- experimental: no card boxes. One sheet of frosted glass lies over the whole photograph and the content sits
+     directly on it. The layout (grid, rows, spans) is unchanged; each former card is only a soft, edgeless pool of shade. ---- */
+  .glass-sheet { position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0) 40%), rgba(8, 14, 38, 0.22);
+    backdrop-filter: blur(22px) saturate(1.6); -webkit-backdrop-filter: blur(22px) saturate(1.6); }
+  .glass-sheet::after { content: ''; position: absolute; inset: 0; opacity: 0.07; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+
+  .panel, .tile, .midcol .widget {
+    background: radial-gradient(ellipse closest-side at 50% 50%, rgba(6, 11, 30, 0.62) 0%, rgba(6, 11, 30, 0.46) 55%, rgba(6, 11, 30, 0) 100%);
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+    border: 0; border-radius: 0; box-shadow: none; overflow: visible;
   }
-  .tile:hover { transform: translateY(-2px); }
-  .tile.on { box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28), inset 0 0 0 2px var(--ember); }
+  .tile { background: radial-gradient(ellipse closest-side at 50% 50%, rgba(6, 11, 30, 0.5) 0%, rgba(6, 11, 30, 0.34) 55%, rgba(6, 11, 30, 0) 100%); }
+  .tile:hover { transform: translateY(-2px); background: radial-gradient(ellipse closest-side at 50% 50%, rgba(255, 255, 255, 0.12) 0%, rgba(6, 11, 30, 0.3) 58%, rgba(6, 11, 30, 0) 100%); }
+  .tile.on { box-shadow: none; background: radial-gradient(ellipse closest-side at 50% 50%, rgba(233, 162, 108, 0.26) 0%, rgba(233, 162, 108, 0.10) 58%, rgba(233, 162, 108, 0) 100%); }
+  .tile.on .amt { color: var(--ember-hi); }
+  .tile.off { opacity: 0.4; }
+  .bar-in, hr.rule { border-image: linear-gradient(90deg, transparent, rgba(240, 232, 217, 0.5) 12%, rgba(240, 232, 217, 0.5) 88%, transparent) 1; }
+  hr.rule { border-top-width: 1px; }
+  .trio, .trio div + div, .month-block .kicker, .stats, .owed .tri div + div, .widget .bal, .fdrow, .fdhead, .day-list li, .owed .col > header, .owed .it { border-color: rgba(240, 232, 217, 0.09); }
+  .goal, .tabs button.on, .cchip { background: rgba(240, 232, 217, 0.08); }
+  .goal { box-shadow: none; }
+  .money img { filter: drop-shadow(0 20px 28px rgba(0, 0, 0, 0.5)); }
+  .panel .kicker { letter-spacing: 0.02em; }
 </style>
 </head>
 <body>
 <div class="bg-layer" aria-hidden="true"><i></i></div>
+<div class="glass-sheet" aria-hidden="true"></div>
 
 <header class="bar">
   <div class="bar-in">
     <img src="../tracker-assets/cat.png" alt="" width="145" height="209">
     <h1>Generational wealth</h1>
-    <p class="proto-note">Prototype · glass cards · sample data</p>
+    <p class="proto-note">Prototype · experimental glass · sample data</p>
   </div>
 </header>
 
