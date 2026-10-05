@@ -1123,51 +1123,39 @@
   }
 
   /* =====================================================================
-     Inner cards: soft tinted panels sitting inside the glass tiles
+     New card content, in the page's own glass style (no extra boxes or colours)
      ===================================================================== */
-  .inner { --tint: #ffffff; position: relative; min-width: 0; padding: 14px 16px; border-radius: 14px;
-    background: linear-gradient(135deg, color-mix(in srgb, var(--tint) 26%, transparent), color-mix(in srgb, var(--tint) 6%, transparent));
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 6px 18px rgba(0, 0, 0, 0.18); }
-  .inner.warm { --tint: #f3b667; } .inner.sky { --tint: #78b0f2; } .inner.mint { --tint: #6fd3ae; }
-  .inner.blue { --tint: #7aa8ec; } .inner.sand { --tint: #e8c68f; } .inner.lilac { --tint: #b9a2ec; } .inner.peach { --tint: #f0a58a; }
+  .inner { position: relative; min-width: 0; }
   .inner-h { margin: 0 0 8px; font-size: 18px; line-height: 1.2; }
 
   /* glance */
-  .glance .zone { padding: 8px; justify-content: stretch; }
-  .glance .zone > .inner { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; padding: 14px 14px 10px; }
+  .glance .zone > .inner { position: static; flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
   .glance .zone.clock > .inner { justify-content: center; }
-  .g-corner { position: absolute; top: 10px; right: 10px; display: inline-flex; }
-  .g-corner .ic { width: 20px; height: 20px; stroke-width: 1.3; color: var(--ember-hi); }
-  .glance .g-bar { height: 8px; margin-bottom: 8px; background: rgba(255, 255, 255, 0.16); }
-  .glance .g-bar i { background: linear-gradient(90deg, #5b9cf0, #7fd6b0); }
-  .glance .g-lbl { font-size: 12px; line-height: 14px; }
-  @media (max-width: 719px) { .glance .g-bar { height: 6px; } .glance .zone { padding: 5px; } .glance .zone > .inner { padding: 10px 9px 8px; } .g-corner { top: 7px; right: 7px; } .g-corner .ic { width: 14px; height: 14px; } }
+  .g-corner { position: absolute; top: 12px; right: 14px; display: inline-flex; }
+  .g-corner .ic { width: 18px; height: 18px; stroke-width: 1.2; color: var(--ember); }
+  @media (max-width: 719px) { .g-corner { top: 9px; right: 9px; } .g-corner .ic { width: 14px; height: 14px; } }
 
   /* goals */
-  .goal-card { padding: 14px 16px 12px; }
   .goals { display: flex; flex-direction: column; gap: 16px; }
   .goal { display: flex; flex-direction: column; gap: 7px; width: 100%; padding: 0; border: 0; background: none; text-align: left; color: inherit; }
   .goal-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
   .goal-title { font-size: 16px; overflow-wrap: anywhere; }
   .goal:hover .goal-title { color: var(--ember-hi); }
   .goal-pct { font-size: 14px; color: var(--ink-2); }
-  .goal-bar { display: block; height: 8px; border-radius: 999px; background: rgba(255, 255, 255, 0.16); overflow: hidden; }
-  .goal-bar i { display: block; height: 100%; border-radius: 999px; transition: width 0.6s var(--ease); }
+  .goal-bar { display: block; height: 4px; border-radius: 999px; background: var(--rule); overflow: hidden; }
+  .goal-bar i { display: block; height: 100%; border-radius: 999px; background: var(--ember) !important; transition: width 0.6s var(--ease); }
   .goal-meta { font-size: 13px; color: var(--ink-3); }
   .goal.is-done .goal-title { color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--rule-2); }
   .goal-card .done-group { margin-top: 14px; }
 
   /* today: a timeline, time then tick then title */
-  .today-card { padding: 8px 10px; }
-  .today-card .list { margin: 0; }
+  .today-card .list { margin: 0 -8px; }
   .row.timed { grid-template-columns: 64px 38px minmax(0, 1fr); }
-  .row-time { padding: 13px 0 0 6px; font-size: 13px; line-height: 1.3; color: var(--ink-2); white-space: nowrap; }
+  .row-time { padding: 13px 0 0 8px; font-size: 13px; line-height: 1.3; color: var(--ink-2); white-space: nowrap; }
   .row-sub { display: block; font-size: 14px; line-height: 1.3; color: var(--ink-3); }
-  .today-card .row + .row { box-shadow: 0 -1px 0 var(--rule); }
   @media (max-width: 479px) { .row.timed { grid-template-columns: 54px 36px minmax(0, 1fr); } .row-time { font-size: 12px; padding-left: 2px; } }
 
   /* habits */
-  .habits { padding: 14px 14px 12px; }
   .hgrid { display: grid; grid-template-columns: minmax(0, 1fr) repeat(7, 26px); align-items: center; gap: 4px; }
   .hhead { margin-bottom: 6px; font-size: 13px; color: var(--ink-3); }
   .hhead span:not(:first-child) { text-align: center; }
@@ -1179,33 +1167,24 @@
   .hdel .ic { width: 11px; height: 11px; }
   .hrow:hover .hdel, .hdel:focus-visible { display: inline-grid; }
   @media (hover: none) { .hdel { display: inline-grid; opacity: 0.6; } }
-  .hcell { display: grid; place-items: center; width: 26px; height: 26px; padding: 0; border: 0; border-radius: 7px; background: rgba(255, 255, 255, 0.1); color: transparent; transition: background-color 0.15s, transform 0.15s; }
+  .hcell { display: grid; place-items: center; width: 26px; height: 26px; padding: 0; border: 0; border-radius: 7px; background: var(--raise); color: transparent; transition: background-color 0.15s, transform 0.15s; }
   .hcell .ic { width: 14px; height: 14px; stroke-width: 2; }
-  .hcell:not(:disabled):hover { transform: scale(1.08); background: rgba(255, 255, 255, 0.2); }
-  .hcell[data-state="done"] { background: #4fb987; color: #fff; }
+  .hcell:not(:disabled):hover { transform: scale(1.08); background: var(--raise-2); }
+  .hcell[data-state="done"] { background: var(--ember); color: var(--on-ember); }
   .hcell[data-state="missed"] { color: var(--ink-3); }
   .hcell[data-state="before"], .hcell[data-state="future"] { opacity: 0.5; }
   .hcell:disabled { cursor: default; }
-  .streak { display: flex; justify-content: center; margin: 12px 0 2px; }
-  .streak span { padding: 3px 14px; border-radius: 999px; font-size: 14px; background: color-mix(in srgb, #f0b46a 30%, transparent); color: var(--ink); }
+  .streak { display: flex; justify-content: center; margin: 12px 0 2px; font-size: 14px; color: var(--ink-2); }
   .habit-form { display: flex; gap: 8px; margin-top: 12px; }
   .habit-form input { flex: 1; min-width: 0; }
   @media (max-width: 479px) { .hgrid { grid-template-columns: minmax(0, 1fr) repeat(7, 24px); gap: 3px; } .hcell { width: 24px; height: 24px; } }
 
   /* notes: quick capture */
-  .capture { margin-bottom: 12px; padding: 12px 14px; }
-  .capture textarea { display: block; width: 100%; min-height: 64px; padding: 8px 10px; border: 0; border-radius: 10px; resize: vertical; background: rgba(255, 255, 255, 0.08); font: inherit; font-size: 16px; color: var(--ink); }
+  .capture { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--rule); }
+  .capture textarea { display: block; width: 100%; min-height: 64px; padding: 8px 10px; border: 0; border-radius: 10px; resize: vertical; background: var(--raise); font: inherit; font-size: 16px; color: var(--ink); }
   .capture textarea:focus-visible { outline: 2px solid var(--ember); }
   .cap-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
   .cap-foot .ic { width: 18px; height: 18px; color: var(--ink-3); }
-
-  /* projects: status pills and white-ish chips */
-  .col-head { align-self: flex-start; width: fit-content; margin-bottom: 12px; padding: 4px 12px 5px; border-radius: 8px; font-size: 15px; line-height: 1.2; color: var(--ink); background: color-mix(in srgb, #7aa8ec 34%, transparent); }
-  .col[data-status="doing"] .col-head { background: color-mix(in srgb, #f3b667 34%, transparent); }
-  .col[data-status="done"] .col-head { background: color-mix(in srgb, #6fd3ae 34%, transparent); }
-  .col-head span { margin-left: 4px; color: var(--ink-2); }
-  .col .col-head, .col:first-child .col-head { justify-content: flex-start; }
-  .proj { margin-bottom: 8px; padding: 10px 12px 8px; border-top: 0; border-radius: 12px; background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.07)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 4px 12px rgba(0, 0, 0, 0.14); }
 </style>
 <script>
   /* the last look (colours, background) is cached so the page never flashes the default one */
