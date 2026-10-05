@@ -599,9 +599,11 @@
   .gate-copy { position: relative; z-index: 3; width: 100%; text-shadow: 0 2px 24px rgba(4, 7, 20, 0.7); transition: opacity 0.45s; }
   .gate-copy h1 { display: flex; justify-content: center; padding-left: 0.5em; font-family: var(--serif); font-weight: 400; font-size: clamp(40px, 9vw, 84px); letter-spacing: 0.5em; text-transform: uppercase; }
   .gate-copy h1 span { opacity: 0; animation: gate-rise 0.9s var(--ease) forwards; animation-delay: calc(0.3s + var(--i) * 0.09s); }
+  /* TEMPORARY: sizing for the two-line "Haiiii Chinmayiipppp" greeting; delete with the greeting */
+  .gate-copy h1.gate-temp { flex-direction: column; align-items: center; padding-left: 0; font-size: clamp(30px, 8vw, 64px); letter-spacing: 0.12em; text-transform: none; line-height: 1.25; }
+  .gate-copy h1.gate-temp .gate-word { display: flex; justify-content: center; font-style: normal; opacity: 1; animation: none; padding-left: 0.12em; }
   .gate-rule { width: min(220px, 50vw); height: 1px; margin: 26px auto 0; background: var(--ember); opacity: 0.7; animation: gate-grow 1.2s 0.9s var(--ease) both; }
   .gate-under { display: grid; place-items: center; height: 34px; margin-top: 22px; opacity: 0; animation: gate-fade 0.8s 1.4s forwards; }
-  .gate-wait { font-style: italic; font-size: 20px; color: var(--ink-3); animation: gate-breathe 1.8s ease-in-out infinite; }
   .gate-link { padding: 6px 2px; border: 0; border-bottom: 1px solid transparent; background: none; color: var(--ink); font: italic 20px var(--serif); cursor: pointer; transition: color 0.2s, border-color 0.2s, letter-spacing 0.3s; }
   .gate-link:hover, .gate-link:focus-visible { color: var(--ember-hi); border-color: var(--ember); letter-spacing: 0.03em; outline: none; }
   .gate.leaving { opacity: 0; pointer-events: none; transition: opacity 1.2s ease 0.35s; }
@@ -614,7 +616,6 @@
   @keyframes gate-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
   @keyframes gate-fade { from { opacity: 0; } to { opacity: 1; } }
   @keyframes gate-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-  @keyframes gate-breathe { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
 
   /* ---------- Footer ---------- */
   .foot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; max-width: 1366px; margin: 0 auto; padding: 18px var(--pad) calc(28px + env(safe-area-inset-bottom)); font-size: 15px; color: var(--ink-2); }
@@ -1132,10 +1133,11 @@
   <div class="gate-art" aria-hidden="true"><div class="gate-pic"></div><div class="gate-leak"></div></div>
   <div class="gate-grain" aria-hidden="true"></div>
   <div class="gate-copy">
-    <h1 aria-label="Potluri"><span aria-hidden="true" style="--i:0">P</span><span aria-hidden="true" style="--i:1">O</span><span aria-hidden="true" style="--i:2">T</span><span aria-hidden="true" style="--i:3">L</span><span aria-hidden="true" style="--i:4">U</span><span aria-hidden="true" style="--i:5">R</span><span aria-hidden="true" style="--i:6">I</span></h1>
+    <!-- TEMPORARY greeting: swap back to the POTLURI line below (and drop the .gate-temp CSS) -->
+    <h1 class="gate-temp" aria-label="Haiiii Chinmayiipppp"><em class="gate-word"><span aria-hidden="true" style="--i:0">H</span><span aria-hidden="true" style="--i:1">a</span><span aria-hidden="true" style="--i:2">i</span><span aria-hidden="true" style="--i:3">i</span><span aria-hidden="true" style="--i:4">i</span><span aria-hidden="true" style="--i:5">i</span></em><em class="gate-word"><span aria-hidden="true" style="--i:6">C</span><span aria-hidden="true" style="--i:7">h</span><span aria-hidden="true" style="--i:8">i</span><span aria-hidden="true" style="--i:9">n</span><span aria-hidden="true" style="--i:10">m</span><span aria-hidden="true" style="--i:11">a</span><span aria-hidden="true" style="--i:12">y</span><span aria-hidden="true" style="--i:13">i</span><span aria-hidden="true" style="--i:14">i</span><span aria-hidden="true" style="--i:15">p</span><span aria-hidden="true" style="--i:16">p</span><span aria-hidden="true" style="--i:17">p</span><span aria-hidden="true" style="--i:18">p</span></em></h1>
+    <!-- <h1 aria-label="Potluri"><span aria-hidden="true" style="--i:0">P</span><span aria-hidden="true" style="--i:1">O</span><span aria-hidden="true" style="--i:2">T</span><span aria-hidden="true" style="--i:3">L</span><span aria-hidden="true" style="--i:4">U</span><span aria-hidden="true" style="--i:5">R</span><span aria-hidden="true" style="--i:6">I</span></h1> -->
     <div class="gate-rule"></div>
     <div class="gate-under">
-      <span class="gate-wait" id="gate-wait" aria-live="polite">Opening</span>
       <button class="gate-link" type="button" id="signin-btn" hidden>Enter with Google →</button>
     </div>
   </div>
@@ -4539,7 +4541,6 @@ hr.rule { margin: 36px 0; }
         setTimeout(() => gate.classList.remove('leaving'), 1700);
       }
       document.body.classList.toggle('locked', !user);
-      $('gate-wait').hidden = true;
       $('signin-btn').hidden = Boolean(user);  // never offered to someone already signed in
     });
   });
