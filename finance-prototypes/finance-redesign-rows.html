@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Generational Wealth · Finance redesign prototype</title>
+<title>Generational Wealth · Finance redesign prototype (three rows)</title>
 <link rel="icon" href="../tracker-assets/cat.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -287,6 +287,48 @@
     .owed .cols { grid-template-columns: minmax(0, 1fr); }
   }
 
+  /* ---- three rows of two: the first section reads as three wide rows instead of two rows of three.
+     Wide cards lay their content out in two columns, so they are shorter, more horizontal and less cramped. ---- */
+  @media (min-width: 1101px) {
+    .grid { gap: 26px; }
+    .grid > .panel, .midcol .widget { padding: 28px; }
+    .overview { grid-column: span 7; }
+    .midcol { grid-column: span 5; gap: 14px; }
+    .fd { grid-column: span 7; }
+    .grid > .savings { grid-column: span 5; }
+    .grid > .pace { grid-column: span 5; }
+    .grid > .punch { grid-column: span 7; }
+    .mid { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1.1fr) minmax(0, 0.85fr); gap: 24px; }
+    .tile { min-height: 160px; }
+
+    /* overview: words and the category split on the left, the day-by-day bars on the right */
+    .overview { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); column-gap: 36px; align-content: start;
+      grid-template-areas: "kick chart" "head chart" "sub chart" "stack chart" "legend chart" "trio trio"; grid-template-rows: auto auto auto auto 1fr auto; }
+    .overview > .kicker { grid-area: kick; }
+    .overview > h2 { grid-area: head; }
+    .overview > .sub { grid-area: sub; margin-bottom: 22px; }
+    .overview > .stack { grid-area: stack; }
+    .overview > .stack-legend { grid-area: legend; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 20px; margin-top: 20px; align-content: start; }
+    .overview > .balfill { grid-area: chart; margin-top: 0; min-height: 0; }
+    .overview > .month-block { grid-area: trio; padding-top: 22px; }
+    .overview .finding.xl { font-size: 30px; }
+
+    /* deposits: headline and timelines on the left, the table on the right */
+    .fd { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); column-gap: 36px; align-content: start;
+      grid-template-areas: "kick rows" "head rows" "sub rows" "chart rows" "chart foot"; grid-template-rows: auto auto auto 1fr auto; container-type: normal; }
+    .fd > .kicker { grid-area: kick; }
+    .fd > h2 { grid-area: head; }
+    .fd > .sub { grid-area: sub; }
+    .fd > .chart { grid-area: chart; align-self: start; margin-top: 8px; }
+    .fd > .fdrows { grid-area: rows; margin-top: 0; container-type: inline-size; }
+    .fd > .foot { grid-area: foot; padding-top: 18px; margin-top: 0; }
+
+    /* savings box: the three goals sit side by side */
+    .savings .goals { flex-direction: row; gap: 12px; }
+    .savings .goal { flex: 1; min-width: 0; flex-direction: column; align-items: flex-start; gap: 10px; padding: 16px; }
+    .savings .goal svg { width: 58px; }
+  }
+
   /* ---- section two: more room between the calendar, the category tiles and the largest payments ---- */
   @media (min-width: 1101px) {
     .mid { gap: 40px; }
@@ -306,7 +348,7 @@
   <div class="bar-in">
     <img src="../tracker-assets/cat.png" alt="" width="145" height="209">
     <h1>Generational wealth</h1>
-    <p class="proto-note">Prototype · sample data</p>
+    <p class="proto-note">Prototype · three rows · sample data</p>
   </div>
 </header>
 
@@ -366,7 +408,7 @@
       <div class="foot"><button class="pill go" type="button" id="fd-add">+ Add deposit</button><span>Principal, rate, start and maturity dates.</span></div>
     </section>
 
-    <section class="panel s3" aria-label="Savings box">
+    <section class="panel s3 savings" aria-label="Savings box">
       <p class="kicker">Savings box</p>
       <h2 class="finding" id="sb-head"></h2>
       <p class="sub">Put away whatever you did not spend, in any amount.</p>
@@ -380,7 +422,7 @@
       <p class="msg" id="msg" aria-live="polite"></p>
     </section>
 
-    <section class="panel s3" aria-label="Budget pace">
+    <section class="panel s3 pace" aria-label="Budget pace">
       <p class="kicker" id="bp-kicker"></p>
       <h2 class="finding" id="bp-head"></h2>
       <p class="sub" id="bp-sub"></p>
@@ -623,7 +665,8 @@ function renderDeposits() {
   chart(() => {
     const W = width('fd-chart', 220), pl = 34, x = (m) => pl + (m / M1) * (W - pl - 10);
     const barH = 11, rowGap = 7, top = 6, order = [...FDS].sort((a, b) => dt(a.end) - dt(b.end));
-    const lineTop = top + order.length * (barH + rowGap) + 14, lineH = 56, H = lineTop + lineH + 20;
+    const slim = false;
+    const lineTop = top + order.length * (barH + rowGap) + 14, lineH = slim ? 0 : 56, H = lineTop + lineH + (slim ? 8 : 20) + (slim ? 12 : 0);
     const today = mIdx(NOW);
     let s = '';
     [0, 12, 24, 36].forEach((m) => { s += `<line x1="${x(m)}" x2="${x(m)}" y1="${top}" y2="${lineTop + lineH}" stroke="${G}" stroke-dasharray="2 5"/><text x="${x(m)}" y="${H - 4}" text-anchor="${m === 0 ? 'start' : m === M1 ? 'end' : 'middle'}">${MON[(m + 11) % 12]} ’${String(2024 + Math.floor((m + 11) / 12)).slice(2)}</text>`; });
@@ -633,6 +676,10 @@ function renderDeposits() {
       s += `<rect x="${x1}" y="${y}" width="${x2 - x1}" height="${barH}" rx="6" fill="${E}" opacity=".22"/>`;
       s += `<rect x="${x1}" y="${y}" width="${Math.max(0, Math.min(x(today), x2) - x1)}" height="${barH}" rx="6" fill="${E}" opacity=".85"/>`;
     });
+    if (slim) {
+      s += `<line x1="${x(today)}" x2="${x(today)}" y1="${top - 2}" y2="${lineTop - 8}" stroke="rgba(240,232,217,.6)"/>`;
+      draw('fd-chart', W, H, s); return;
+    }
     const tv = (m) => FDS.reduce((a, f) => a + fdValue(f, dateAt(m)), 0), vmax = Math.ceil(tv(M1) / 100000) * 100000 + 40000;
     const y2 = (v) => lineTop + lineH - (v / vmax) * lineH;
     const pts = []; for (let m = 0; m <= M1; m += 0.5) pts.push([x(m), y2(tv(m))]);
