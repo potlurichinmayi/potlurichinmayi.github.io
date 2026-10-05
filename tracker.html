@@ -1194,10 +1194,15 @@
   .cap-foot .ic { width: 18px; height: 18px; color: var(--ink-3); }
 
   /* filters (Today, Personal tasks, calendar day) and labels */
-  .filters { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 10px; }
-  .filters select { min-height: 32px; max-width: 100%; padding: 0 10px; border: 0; border-radius: 999px; background: var(--raise); font-size: 13px; color: var(--ink-2); box-shadow: inset 0 0 0 1px var(--rule-2); cursor: pointer; }
-  .filters select.on { color: var(--ink); box-shadow: inset 0 0 0 1px var(--ember); }
-  .filters .link-btn { min-height: 32px; font-size: 13px; }
+  .filter-btn.on { color: var(--ember); border-color: var(--ember); }
+  .filter-pop { position: fixed; inset: auto; margin: 0; padding: 14px; width: min(260px, calc(100vw - 24px)); border: 0; border-radius: 14px; background: var(--sheet); color: var(--ink); box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4), inset 0 0 0 1px var(--rule-2); }
+  .filter-pop label { display: block; margin: 0 0 10px; font-size: 13px; color: var(--ink-3); }
+  .filter-pop select { display: block; width: 100%; margin-top: 4px; min-height: 38px; padding: 0 32px 0 10px; border: 0; border-radius: 8px; font-size: 15px; color: var(--ink); cursor: pointer;
+    -webkit-appearance: none; appearance: none; box-shadow: inset 0 0 0 1px var(--rule-2);
+    background: var(--raise) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' stroke='%23b9b2a5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 12px center; }
+  .filter-pop select.on { box-shadow: inset 0 0 0 1px var(--ember); }
+  .filter-pop select option { background: var(--sheet); color: var(--ink); }
+  .filter-pop .link-btn { min-height: 32px; padding: 0; font-size: 14px; }
   .label-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
   .label-chips:empty { display: none; }
   .label-chip { display: inline-flex; align-items: center; gap: 2px; padding: 2px 4px 2px 12px; border-radius: 999px; font-size: 14px; box-shadow: inset 0 0 0 1px var(--rule-2); }
@@ -1246,6 +1251,7 @@
     <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16zM13 7l4 4"/></symbol>
     <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13M10 11v5M14 11v5"/></symbol>
     <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></symbol>
     <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.500h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
     <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.200"/></symbol>
     <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.500 10.500z"/></symbol>
@@ -1334,6 +1340,7 @@
       <div class="head">
         <h2 id="h-today">Today</h2>
         <span class="sub" id="today-sub"></span>
+        <button class="icon-btn filter-btn" type="button" data-filter="today" aria-label="Filter today" aria-haspopup="dialog" hidden><svg class="ic" aria-hidden="true"><use href="#i-filter"/></svg></button>
         <button class="icon-btn" type="button" id="today-add" aria-label="Add something for today"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
       </div>
       <div id="today-body" class="panel"></div>
@@ -1344,6 +1351,7 @@
       <div class="head ruled">
         <h2 id="h-personal">Personal Tasks</h2>
         <span class="sub" id="personal-sub"></span>
+        <button class="icon-btn filter-btn" type="button" data-filter="personal" aria-label="Filter tasks" aria-haspopup="dialog" hidden><svg class="ic" aria-hidden="true"><use href="#i-filter"/></svg></button>
         <button class="icon-btn" type="button" data-add="personal" aria-label="Add personal task"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
       </div>
       <div id="personal-body"></div>
@@ -1363,6 +1371,7 @@
       <div class="agenda">
         <div class="agenda-head">
           <h3 id="agenda-title"></h3>
+          <button class="icon-btn filter-btn" type="button" data-filter="agenda" aria-label="Filter this day" aria-haspopup="dialog" hidden><svg class="ic" aria-hidden="true"><use href="#i-filter"/></svg></button>
           <button class="link-btn" type="button" id="agenda-add"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg>Add on this day</button>
         </div>
         <div id="agenda-body"></div>
@@ -2697,18 +2706,42 @@ hr.rule { margin: 36px 0; }
     if (f.label && !(isTask && labelsOf(doc).some((l) => l.toLowerCase() === f.label.toLowerCase()))) return false;
     return true;
   }
-  function filterBar(key, rerender) {
-    const f = filters[key];
-    const select = (name, title, options) => options.length ? el('select', {
-      'aria-label': `Filter by ${title.toLowerCase()}`, class: f[name] ? 'on' : '',
-      onchange: (e) => { f[name] = e.target.value; rerender(); },
-    }, el('option', { value: '' }, title), ...options.map(([value, text]) => el('option', { value, selected: f[name] === value }, text))) : null;
-    return el('div', { class: 'filters' },
-      select('status', 'Status', Object.entries(STATUS_NAMES)),
-      select('project', 'Project', sorted(state.projects).map((p) => [p.id, p.title])),
-      select('label', 'Label', allLabels().map((l) => [l, l])),
-      filterActive(f) ? el('button', { class: 'link-btn', type: 'button', onclick: () => { Object.keys(f).forEach((k) => delete f[k]); rerender(); } }, 'Clear') : null);
+  // one small popover, opened by the funnel button beside each section's +
+  const filterPop = el('div', { class: 'filter-pop', popover: 'auto', role: 'dialog', 'aria-label': 'Filters' });
+  document.body.append(filterPop);
+  let filterOwner = null;   // { key, btn }
+  const filterRender = { today: () => renderToday(), personal: () => renderPersonal(), agenda: () => renderCalendar() };
+
+  function fillFilterPop() {
+    const f = filters[filterOwner.key];
+    const field = (name, title, options) => options.length ? el('label', {}, title, el('select', {
+      class: f[name] ? 'on' : '',
+      onchange: (e) => { f[name] = e.target.value; filterRender[filterOwner.key](); fillFilterPop(); },
+    }, el('option', { value: '' }, 'Any'), ...options.map(([value, text]) => el('option', { value, selected: f[name] === value }, text)))) : null;
+    filterPop.replaceChildren(
+      field('status', 'Status', Object.entries(STATUS_NAMES)),
+      field('project', 'Project', sorted(state.projects).map((p) => [p.id, p.title])),
+      field('label', 'Label', allLabels().map((l) => [l, l])),
+      filterActive(f) ? el('button', { class: 'link-btn', type: 'button', onclick: () => { Object.keys(f).forEach((k) => delete f[k]); filterRender[filterOwner.key](); fillFilterPop(); } }, 'Clear filters') : null);
   }
+
+  // show the funnel only when there is something to filter, and light it while a filter is on
+  function syncFilterBtn(key, visible) {
+    const btn = document.querySelector(`[data-filter="${key}"]`);
+    btn.hidden = !visible;
+    btn.classList.toggle('on', filterActive(filters[key]));
+  }
+
+  document.querySelectorAll('[data-filter]').forEach((btn) => btn.addEventListener('click', () => {
+    if (filterPop.matches(':popover-open') && filterOwner?.btn === btn) { filterPop.hidePopover(); return; }
+    filterOwner = { key: btn.dataset.filter, btn };
+    fillFilterPop();
+    filterPop.showPopover();
+    const r = btn.getBoundingClientRect();
+    const w = filterPop.offsetWidth;
+    filterPop.style.top = `${r.bottom + 8}px`;
+    filterPop.style.left = `${Math.min(Math.max(8, r.right - w), window.innerWidth - w - 8)}px`;
+  }));
 
   let justDone = null;   // id whose tick should animate on the next render
 
@@ -2792,7 +2825,8 @@ hr.rule { margin: 36px 0; }
     const timeline = [...overdue, ...due].some((e) => e.doc.time);   // the time column only appears when something has a time
     const byTime = (list) => [...list].sort((a, b) => (a.doc.status === 'done') - (b.doc.status === 'done') || (a.doc.time || '99:99').localeCompare(b.doc.time || '99:99'));
     due.splice(0, due.length, ...byTime(due));
-    const kids = anyToday ? [filterBar('today', renderToday)] : [];
+    syncFilterBtn('today', anyToday);
+    const kids = [];
     if (!overdue.length && !due.length && anyToday) {
       kids.push(el('p', { class: 'quiet' }, 'Nothing today matches these filters.'));
     } else if (!overdue.length && !due.length) {
@@ -2886,7 +2920,7 @@ hr.rule { margin: 36px 0; }
     renderFolded('personal-body', 'personal', 'tasks', docs, all.length
       ? el('p', { class: 'quiet' }, 'No tasks match these filters.')
       : emptyEl('Things to get done, with a date, project, goal or labels if they have them.', 'Add a task', () => openEntry({ type: 'task' })));
-    if (all.length) $('personal-body').prepend(filterBar('personal', renderPersonal));
+    syncFilterBtn('personal', all.length > 0);
   }
 
   // linked tasks drive the bar when there are any; otherwise the typed-in numbers do
@@ -3036,8 +3070,8 @@ hr.rule { margin: 36px 0; }
     const dayAll = datedEntries().filter((e) => coversDay(e.doc, calSelected));
     const entries = sortEntries(dayAll.filter((e) => matchesFilter(e, filters.agenda)));
     $('agenda-title').textContent = calSelected === today ? `Today, ${fmtShort.format(parseKey(today))}` : fmtLong.format(parseKey(calSelected));
+    syncFilterBtn('agenda', dayAll.length > 0);
     $('agenda-body').replaceChildren(
-      ...(dayAll.length ? [filterBar('agenda', () => renderCalendar())] : []),
       entries.length ? listEl('agenda', entries, { showDate: false })
         : el('p', { class: 'quiet' }, dayAll.length ? 'Nothing here matches these filters.' : 'Nothing on this day.'));
   }
