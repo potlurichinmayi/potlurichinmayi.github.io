@@ -235,7 +235,7 @@
   .g-num.time { position: relative; top: -4px; font-size: 48px; }
   .g-num.time sup { top: 7px; }
   .g-num.deg sup { margin-left: 1px; font-size: 16px; letter-spacing: 0; }
-  .g-num.name { font-style: italic; letter-spacing: 0; }
+  .g-num.name { letter-spacing: 0; }
   .g-foot { font-size: 11px; line-height: 13px; color: var(--ink-3); }
   .g-foot.date { font-style: italic; }
   .g-row { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; }
@@ -1072,10 +1072,9 @@
   }
   .panel:not(.no-lift):hover, .zone:hover, .col:hover { box-shadow: 0 18px 46px rgba(0, 0, 0, 0.32); }
 
-  /* privacy veil: finance numbers stay blurred until their card is clicked, or "Unblur all" is on */
+  /* privacy veil: money amounts show as "..." until their card is clicked, or "Unblur all" is on */
   [data-veil="on"] #tx-summary:not(.open), [data-veil="on"] #tx-list:not(.open),
-  [data-veil="on"] .fin-grid .panel:not(.open) > :not(.ptitle) { filter: blur(9px); user-select: none; cursor: pointer; }
-  #tx-summary, #tx-list, .fin-grid .panel > * { transition: filter 0.3s; }
+  [data-veil="on"] .fin-grid .panel:not(.open) { cursor: pointer; }
   .veil-btn { gap: 6px; min-height: 34px; padding: 0 14px; border: 0; border-radius: 999px; font-size: 15px; display: inline-flex; align-items: center; color: var(--ink-2);
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 60%), color-mix(in srgb, var(--ground) 64%, transparent);
     -webkit-backdrop-filter: blur(26px) saturate(1.5); backdrop-filter: blur(26px) saturate(1.5); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22); }
@@ -1443,8 +1442,7 @@ button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
 :focus-visible { outline: 2px solid var(--ember); outline-offset: 2px; }
 @media (max-width: 719px) { :host { --gap: 14px; } }
-:host([data-veil="on"]) .panel:not(.open) > :not(.kicker), :host([data-veil="on"]) .tile:not(.open) > * { filter: blur(9px); user-select: none; cursor: pointer; }
-.panel > *, .tile > * { transition: filter 0.3s; }
+:host([data-veil="on"]) .panel:not(.open), :host([data-veil="on"]) .tile:not(.open) { cursor: pointer; }
 .s3 { grid-column: span 3; }
 .savings { position: relative; }
 .savings .foot { position: absolute; top: 14px; right: 18px; padding: 0; margin: 0; }
@@ -3636,12 +3634,40 @@ hr.rule { margin: 36px 0; }
   const veilCards = (root, tab) => (tab === 'transactions' ? [...root.querySelectorAll('#tx-summary, #tx-list')]
     : [...root.querySelectorAll(tab === 'budget' ? '.fin-grid .panel' : '.panel, .tile')]);
 
+  // amounts (₹ figures, k/L shorthand) and percentages become "..." in the text itself
+  const MASK_RE = /[−-]?₹\s?[\d,]*\d(?:\.\d+)?[kKL]?|\d+(?:\.\d+)?\s?%/g;
+  const maskString = (text) => text.replace(MASK_RE, '...');
+  const maskedText = new WeakMap();   // text node -> what it said before
+  function eachText(root, fn) {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) fn(node);
+  }
+  function maskText(root) {
+    eachText(root, (node) => {
+      if (maskedText.has(node)) return;
+      const masked = maskString(node.data);
+      if (masked !== node.data) { maskedText.set(node, node.data); node.data = masked; }
+    });
+  }
+  function unmaskText(root) {
+    eachText(root, (node) => {
+      if (!maskedText.has(node)) return;
+      node.data = maskedText.get(node);
+      maskedText.delete(node);
+    });
+  }
+  const tipVeiled = (target) => Boolean(target.closest('[data-veil="on"]')) && !target.closest('.open');
+
   function applyVeil() {
     for (const tab of ['spending', 'transactions', 'budget']) {
       const host = $(`tab-${tab}`);
       host.dataset.veil = veilOn ? 'on' : 'off';
       const root = tab === 'spending' ? (SP.sr || host) : host;
-      veilCards(root, tab).forEach((card, i) => card.classList.toggle('open', veilOpen.has(`${tab}:${i}`)));
+      veilCards(root, tab).forEach((card, i) => {
+        const open = veilOpen.has(`${tab}:${i}`);
+        card.classList.toggle('open', open);
+        if (veilOn && !open) maskText(card); else unmaskText(card);
+      });
     }
     const btn = $('veil-all');
     btn.textContent = veilOn ? 'Unblur all' : 'Blur all';
@@ -3663,6 +3689,10 @@ hr.rule { margin: 36px 0; }
       applyVeil();
     }, true);
   }
+  // anything redrawn inside a tab is masked again before it is painted (only child changes are watched, so masking itself does not loop)
+  const veilWatch = new MutationObserver(() => applyVeil());
+  const watchVeil = (root) => veilWatch.observe(root, { childList: true, subtree: true });
+  ['tab-spending', 'tab-transactions', 'tab-budget'].forEach((id) => watchVeil($(id)));
   veilClick('transactions', $('tab-transactions'));
   veilClick('budget', $('tab-budget'));
 
@@ -4062,6 +4092,7 @@ hr.rule { margin: 36px 0; }
     sr.append(body, dlg);
     SP.sr = sr;
     veilClick('spending', sr);
+    watchVeil(sr);
     spDialogs();
     if (window.ResizeObserver) new ResizeObserver(spAgain).observe($('tab-spending'));
     if (document.fonts) document.fonts.ready.then(spAgain);
@@ -4836,7 +4867,8 @@ hr.rule { margin: 36px 0; }
   /* ---------- Chart tooltips (hover, keyboard focus, or tap) ---------- */
   const tip = $('chart-tip');
   function showTip(target) {
-    tip.textContent = target.getAttribute('data-tip');
+    const text = target.getAttribute('data-tip');
+    tip.textContent = tipVeiled(target) ? maskString(text) : text;
     tip.hidden = false;
     const r = target.getBoundingClientRect();
     const x = Math.min(window.innerWidth - tip.offsetWidth / 2 - 8, Math.max(tip.offsetWidth / 2 + 8, r.left + r.width / 2));
