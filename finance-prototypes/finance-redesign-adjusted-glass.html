@@ -45,9 +45,9 @@
 
   /* masthead: the cat sits on the rule */
   .bar { display: flex; align-items: flex-end; gap: 22px; max-width: 1366px; margin: 0 auto; padding: 22px var(--pad) 0; }
-  .bar-in { display: flex; align-items: flex-end; gap: 22px; flex: 1; border-bottom: 1px solid var(--line); }
-  .bar img { width: 82px; height: auto; margin-bottom: -1px; }
-  .bar h1 { padding-bottom: 12px; font-size: 34px; line-height: 1; letter-spacing: 0.02em; text-transform: uppercase; }
+  .bar-in { display: flex; align-items: center; gap: 12px; flex: 1; border-bottom: 1px solid var(--line); }
+  .bar img { width: 52px; height: auto; margin-bottom: -1px; }   /* the same 52px mark and 21px wordmark as the Overview */
+  .bar h1 { padding: 0; font-size: 21px; line-height: 1; letter-spacing: 0.02em; text-transform: uppercase; }
   .proto-note { margin-left: auto; padding-bottom: 14px; font-size: 13px; color: var(--ink-3); }
 
   .page { max-width: 1366px; margin: 0 auto; padding: 22px var(--pad) 72px; }
@@ -161,7 +161,8 @@
   .tile .badge svg { width: 34px; height: 34px; }
   .tile .badge text { fill: var(--ink); font-size: 13px; }
   .tile h3 { font-size: 15px; line-height: 1.05; }
-  .tile .cat { display: block; font-size: 11px; color: var(--ink-3); line-height: 1.15; margin-top: 2px; }
+  .tile .cat { display: block; font-size: 11px; color: var(--ink-3); line-height: 1.15; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tile .top > div:last-child { min-width: 0; flex: 1; }
   .tile .amt { margin-top: 12px; font-size: 24px; line-height: 1; }
   .tile .meta { margin-top: 4px; font-size: 11.5px; line-height: 1.25; color: var(--ink-2); }
   .tile .strip { position: relative; height: 9px; margin-top: auto; border-radius: 999px; background: var(--raise-2); }
@@ -271,7 +272,7 @@
   }
   @media (max-width: 719px) {
     :root { --pad: 16px; --gap: 14px; }
-    .bar img { width: 62px; } .bar h1 { font-size: 22px; padding-bottom: 8px; } .proto-note { display: none; }
+    .bar img { width: 52px; } .bar h1 { font-size: 21px; padding-bottom: 0; } .proto-note { display: none; }
     .panel { padding: 16px; }
     .finding.xl { font-size: 26px; } .finding { font-size: 20px; }
     .midcol { flex-direction: column; } .money img { max-width: 260px; }
@@ -366,6 +367,7 @@
     #pace { min-height: 110px; }
     .pace .keys { font-size: 11.5px; gap: 4px 12px; margin-top: 6px; }
     .punch .chart { min-height: 180px; }
+    .punch #pu-head { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 8px; }
   }
 
   /* ---- section two: more room between the calendar, the category tiles and the largest payments ---- */
@@ -377,6 +379,103 @@
   @media (min-width: 720px) and (max-width: 1100px) {
     .mid { gap: 28px; }
     .tiles { gap: 14px; }
+  }
+
+  /* ---- section two matches the template-dimensions page: square tiles that set the row height, a flexible calendar,
+     a largest-payments list that trims itself. Its columns sit exactly under section one's (calendar under the overview,
+     tiles under the budget card, the list under the deposits card). ---- */
+  @media (min-width: 1101px) {
+    .mid { grid-template-columns: 468fr 44fr 468fr 70fr 457fr 44fr 482fr; column-gap: 0; row-gap: 0; }
+    .mid > .cal-card { grid-column: 1 / 4; }
+    .mid > .tiles { grid-column: 5; }
+    .mid > .day-card { grid-column: 7; }
+    .tiles { gap: 18px; }
+  }
+  /* section two on desktop: six square tiles set the height of the row; the calendar and the largest payments follow it */
+  @media (min-width: 1101px) {
+    .tiles { grid-auto-rows: auto; align-content: start; }
+    .tile { aspect-ratio: 1 / 1; min-height: 0; padding: 14px 14px 12px; }
+    .tile { padding: 12px 12px 11px; }
+    .tile .top { gap: 8px; }
+    .tile .badge, .tile .badge svg { width: 28px; height: 28px; }
+    .tile .badge text { font-size: 11px; }
+    .tile h3 { font-size: 14px; }
+    .tile .cat { font-size: 10.5px; }
+    .tile .amt { margin-top: 8px; font-size: 21px; }
+    .tile .meta { margin: 3px 0 8px; font-size: 10.5px; line-height: 1.2; }
+    .cal-card { padding: 20px 24px; }
+    .cal-card .finding { margin-bottom: 8px; }
+    /* the squares set the row height; the calendar's day grid stretches (or squeezes, down to a floor) to fill it exactly */
+    .cal-card .bigcal { flex: 1 1 0; min-height: 246px; grid-auto-rows: minmax(0, 1fr); }
+    .bday { min-height: 0; overflow: hidden; gap: 3px; padding: 4px 7px; }
+    .bday .n { white-space: nowrap; }
+    .bday.today .n::after { content: ' •'; }
+    .bday .mix { height: 4px; }
+    .cchip:nth-child(n+7) { display: none; }
+    .bday .amt { font-size: 16px; }
+    .bigcal-week { margin-bottom: 6px; }
+    .cchips { margin-top: 12px; gap: 6px; }
+    .cchip { padding: 4px 11px; font-size: 13px; }
+    .day-card { min-height: 0; }
+    .day-card .day-list { flex: 1 1 0; min-height: 0; overflow: hidden; }
+  }
+  /* on narrower desktops the calendar needs more height than six squares give, so the tiles stretch to fill the row */
+  @media (min-width: 1101px) and (max-width: 1260px) {
+    .tiles { grid-auto-rows: 1fr; align-content: stretch; }
+    .tile { aspect-ratio: auto; }
+  }
+
+  /* ---- category tiles: a larger payment amount ---- */
+  .tile { position: relative; }
+  /* the spare height sits above the amount: the amount leads away from the name, and the strip stays close under "about ... each" */
+  .tile .top { margin-bottom: 10px; flex-direction: row-reverse; align-items: flex-start; gap: 8px; }
+  .tile .top > div:last-child { text-align: left; }
+  .tile .badge { margin-top: 1px; }
+  .tile .amt { margin-top: auto; font-size: 26px; color: var(--ember-hi); }
+  .tile .meta { margin-bottom: 0; }
+  .tile .strip { margin-top: 9px; }
+
+  /* the tiles here are a little narrower than on the template page, so they stretch to fill the row on windows up to 1320px */
+  @media (min-width: 1101px) and (max-width: 1320px) {
+    .tiles { grid-auto-rows: 1fr; align-content: stretch; }
+    .tile { aspect-ratio: auto; }
+  }
+  /* ---- Owed: two separate cards (design C, split), on the same 12-column grid as the sections above ---- */
+  .owed-pair { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 28px; row-gap: 20px; align-items: stretch; }
+  .owed-card { grid-column: span 6; padding: 24px 28px; }
+  .owed-card h2 { font-size: 23px; }
+  .owed-card > .big { display: block; margin-top: 8px; font-weight: 400; font-size: 52px; line-height: 1.05; }
+  .owed-card.to > .big { color: var(--ember-hi); }
+  .owed-card.from > .big { color: var(--budget); }
+  .owed-card .cap { display: block; margin: 4px 0 18px; font-size: 14px; color: var(--ink-3); }
+  .owed-card ul { margin: 0; padding: 0; list-style: none; }
+  .owed-card li { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto auto; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .owed-card li:first-child { border-top: 1px solid var(--line); }
+  .owed-card li.empty { display: block; padding: 14px 0; font-size: 14px; color: var(--ink-3); }
+  .owed-card .chip { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; font-size: 17px; line-height: 1; }
+  .owed-card.to .chip { background: color-mix(in srgb, var(--ember) 22%, transparent); color: var(--ember-hi); }
+  .owed-card.from .chip { background: color-mix(in srgb, var(--budget) 22%, transparent); color: var(--budget); }
+  .owed-card li b { font-weight: 400; font-size: 16px; }
+  .owed-card li small { display: block; font-size: 13px; color: var(--ink-3); }
+  .owed-card .amt { font-size: 19px; }
+  .owed-card.to .amt { color: var(--ember-hi); }
+  .owed-card .acts { display: inline-flex; gap: 2px; }
+  .owed-card .ib { width: 30px; height: 30px; display: inline-grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--ink-3); }
+  .owed-card .ib:hover { background: var(--raise-2); color: var(--ink); }
+  .owed-card svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .owed-card .add { margin-top: 10px; align-self: flex-start; }
+  .owed-card .add svg { width: 14px; height: 14px; margin-right: 4px; }
+  .owed-card li.done { opacity: 0.45; }
+  .owed-card li.done b, .owed-card li.done .amt { text-decoration: line-through; }
+  @media (max-width: 860px) {
+    .owed-card { grid-column: 1 / -1; padding: 18px; }
+    .owed-card > .big { font-size: 42px; }
+  }
+  /* in this layout the two cards sit under the two halves of section one */
+  @media (min-width: 1101px) {
+    .owed-pair { grid-template-columns: 468fr 44fr 468fr 70fr 457fr 44fr 482fr; column-gap: 0; }
+    .owed-card.to { grid-column: 1 / 4; }
+    .owed-card.from { grid-column: 5 / 8; }
   }
 
   /* ---- navy glass cards: frosted and dark, no border, no highlight edges (size comes from the layout) ---- */
@@ -392,6 +491,30 @@
   }
   .tile:hover { transform: translateY(-2px); }
   .tile.on { box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28), inset 0 0 0 2px var(--ember); }
+
+  /* ---- glass copy: trimmed text, today's transactions, a half-height Owed section ---- */
+  #sb-head, #pu-head, #cal-head { display: none; }
+  .fd #fd-head { display: flex; flex-wrap: wrap; gap: 6px 26px; margin-bottom: 10px; }
+  .fd .fd-st small { display: block; font-size: 12px; color: var(--ink-3); }
+  .fd .fd-st b { display: block; margin-top: 2px; font-weight: 400; font-size: 23px; line-height: 1.1; }
+  .day-list li { cursor: default; }
+  .day-list li:hover { background: none; }
+  .day-card .day-list { overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--rule-2) transparent; }
+  /* Owed, half as tall: the title and total on the left, the people on the right */
+  @media (min-width: 861px) {
+    .owed-card { display: grid; grid-template-columns: minmax(150px, 0.75fr) minmax(0, 1.65fr); column-gap: 28px; align-content: start; padding: 18px 24px;
+      grid-template-areas: "h l" "t l" "c l" "a l"; grid-template-rows: auto auto auto 1fr; }
+    .owed-card > h2 { grid-area: h; font-size: 19px; }
+    .owed-card > .big { grid-area: t; margin-top: 2px; font-size: 38px; }
+    .owed-card > .cap { grid-area: c; margin: 2px 0 6px; font-size: 13px; }
+    .owed-card > ul { grid-area: l; align-self: start; }
+    .owed-card > .add { grid-area: a; margin-top: 0; align-self: end; }
+    .owed-card li { padding: 6px 0; }
+    .owed-card li:first-child { border-top: 0; }
+    .owed-card { padding: 14px 22px; }
+    .owed-card > .big { font-size: 34px; line-height: 1; }
+    .owed-card > .add { min-height: 22px; font-size: 14px; white-space: nowrap; }
+  }
 </style>
 </head>
 <body>
@@ -490,7 +613,6 @@
     <section class="panel s6 punch" aria-label="When you pay">
       <p class="kicker">When you pay</p>
       <h2 class="finding" id="pu-head"></h2>
-      <p class="sub">Each circle is an hour of the week; bigger and deeper means more was spent.</p>
       <div class="chart fill" id="punch"></div>
     </section>
   </div>
@@ -517,11 +639,10 @@
 
   <hr class="rule">
 
-  <section class="panel owed" aria-label="Owed">
-    <div class="head"><h2>Owed</h2><button class="btn" type="button" id="owe-add">＋ Add</button></div>
-    <div class="tri" id="owe-tri"></div>
-    <div class="cols" id="owe-cols"></div>
-  </section>
+  <div class="owed-pair">
+    <section class="panel owed-card to" id="owed-in" aria-label="Owed to you"></section>
+    <section class="panel owed-card from" id="owed-out" aria-label="You owe"></section>
+  </div>
   </div>
 
   <section class="panel stub" id="tab-transactions" role="tabpanel" hidden>Transactions: this screen stays as it is today. Only the Spending tab is redesigned here.</section>
@@ -570,7 +691,7 @@ const chart = (fn) => { redraws.push(fn); fn(); };
 let rt; const again = () => { clearTimeout(rt); rt = setTimeout(() => redraws.forEach((f) => f()), 120); };
 addEventListener('resize', again);
 if (document.fonts) document.fonts.ready.then(again);
-if (window.ResizeObserver) new ResizeObserver(again).observe(document.querySelector('.grid'));
+if (window.ResizeObserver) { const ro = new ResizeObserver(again); ro.observe(document.querySelector('.grid')); ro.observe(document.querySelector('.mid')); }
 
 /* ---------------------------------------------------------------- sample data
    Everything below is made up. September 2026, today is the 18th. */
@@ -703,7 +824,7 @@ const fdFinal = (f) => fdValue(f, dt(f.end));
 function renderDeposits() {
   const inv = FDS.reduce((a, f) => a + f.p, 0), fin = FDS.reduce((a, f) => a + fdFinal(f), 0);
   const next = [...FDS].filter((f) => dt(f.end) >= NOW).sort((a, b) => dt(a.end) - dt(b.end))[0];
-  html('fd-head', `${rs(inv)} invested across ${FDS.length} deposits, worth <span class="hl">${rs(fin)}</span> at maturity.`);
+  html('fd-head', `<span class="fd-st"><small>Invested</small><b>${rs(inv)}</b></span><span class="fd-st"><small>Worth on maturity</small><b class="hl">${rs(fin)}</b></span>`);
   $('fd-sub').textContent = next ? `Next to mature: ${next.n} on ${dName(next.end)}.` : 'All deposits have matured.';
   const rows = [...FDS].sort((a, b) => dt(a.end) - dt(b.end));
   html('fd-rows', '<div class="fdhead"><span>Deposit</span><span>Principal</span><span>Rate</span><span>Interest</span><span>Final value</span></div>'
@@ -813,10 +934,13 @@ renderDeposits();
   const max = Math.max(...hits.map((h) => h[2]));
   const dayTotals = Array(7).fill(0); hits.forEach(([r, , v]) => { dayTotals[r] += v; });
   const peak = hits.reduce((a, b) => (b[2] > a[2] ? b : a));
-  html('pu-head', `You spend most on <span class="hl">${WDLONG[dayTotals.indexOf(Math.max(...dayTotals))]}s</span>, and your busiest hour is <span class="hl">${WDLONG[peak[0]]} around ${hourName(peak[1])}</span>.`);
+  { const busy = dayTotals.indexOf(Math.max(...dayTotals));
+    html('pu-head', busy === peak[0]
+      ? `You spend most on <span class="hl">${WDLONG[busy]}s</span>, around <span class="hl">${hourName(peak[1])}</span>.`
+      : `You spend most on <span class="hl">${WDLONG[busy]}s</span>, peaking <span class="hl">${WD[peak[0]]} ${hourName(peak[1])}</span>.`); }
   $('punch').dataset.label = 'Spending by weekday and hour';
   chart(() => {
-    const W = width('punch', 320), narrow = W < 520, lw = 36, cw = (W - lw) / 24, H = Math.max(narrow ? 190 : 240, $('punch').clientHeight), ch = (H - 24) / 7;
+    const W = width('punch', 320), narrow = W < 520, lw = 36, cw = (W - lw) / 24, H = Math.max(narrow ? 190 : 200, $('punch').clientHeight), ch = (H - 24) / 7;
     let s = WD.map((d, r) => `<text x="0" y="${r * ch + ch / 2 + 4}">${d}</text>`).join('');
     for (let k = 0; k < 8; k += narrow ? 2 : 1) s += `<text x="${lw + k * 3 * cw + cw / 2}" y="${H - 4}" text-anchor="middle">${hourName(k * 3)}</text>`;
     for (let r = 0; r < 7; r++) for (let h = 0; h < 24; h++) {
@@ -836,14 +960,14 @@ renderDeposits();
   const rank = new Map(cats.map((c, i) => [c, i]));
   const RANKS = [1, 0.8, 0.62, 0.46, 0.3, 0.14];
   const TILES = [
-    { key: 'Bills & recharges', sub: null, test: (t) => t.category === 'Bills & recharges' },
+    { key: 'Bills & recharges', label: 'Bills', sub: null, test: (t) => t.category === 'Bills & recharges' },
     { key: 'Commute', sub: null, test: (t) => t.category === 'Commute' },
     { key: 'Food delivery', sub: null, test: (t) => t.category === 'Food delivery' },
     { key: 'Shopping', sub: null, test: (t) => t.category === 'Shopping' },
     { key: 'Family', sub: null, test: (t) => t.category === 'Family' },
     { key: 'Misc', sub: null, test: (t) => t.category === 'Miscellaneous' },
   ];
-  let picked = 7, filter = null;           // filter: { key, test }
+  let picked = TODAY, filter = null;           // filter: { key, test }
   const shown = (d) => d.items.filter((t) => !filter || filter.test(t)).reduce((a, t) => a + t.amount, 0);
   const setFilter = (f) => { filter = filter && f && filter.key === f.key ? null : f; paint(); };
 
@@ -878,59 +1002,79 @@ renderDeposits();
       return el('button', { class: 'cchip' + (on ? ' on' : ''), type: 'button', 'aria-pressed': String(!!on), onclick: () => setFilter({ key: c, test: (t) => t.category === c }) }, sw, c);
     }));
 
-    // category tiles: the Electricity card from the reference, repeated per category
+    // category tiles: ring badge, name and top vendors, a large amount, payment count, and the month strip
     const totalSpent = TX.reduce((a, t) => a + t.amount, 0);
     $('tiles').replaceChildren(...TILES.map((def) => {
       const mine = TX.filter(def.test), sum = mine.reduce((a, t) => a + t.amount, 0), n = mine.length;
-      const top = [...mine.reduce((m, t) => m.set(t.payee, (m.get(t.payee) || 0) + t.amount), new Map())].sort((a, b) => b[1] - a[1]).slice(0, 2).map((x) => x[0]).join(', ');
+      const vendors = [...mine.reduce((m, t) => m.set(t.payee, (m.get(t.payee) || 0) + t.amount), new Map())].sort((a, b) => b[1] - a[1]).map((x) => x[0]).slice(0, 6), top = vendors.join(', ');
       const on = filter && filter.key === def.key, share = totalSpent ? sum / totalSpent : 0, r = 14, c = 2 * Math.PI * r;
       const badge = `<svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="${r}" fill="none" stroke="${G}" stroke-width="3"/><circle cx="17" cy="17" r="${r}" fill="none" stroke="${E}" stroke-width="3" stroke-linecap="round" stroke-dasharray="${c * Math.max(share, 0.02)} ${c}" transform="rotate(-90 17 17)"/><text x="17" y="21" text-anchor="middle">${def.key[0]}</text></svg>`;
       const dots = mine.map((t) => `<i style="left:${((t.day - 0.5) / DAYS) * 100}%;width:${5 + Math.min(5, Math.sqrt(t.amount / 400))}px;height:${5 + Math.min(5, Math.sqrt(t.amount / 400))}px"></i>`).join('');
-      const b = el('button', { class: 'tile' + (on ? ' on' : '') + (filter && !on ? ' off' : ''), type: 'button', 'aria-pressed': String(!!on), onclick: () => setFilter({ key: def.key, test: def.test }) });
-      b.innerHTML = `<div class="top"><span class="badge">${badge}</span><div><h3>${def.key}</h3><span class="cat">${def.sub || top || 'No payments'}</span></div></div><div class="amt">${rs(sum)}</div><p class="meta">${n} payment${n === 1 ? '' : 's'}${n ? ` · about ${rs(sum / n)} each` : ''}</p><div class="strip" aria-hidden="true">${dots}</div>`;
+      const b = el('button', { class: 'tile' + (on ? ' on' : '') + (filter && !on ? ' off' : ''), type: 'button', 'aria-pressed': String(!!on), 'aria-label': `${def.key} ${rs(sum)}`, onclick: () => setFilter({ key: def.key, test: def.test }) });
+      b.dataset.v = JSON.stringify(vendors);
+      b.innerHTML = `<div class="top"><span class="badge">${badge}</span><div><h3>${def.label || def.key}</h3><span class="cat">${def.sub || top || 'No payments'}</span></div></div><div class="amt">${rs(sum)}</div><p class="meta">${n} payment${n === 1 ? '' : 's'}${n ? `<br>${share > 0 && share < 0.005 ? '<1' : Math.round(share * 100)}% of spending` : ''}</p><div class="strip" aria-hidden="true">${dots}</div>`;
       return b;
     }));
+    fitVendors();
 
-    // the month's largest payments (within the picked category, if there is one); a row picks its day on the calendar
-    const big = TX.filter((t) => !filter || filter.test(t)).sort((a, b) => b.amount - a.amount).slice(0, 8);
-    $('day-kicker').textContent = filter ? `Largest payments · ${filter.key}` : 'Largest payments · September';
-    html('day-head', big.length ? `<span class="hl">${rs(big[0].amount)}</span> to ${big[0].payee} was the largest.` : 'No payments yet.');
-    $('day-list').replaceChildren(...big.map((t) => {
-      const li = el('li', { class: t.day === picked ? 'sel' : '', onclick: () => { picked = t.day; paint(); } }, el('span', {}, t.payee), el('span', {}, rs(t.amount)), el('small', {}, `${t.day} Sep · ${t.time} · ${t.category}`));
-      return li;
-    }));
+    // the picked day's payments: today until a date on the calendar is clicked
+    const dd = perDay[picked - 1], wd = (FIRST_WD + picked - 1) % 7;
+    const items = dd.items.filter((t) => !filter || filter.test(t)).sort((x, y) => x.time.localeCompare(y.time));
+    const dayTotal = items.reduce((acc, t) => acc + t.amount, 0);
+    $('day-kicker').textContent = `${picked === TODAY ? 'Today · ' : ''}${WDLONG[wd]} ${picked} September`;
+    html('day-head', items.length ? `<span class="hl">${rs(dayTotal)}</span> across ${items.length} payment${items.length === 1 ? '' : 's'}.` : 'Nothing spent this day.');
+    $('day-list').replaceChildren(...items.map((t) => el('li', {}, el('span', {}, t.payee), el('span', {}, rs(t.amount)), el('small', {}, `${t.time} · ${t.category}`))));
+    fit();
   }
+  // each tile lists its vendors on a single line: as many whole names as fit, biggest spend first
+  function fitVendors() {
+    document.querySelectorAll('.tile').forEach((t) => {
+      const cat = t.querySelector('.cat'), list = JSON.parse(t.dataset.v || '[]');
+      if (!cat || !list.length || (TILES.find((d) => t.getAttribute('aria-label').startsWith(d.key)) || {}).sub) return;
+      let k = list.length; cat.textContent = list.join(', ');
+      while (k > 1 && cat.scrollWidth > cat.clientWidth) { k -= 1; cat.textContent = list.slice(0, k).join(', '); }
+    });
+  }
+  redraws.push(fitVendors);
+  // the card's height is set by the tiles; a long day scrolls inside it
+  function fit() {
+    const list = $('day-list'), rows = [...list.children];
+    rows.forEach((li) => { li.hidden = false; });   // nothing is hidden: a long day scrolls
+  }
+  redraws.push(fit);
   paint();
 })();
 
-/* ---------------------------------------------------------------- 8 · owed */
+/* ---------------------------------------------------------------- 8 · owed: one card for what is owed to you, one for what you owe */
 (function owed() {
-  const items = [
+  const OW = [
     { dir: 'in', who: 'Revathi', note: 'Mon 7 Sept', amt: 2000, done: false },
     { dir: 'out', who: 'Adipu', note: 'Vaseline · Fri 25 Sept', amt: 250, done: false },
   ];
-  const ic = { check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>', edit: '<path d="M4 20h4L19 9l-4-4L4 16zM13 7l4 4"/>' };
-  const btn = (name, label, fn) => { const b = el('button', { class: 'ib', type: 'button', 'aria-label': label, onclick: fn }); b.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${ic[name]}</svg>`; return b; };
-  function paint() {
-    const live = (dir) => items.filter((i) => i.dir === dir && !i.done).reduce((a, i) => a + i.amt, 0);
-    const inn = live('in'), out = live('out');
-    html('owe-tri', `<div><small>Owed to you</small><b style="color:var(--ember-hi)">${rs(inn)}</b></div><div><small>You owe</small><b>${rs(out)}</b></div><div><small>Net, ${inn >= out ? 'in your favour' : 'against you'}</small><b>${rs(Math.abs(inn - out))}</b></div>`);
-    const col = (dir, title, total) => {
-      const rows = items.filter((i) => i.dir === dir);
-      return el('div', { class: 'col' }, el('header', {}, el('span', {}, title), el('span', {}, rs(total))),
-        rows.length ? rows.map((i) => el('div', { class: 'it' + (i.done ? ' done' : '') },
-          el('span', {}, i.who), el('span', {}, rs(i.amt)), btn('check', i.done ? 'Mark as open' : 'Mark as settled', () => { i.done = !i.done; paint(); }), btn('edit', 'Edit', () => {}),
-          el('small', {}, i.note))) : el('p', { class: 'none' }, 'Nothing here.'),
-        el('button', { class: 'link-btn', type: 'button', style: 'margin-top:8px', onclick: add(dir) }, '＋ Add'));
-    };
-    $('owe-cols').replaceChildren(col('in', 'They owe you', inn), col('out', 'You owe', out));
-  }
-  const add = (dir) => () => {
-    const who = prompt(dir === 'in' ? 'Who owes you?' : 'Who do you owe?'); if (!who) return;
-    const amt = Number(prompt('Amount in ₹')); if (!(amt > 0)) return;
-    items.push({ dir, who, note: 'Today', amt, done: false }); paint();
+  const ICON = { check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>', edit: '<path d="M4 20h4L19 9l-4-4L4 16zM13 7l4 4"/>', plus: '<path d="M12 5v14M5 12h14"/>' };
+  const ico = (n) => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
+  const btn = (label, icon, fn) => { const b = el('button', { class: 'ib', type: 'button', 'aria-label': label, title: label, onclick: fn }); b.innerHTML = ico(icon); return b; };
+  const paint = () => {
+    [['in', 'owed-in', 'Owed to you', 'Add', 'Nobody owes you anything.'], ['out', 'owed-out', 'You owe', 'Add', 'You don’t owe anyone.']].forEach(([dir, id, title, addLabel, none]) => {
+      const rows = OW.filter((i) => i.dir === dir), live = rows.filter((i) => !i.done), total = live.reduce((a, i) => a + i.amt, 0);
+      const who = live.length;
+      const root = $(id);
+      root.replaceChildren(
+        el('h2', {}, title),
+        el('b', { class: 'big' }, rs(total)),
+        el('small', { class: 'cap' }, who ? `${who} ${who === 1 ? 'person' : 'people'}` : 'All settled'),
+        el('ul', {}, rows.length ? rows.map((i) => el('li', { class: i.done ? 'done' : '' },
+          el('span', { class: 'chip' }, dir === 'in' ? '+' : '−'),
+          el('div', {}, el('b', {}, i.who), el('small', {}, i.note)),
+          el('span', { class: 'amt' }, rs(i.amt)),
+          el('span', { class: 'acts' }, btn(i.done ? 'Mark as open' : 'Mark as settled', 'check', () => { i.done = !i.done; paint(); }), btn('Edit', 'edit', () => {
+            const w = prompt('Name', i.who); if (!w) return; const a = Number(prompt('Amount in ₹', i.amt)); if (!(a > 0)) return;
+            i.who = w; i.amt = a; paint(); })))) : [el('li', { class: 'empty' }, none)]),
+        (() => { const b = el('button', { class: 'link-btn add', type: 'button', onclick: () => {
+          const w = prompt(dir === 'in' ? 'Who owes you?' : 'Who do you owe?'); if (!w) return; const a = Number(prompt('Amount in ₹')); if (!(a > 0)) return;
+          OW.push({ dir, who: w, note: 'Today', amt: a, done: false }); paint(); } }); b.innerHTML = ico('plus') + addLabel; return b; })());
+    });
   };
-  $('owe-add').onclick = add('in');
   paint();
 })();
 
