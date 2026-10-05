@@ -370,6 +370,38 @@
     .fd > .fdrows { grid-area: rows; margin-top: 0; container-type: inline-size; }
     .fd > .foot { grid-area: foot; padding-top: 12px; margin-top: 0; }
   }
+
+  /* ---- Owed: two separate cards (design C, split), on the same 12-column grid as the sections above ---- */
+  .owed-pair { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 28px; row-gap: 20px; align-items: stretch; }
+  .owed-card { grid-column: span 6; padding: 24px 28px; }
+  .owed-card h2 { font-size: 23px; }
+  .owed-card > .big { display: block; margin-top: 8px; font-weight: 400; font-size: 52px; line-height: 1.05; }
+  .owed-card.to > .big { color: var(--ember-hi); }
+  .owed-card.from > .big { color: var(--budget); }
+  .owed-card .cap { display: block; margin: 4px 0 18px; font-size: 14px; color: var(--ink-3); }
+  .owed-card ul { margin: 0; padding: 0; list-style: none; }
+  .owed-card li { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto auto; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .owed-card li:first-child { border-top: 1px solid var(--line); }
+  .owed-card li.empty { display: block; padding: 14px 0; font-size: 14px; color: var(--ink-3); }
+  .owed-card .chip { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; font-size: 17px; line-height: 1; }
+  .owed-card.to .chip { background: color-mix(in srgb, var(--ember) 22%, transparent); color: var(--ember-hi); }
+  .owed-card.from .chip { background: color-mix(in srgb, var(--budget) 22%, transparent); color: var(--budget); }
+  .owed-card li b { font-weight: 400; font-size: 16px; }
+  .owed-card li small { display: block; font-size: 13px; color: var(--ink-3); }
+  .owed-card .amt { font-size: 19px; }
+  .owed-card.to .amt { color: var(--ember-hi); }
+  .owed-card .acts { display: inline-flex; gap: 2px; }
+  .owed-card .ib { width: 30px; height: 30px; display: inline-grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--ink-3); }
+  .owed-card .ib:hover { background: var(--raise-2); color: var(--ink); }
+  .owed-card svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .owed-card .add { margin-top: 10px; align-self: flex-start; }
+  .owed-card .add svg { width: 14px; height: 14px; margin-right: 4px; }
+  .owed-card li.done { opacity: 0.45; }
+  .owed-card li.done b, .owed-card li.done .amt { text-decoration: line-through; }
+  @media (max-width: 860px) {
+    .owed-card { grid-column: 1 / -1; padding: 18px; }
+    .owed-card > .big { font-size: 42px; }
+  }
 </style>
 </head>
 <body>
@@ -494,11 +526,10 @@
 
   <hr class="rule">
 
-  <section class="panel owed" aria-label="Owed">
-    <div class="head"><h2>Owed</h2><button class="btn" type="button" id="owe-add">＋ Add</button></div>
-    <div class="tri" id="owe-tri"></div>
-    <div class="cols" id="owe-cols"></div>
-  </section>
+  <div class="owed-pair">
+    <section class="panel owed-card to" id="owed-in" aria-label="Owed to you"></section>
+    <section class="panel owed-card from" id="owed-out" aria-label="You owe"></section>
+  </div>
   </div>
 
   <section class="panel stub" id="tab-transactions" role="tabpanel" hidden>Transactions: this screen stays as it is today. Only the Spending tab is redesigned here.</section>
@@ -899,34 +930,36 @@ renderDeposits();
   paint();
 })();
 
-/* ---------------------------------------------------------------- 8 · owed */
+/* ---------------------------------------------------------------- 8 · owed: one card for what is owed to you, one for what you owe */
 (function owed() {
-  const items = [
+  const OW = [
     { dir: 'in', who: 'Revathi', note: 'Mon 7 Sept', amt: 2000, done: false },
     { dir: 'out', who: 'Adipu', note: 'Vaseline · Fri 25 Sept', amt: 250, done: false },
   ];
-  const ic = { check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>', edit: '<path d="M4 20h4L19 9l-4-4L4 16zM13 7l4 4"/>' };
-  const btn = (name, label, fn) => { const b = el('button', { class: 'ib', type: 'button', 'aria-label': label, onclick: fn }); b.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${ic[name]}</svg>`; return b; };
-  function paint() {
-    const live = (dir) => items.filter((i) => i.dir === dir && !i.done).reduce((a, i) => a + i.amt, 0);
-    const inn = live('in'), out = live('out');
-    html('owe-tri', `<div><small>Owed to you</small><b style="color:var(--ember-hi)">${rs(inn)}</b></div><div><small>You owe</small><b>${rs(out)}</b></div><div><small>Net, ${inn >= out ? 'in your favour' : 'against you'}</small><b>${rs(Math.abs(inn - out))}</b></div>`);
-    const col = (dir, title, total) => {
-      const rows = items.filter((i) => i.dir === dir);
-      return el('div', { class: 'col' }, el('header', {}, el('span', {}, title), el('span', {}, rs(total))),
-        rows.length ? rows.map((i) => el('div', { class: 'it' + (i.done ? ' done' : '') },
-          el('span', {}, i.who), el('span', {}, rs(i.amt)), btn('check', i.done ? 'Mark as open' : 'Mark as settled', () => { i.done = !i.done; paint(); }), btn('edit', 'Edit', () => {}),
-          el('small', {}, i.note))) : el('p', { class: 'none' }, 'Nothing here.'),
-        el('button', { class: 'link-btn', type: 'button', style: 'margin-top:8px', onclick: add(dir) }, '＋ Add'));
-    };
-    $('owe-cols').replaceChildren(col('in', 'They owe you', inn), col('out', 'You owe', out));
-  }
-  const add = (dir) => () => {
-    const who = prompt(dir === 'in' ? 'Who owes you?' : 'Who do you owe?'); if (!who) return;
-    const amt = Number(prompt('Amount in ₹')); if (!(amt > 0)) return;
-    items.push({ dir, who, note: 'Today', amt, done: false }); paint();
+  const ICON = { check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>', edit: '<path d="M4 20h4L19 9l-4-4L4 16zM13 7l4 4"/>', plus: '<path d="M12 5v14M5 12h14"/>' };
+  const ico = (n) => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
+  const btn = (label, icon, fn) => { const b = el('button', { class: 'ib', type: 'button', 'aria-label': label, title: label, onclick: fn }); b.innerHTML = ico(icon); return b; };
+  const paint = () => {
+    [['in', 'owed-in', 'Owed to you', 'Add someone who owes you', 'Nobody owes you anything.'], ['out', 'owed-out', 'You owe', 'Add someone you owe', 'You don’t owe anyone.']].forEach(([dir, id, title, addLabel, none]) => {
+      const rows = OW.filter((i) => i.dir === dir), live = rows.filter((i) => !i.done), total = live.reduce((a, i) => a + i.amt, 0);
+      const who = live.length;
+      const root = $(id);
+      root.replaceChildren(
+        el('h2', {}, title),
+        el('b', { class: 'big' }, rs(total)),
+        el('small', { class: 'cap' }, who ? `${who} ${who === 1 ? 'person' : 'people'}` : 'All settled'),
+        el('ul', {}, rows.length ? rows.map((i) => el('li', { class: i.done ? 'done' : '' },
+          el('span', { class: 'chip' }, dir === 'in' ? '+' : '−'),
+          el('div', {}, el('b', {}, i.who), el('small', {}, i.note)),
+          el('span', { class: 'amt' }, rs(i.amt)),
+          el('span', { class: 'acts' }, btn(i.done ? 'Mark as open' : 'Mark as settled', 'check', () => { i.done = !i.done; paint(); }), btn('Edit', 'edit', () => {
+            const w = prompt('Name', i.who); if (!w) return; const a = Number(prompt('Amount in ₹', i.amt)); if (!(a > 0)) return;
+            i.who = w; i.amt = a; paint(); })))) : [el('li', { class: 'empty' }, none)]),
+        (() => { const b = el('button', { class: 'link-btn add', type: 'button', onclick: () => {
+          const w = prompt(dir === 'in' ? 'Who owes you?' : 'Who do you owe?'); if (!w) return; const a = Number(prompt('Amount in ₹')); if (!(a > 0)) return;
+          OW.push({ dir, who: w, note: 'Today', amt: a, done: false }); paint(); } }); b.innerHTML = ico('plus') + addLabel; return b; })());
+    });
   };
-  $('owe-add').onclick = add('in');
   paint();
 })();
 
