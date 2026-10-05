@@ -287,16 +287,96 @@
     .owed .cols { grid-template-columns: minmax(0, 1fr); }
   }
 
-  /* ---- adjusted ratios: same layout as the templates, a few boxes resized to suit their content ----
-     overview 6 to 5, deposits 3 to 4 (room for the full table with interest earned),
-     budget pace 3 to 4 and the dot chart 6 to 5, calendar / tiles / day re-balanced */
+  /* ---- adjusted layout: section one copies the reference.
+     Two halves. Left: the overview over savings + pace. Right: budget card (with the money image) and deposits over the dot chart.
+     Column and row proportions are the reference's, measured off it; the gaps between cards are wider than in the reference.
+     Row heights follow the reference ratio but grow when a card's content needs more room. ---- */
   @media (min-width: 1101px) {
-    .overview { grid-column: span 5; }
-    .fd { grid-column: span 4; }
-    .grid > .s3.pace { grid-column: span 4; }
-    .grid > .punch { grid-column: span 5; }
-    .mid { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1.1fr) minmax(0, 0.85fr); }
+    .page { container-type: inline-size; }
+    .grid {
+      grid-template-columns: 468fr 44fr 468fr 70fr 457fr 44fr 482fr;   /* A | gap | B || gap || C | gap | D */
+      grid-template-rows: minmax(27.96cqw, auto) minmax(21.48cqw, auto);
+      column-gap: 0; row-gap: 36px;
+    }
+    .grid > .panel, .midcol .widget { padding: 20px; }
+    .overview { grid-column: 1 / 4; grid-row: 1; }
+    .midcol { grid-column: 5; grid-row: 1; gap: 12px; }
+    .fd { grid-column: 7; grid-row: 1; }
+    .grid > .savings { grid-column: 1; grid-row: 2; }
+    .grid > .pace { grid-column: 3; grid-row: 2; }
+    .grid > .punch { grid-column: 5 / 8; grid-row: 2; }
+    .mid { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1.1fr) minmax(0, 0.85fr); gap: 32px; }
+    .tiles { gap: 14px; }
     .tile { min-height: 160px; }
+    hr.rule { margin: 34px 0; }
+    .kicker { font-size: 13px; margin-bottom: 4px; }
+    .grid .finding { font-size: 19px; margin-bottom: 10px; line-height: 1.2; }
+
+    /* overview: words and the category split on the left, the day-by-day bars on the right */
+    .overview { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); column-gap: 28px; align-content: start;
+      grid-template-areas: "kick chart" "head chart" "sub chart" "stack chart" "legend chart" "trio trio"; grid-template-rows: auto auto auto auto 1fr auto; }
+    .overview > .kicker { grid-area: kick; }
+    .overview > h2 { grid-area: head; }
+    .overview > .sub { grid-area: sub; display: none; }
+    .overview > .stack { grid-area: stack; height: 20px; }
+    .overview > .stack-legend { grid-area: legend; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 16px; margin-top: 14px; align-content: start; }
+    .overview .stack-legend li { font-size: 14px; }
+    .overview .stack-legend small { font-size: 12px; }
+    .overview > .balfill { grid-area: chart; margin-top: 0; min-height: 0; }
+    .overview > .month-block { grid-area: trio; padding-top: 10px; }
+    .overview .finding.xl { font-size: 27px; line-height: 1.12; margin-bottom: 14px; }
+    .overview .trio b { font-size: 19px; }
+    .overview .trio div { padding-top: 8px; }
+
+    /* budget card */
+    .widget .keys { font-size: 13px; }
+    .widget .bal b { font-size: 26px; }
+    .widget .wnote { display: none; }
+    .widget .chart { min-height: 100px; }
+
+    /* deposits: portrait, so one column, timelines then compact rows */
+    .fd .finding { font-size: 17px; }
+    .fd > .sub { display: none; }
+    .fd { position: relative; }
+    .fd .fdrows { margin-top: 4px; }
+    .fd .fdrow { padding: 4px 0; font-size: 13px; gap: 0 10px; }
+    .fd .fdrow .more { font-size: 11.5px; }
+    .fd .foot { position: absolute; top: 14px; right: 18px; padding: 0; margin: 0; }
+    .fd .foot .pill { padding: 3px 11px; font-size: 13px; }
+    .fd .foot span { display: none; }
+
+    /* savings box and budget pace: shorter cards, tighter content */
+    .grid > .savings .sub, .grid > .pace .sub { display: none; }
+    .savings .goals { flex-direction: row; gap: 8px; margin: 0 0 10px; }
+    .savings .goal { flex: 1; min-width: 0; flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px; }
+    .savings .goal svg { width: 40px; }
+    .savings .goal svg text { font-size: 13px; }
+    .savings .goal b { font-size: 14px; line-height: 1.1; }
+    .savings .goal span { display: block; font-size: 11px; line-height: 1.25; }
+    .savings .addbox { gap: 6px; }
+    .savings .addbox input { flex: 1 1 60px; }
+    .savings .addbox select { flex: 1 1 70px; min-width: 0; }
+    .savings .addbox #sugg { flex: 1 1 100%; text-align: left; }
+    .savings .addbox input, .savings .addbox select { padding: 6px 10px; font-size: 14px; }
+    .savings .addbox .pill { font-size: 13px; padding: 5px 11px; }
+    .savings .msg { display: none; }
+    .pace #bp-stats { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 8px; margin: 0 0 8px; }
+    .pace .stats b { font-size: 15px; }
+    .pace .stats span { font-size: 11px; line-height: 1.2; display: block; }
+    #pace { min-height: 110px; }
+    .pace .keys { font-size: 11.5px; gap: 4px 12px; margin-top: 6px; }
+    .punch .chart { min-height: 180px; }
+  }
+
+  /* ---- section two: more room between the calendar, the category tiles and the largest payments ---- */
+  @media (min-width: 1101px) {
+    .mid { gap: 40px; }
+    .tiles { gap: 18px; }
+    hr.rule { margin: 36px 0; }
+  }
+  @media (min-width: 720px) and (max-width: 1100px) {
+    .mid { gap: 28px; }
+    .tiles { gap: 14px; }
   }
 </style>
 </head>
@@ -367,7 +447,7 @@
       <div class="foot"><button class="pill go" type="button" id="fd-add">+ Add deposit</button><span>Principal, rate, start and maturity dates.</span></div>
     </section>
 
-    <section class="panel s3" aria-label="Savings box">
+    <section class="panel s3 savings" aria-label="Savings box">
       <p class="kicker">Savings box</p>
       <h2 class="finding" id="sb-head"></h2>
       <p class="sub">Put away whatever you did not spend, in any amount.</p>
@@ -624,7 +704,8 @@ function renderDeposits() {
   chart(() => {
     const W = width('fd-chart', 220), pl = 34, x = (m) => pl + (m / M1) * (W - pl - 10);
     const barH = 11, rowGap = 7, top = 6, order = [...FDS].sort((a, b) => dt(a.end) - dt(b.end));
-    const lineTop = top + order.length * (barH + rowGap) + 14, lineH = 56, H = lineTop + lineH + 20;
+    const slim = W < 340;   // the narrow, portrait card shows the timelines only
+    const lineTop = top + order.length * (barH + rowGap) + 14, lineH = slim ? 0 : 56, H = lineTop + lineH + (slim ? 8 : 20) + (slim ? 12 : 0);
     const today = mIdx(NOW);
     let s = '';
     [0, 12, 24, 36].forEach((m) => { s += `<line x1="${x(m)}" x2="${x(m)}" y1="${top}" y2="${lineTop + lineH}" stroke="${G}" stroke-dasharray="2 5"/><text x="${x(m)}" y="${H - 4}" text-anchor="${m === 0 ? 'start' : m === M1 ? 'end' : 'middle'}">${MON[(m + 11) % 12]} ’${String(2024 + Math.floor((m + 11) / 12)).slice(2)}</text>`; });
@@ -634,6 +715,10 @@ function renderDeposits() {
       s += `<rect x="${x1}" y="${y}" width="${x2 - x1}" height="${barH}" rx="6" fill="${E}" opacity=".22"/>`;
       s += `<rect x="${x1}" y="${y}" width="${Math.max(0, Math.min(x(today), x2) - x1)}" height="${barH}" rx="6" fill="${E}" opacity=".85"/>`;
     });
+    if (slim) {
+      s += `<line x1="${x(today)}" x2="${x(today)}" y1="${top - 2}" y2="${lineTop - 8}" stroke="rgba(240,232,217,.6)"/>`;
+      draw('fd-chart', W, H, s); return;
+    }
     const tv = (m) => FDS.reduce((a, f) => a + fdValue(f, dateAt(m)), 0), vmax = Math.ceil(tv(M1) / 100000) * 100000 + 40000;
     const y2 = (v) => lineTop + lineH - (v / vmax) * lineH;
     const pts = []; for (let m = 0; m <= M1; m += 0.5) pts.push([x(m), y2(tv(m))]);
@@ -689,7 +774,7 @@ renderDeposits();
   $('bp-kicker').textContent = `Budget pace · day ${TODAY} of ${DAYS}`;
   html('bp-head', `Spend <span class="hl">${rs(allowance)}</span> or less a day to finish within budget.`);
   $('bp-sub').textContent = `${rs(spent)} spent of ${rs(BUDGET)}. At ${rs(rate)} a day you will end ${projected <= BUDGET ? rs(BUDGET - projected) + ' under' : rs(projected - BUDGET) + ' over'}.`;
-  html('bp-stats', `<div><b>${rs(spent)}</b><span>Spent so far</span></div><div><b>${rs(even)}</b><span>Where an even pace would be</span></div><div><b>${rs(left)}</b><span>Left for ${daysLeft} days</span></div><div><b style="color:${projected > BUDGET ? 'var(--danger)' : 'var(--good)'}">${rs(projected)}</b><span>Projected month-end</span></div>`);
+  html('bp-stats', `<div><b>${rs(spent)}</b><span>Spent</span></div><div><b>${rs(even)}</b><span>Even pace</span></div><div><b>${rs(left)}</b><span>Left, ${daysLeft} days</span></div><div><b style="color:${projected > BUDGET ? 'var(--danger)' : 'var(--good)'}">${rs(projected)}</b><span>Projected</span></div>`);
   $('pace').dataset.label = 'Cumulative spending against an even pace and the budget';
   let run = 0; const act = perDay.slice(0, TODAY).map((d) => (run += d.spend));
   chart(() => {
