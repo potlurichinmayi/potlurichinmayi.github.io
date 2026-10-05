@@ -1209,6 +1209,36 @@
   .label-chip button { display: grid; place-items: center; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--ink-3); }
   .label-chip button:hover { color: var(--ink); }
   .label-chip .ic { width: 11px; height: 11px; }
+
+  /* add / edit sheet: title on top, then a list of properties */
+  .big-in { display: block; width: 100%; min-height: 56px; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; font-size: 30px; line-height: 1.2; outline: none; }
+  .big-in::placeholder, .sub-in::placeholder { color: var(--ink-3); }
+  .big-in[aria-invalid="true"] { box-shadow: 0 2px 0 var(--danger); }
+  .sub-in { display: block; width: 100%; min-height: 34px; margin-bottom: 14px; padding: 0; border: 0; background: none; box-shadow: none; font-size: 17px; color: var(--ink-2); outline: none; }
+  .props { margin-bottom: 18px; border-top: 1px solid var(--rule); }
+  .prop { display: grid; grid-template-columns: 120px minmax(0, 1fr); align-items: center; gap: 10px; min-height: 50px; padding: 4px 0; border-bottom: 1px solid var(--rule); }
+  .pl { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 15px; color: var(--ink-3); }
+  .pl .ic { width: 16px; height: 16px; flex: none; }
+  .prop select, .prop input[type="text"], .prop input[type="number"] { display: block; width: 100%; min-height: 38px; padding: 4px 8px; border: 0; border-radius: 8px; background-color: transparent; box-shadow: none; font-size: 17px; outline: none; }
+  .prop select { -webkit-appearance: none; appearance: none; padding-right: 30px; cursor: pointer; background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' stroke='%23b9b2a5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 10px center; }
+  .prop select option { background: var(--sheet); color: var(--ink); }
+  .prop select:hover, .prop input[type="text"]:hover, .prop input[type="number"]:hover, .prop .date-btn:hover { background-color: var(--raise); }
+  .prop select:focus-visible, .prop input:focus-visible { box-shadow: inset 0 0 0 1px var(--ember); }
+  .prop .date-btn { min-height: 38px; padding: 4px 8px; background: none; box-shadow: none; font-size: 17px; border-radius: 8px; width: auto; flex: 1 1 0; min-width: 0; }
+  .prop .date-btn.time { flex: 0 1 auto; min-width: 120px; }
+  .prop-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .prop-row > input[type="number"], .prop-row > input[type="text"] { flex: 1 1 0; min-width: 0; }
+  .prop-row .arrow { color: var(--ink-3); flex: none; }
+  .quick { display: flex; gap: 14px; padding: 0 8px 4px; }
+  .quick .link-btn, .prop-row .link-btn { min-height: 28px; padding: 0; font-size: 14px; color: var(--ink-3); }
+  .quick .link-btn:hover, .prop-row .link-btn:hover { color: var(--ink); }
+  .prop-labels { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-width: 0; }
+  .prop-labels .label-chips { display: contents; }
+  .prop-labels input { flex: 1 1 110px; width: auto; }
+  .prop-dates { align-items: start; padding-top: 6px; }
+  .prop-dates .pl { min-height: 38px; }
+  .prop .err { margin: 2px 8px 4px; }
+  @media (max-width: 560px) { .prop { grid-template-columns: 96px minmax(0, 1fr); } .prop-row.dates { flex-wrap: wrap; } }
 </style>
 <script>
   /* the last look (colours, background) is cached so the page never flashes the default one */
@@ -1252,6 +1282,7 @@
     <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13M10 11v5M14 11v5"/></symbol>
     <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></symbol>
     <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.500" cy="8.500" r="1"/></symbol>
     <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.500h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
     <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.200"/></symbol>
     <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.500 10.500z"/></symbol>
@@ -1967,69 +1998,73 @@ hr.rule { margin: 36px 0; }
         <label><input type="radio" name="type" value="project"><span>Project</span></label>
       </div>
     </fieldset>
-    <div class="field">
-      <label for="entry-title">Title</label>
-      <input type="text" id="entry-title" maxlength="200" autocomplete="off" enterkeyhint="done" aria-describedby="entry-title-err">
-      <p class="err" id="entry-title-err" hidden>Give it a title first.</p>
+    <label class="sr" for="entry-title">Title</label>
+    <input type="text" class="big-in" id="entry-title" placeholder="Title" maxlength="200" autocomplete="off" enterkeyhint="done" aria-describedby="entry-title-err">
+    <p class="err" id="entry-title-err" hidden>Give it a title first.</p>
+    <div id="entry-sub-field">
+      <label class="sr" for="entry-sub">Subtitle</label>
+      <input type="text" class="sub-in" id="entry-sub" placeholder="Add a subtitle" maxlength="120" autocomplete="off">
     </div>
-    <div class="field" id="entry-sub-field">
-      <label for="entry-sub">Subtitle (optional)</label>
-      <input type="text" id="entry-sub" maxlength="120" autocomplete="off" placeholder="e.g. Meditate, hydrate">
-    </div>
-    <div class="field" id="entry-project-field" hidden>
-      <label for="entry-project">Project (optional)</label>
-      <select id="entry-project"></select>
-    </div>
-    <div class="field" id="entry-goal-field" hidden>
-      <label for="entry-goal">Goal (optional)</label>
-      <select id="entry-goal"></select>
-    </div>
-    <div class="field" id="entry-labels-field" hidden>
-      <label for="entry-label-input">Labels (optional)</label>
-      <div class="label-chips" id="entry-label-chips"></div>
-      <input type="text" id="entry-label-input" maxlength="30" list="label-options" placeholder="Type a label, press Enter" autocomplete="off" enterkeyhint="done">
-      <datalist id="label-options"></datalist>
-    </div>
-    <div class="field" id="entry-goalnums" hidden>
-      <label for="entry-target">Progress (optional)</label>
-      <div class="date-row">
-        <input type="number" id="entry-current" min="0" step="any" inputmode="decimal" placeholder="Done so far" aria-label="Done so far">
-        <input type="number" id="entry-target" min="0" step="any" inputmode="decimal" placeholder="Target" aria-label="Target">
-        <input type="text" id="entry-unit" maxlength="16" placeholder="Unit, e.g. km" aria-label="Unit" autocomplete="off">
+    <div class="props">
+      <div class="prop">
+        <label class="pl" for="entry-status"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg>Status</label>
+        <select id="entry-status" name="status">
+          <option value="">None</option>
+          <option value="todo">To-do</option>
+          <option value="doing">In progress</option>
+          <option value="blocked" id="status-blocked">Blocked</option>
+          <option value="done">Completed</option>
+        </select>
       </div>
-    </div>
-    <fieldset class="seg seg-status">
-      <legend>Status (optional)</legend>
-      <div class="seg-opts">
-        <label><input type="radio" name="status" value="" checked><span>None</span></label>
-        <label><input type="radio" name="status" value="todo"><span>To-do</span></label>
-        <label><input type="radio" name="status" value="doing"><span>In progress</span></label>
-        <label id="status-blocked"><input type="radio" name="status" value="blocked"><span>Blocked</span></label>
-        <label><input type="radio" name="status" value="done"><span>Completed</span></label>
+      <div class="prop" id="entry-goalnums" hidden>
+        <span class="pl"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg>Progress</span>
+        <div class="prop-row">
+          <input type="number" id="entry-current" min="0" step="any" inputmode="decimal" placeholder="Done so far" aria-label="Done so far">
+          <input type="number" id="entry-target" min="0" step="any" inputmode="decimal" placeholder="Target" aria-label="Target">
+          <input type="text" id="entry-unit" maxlength="16" placeholder="Unit, e.g. km" aria-label="Unit" autocomplete="off">
+        </div>
       </div>
-    </fieldset>
-    <div class="field">
-      <label for="entry-start">Start date (optional)</label>
-      <div class="date-row">
-        <input type="date" id="entry-start">
-        <button class="chip" type="button" data-start="clear">No start</button>
+      <div class="prop" id="entry-project-field" hidden>
+        <label class="pl" for="entry-project"><svg class="ic" aria-hidden="true"><use href="#i-folder"/></svg>Project</label>
+        <select id="entry-project"></select>
       </div>
-    </div>
-    <div class="field">
-      <label for="entry-date">End date (optional)</label>
-      <div class="date-row">
-        <input type="date" id="entry-date">
-        <button class="chip" type="button" data-date="0">Today</button>
-        <button class="chip" type="button" data-date="1">Tomorrow</button>
-        <button class="chip" type="button" data-date="clear">No end</button>
+      <div class="prop" id="entry-goal-field" hidden>
+        <label class="pl" for="entry-goal"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg>Goal</label>
+        <select id="entry-goal"></select>
       </div>
-      <p class="err" id="entry-range-err" hidden>The end date is before the start date.</p>
-    </div>
-    <div class="field" id="entry-time-field">
-      <label for="entry-time">Time (optional)</label>
-      <div class="date-row">
-        <input type="time" id="entry-time">
-        <button class="chip" type="button" id="entry-time-clear">No time</button>
+      <div class="prop" id="entry-labels-field" hidden>
+        <label class="pl" for="entry-label-input"><svg class="ic" aria-hidden="true"><use href="#i-tag"/></svg>Labels</label>
+        <div class="prop-labels">
+          <span class="label-chips" id="entry-label-chips"></span>
+          <input type="text" id="entry-label-input" maxlength="30" list="label-options" placeholder="Add a label" autocomplete="off" enterkeyhint="done">
+          <datalist id="label-options"></datalist>
+        </div>
+      </div>
+      <div class="prop prop-dates">
+        <span class="pl"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg>Dates</span>
+        <div>
+          <div class="prop-row dates">
+            <label class="sr" for="entry-start">Start date</label>
+            <input type="date" id="entry-start">
+            <span class="arrow" aria-hidden="true">→</span>
+            <label class="sr" for="entry-date">End date</label>
+            <input type="date" id="entry-date">
+          </div>
+          <div class="quick">
+            <button class="link-btn" type="button" data-date="0">Today</button>
+            <button class="link-btn" type="button" data-date="1">Tomorrow</button>
+            <button class="link-btn" type="button" data-date="clear">Clear</button>
+          </div>
+          <p class="err" id="entry-range-err" hidden>The end date is before the start date.</p>
+        </div>
+      </div>
+      <div class="prop" id="entry-time-field">
+        <span class="pl"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>Time</span>
+        <div class="prop-row">
+          <label class="sr" for="entry-time">Time</label>
+          <input type="time" id="entry-time">
+          <button class="link-btn" type="button" id="entry-time-clear">Clear</button>
+        </div>
       </div>
     </div>
     <div class="sheet-actions">
@@ -3229,6 +3264,7 @@ hr.rule { margin: 36px 0; }
     const isTask = type === 'task';
     ['entry-project-field', 'entry-goal-field', 'entry-labels-field', 'entry-time-field', 'entry-sub-field'].forEach((id) => { $(id).hidden = !isTask; });
     $('entry-goalnums').hidden = type !== 'goal';
+    $('status-blocked').disabled = !isTask;   // Blocked is for tasks only
     $('status-blocked').hidden = !isTask;
     if (!isTask && entryForm.elements.status.value === 'blocked') entryForm.elements.status.value = '';
     $('entry-h').textContent = `${editing ? 'Edit' : 'Add'} ${TYPES[type].label}`;
@@ -3295,9 +3331,9 @@ hr.rule { margin: 36px 0; }
   entryForm.addEventListener('change', (e) => { if (e.target.name === 'type') syncEntry(); });
   $('entry-title').addEventListener('input', () => setTitleError(false));
   $('entry-time-clear').addEventListener('click', () => { $('entry-time').value = ''; });
-  entryForm.querySelector('[data-start]').addEventListener('click', () => { $('entry-start').value = ''; });
   entryForm.querySelectorAll('[data-date]').forEach((chip) => chip.addEventListener('click', () => {
-    $('entry-date').value = chip.dataset.date === 'clear' ? '' : addDays(todayKey(), Number(chip.dataset.date));
+    if (chip.dataset.date === 'clear') { $('entry-start').value = ''; $('entry-date').value = ''; }
+    else $('entry-date').value = addDays(todayKey(), Number(chip.dataset.date));
   }));
 
   entryForm.addEventListener('submit', async (e) => {
