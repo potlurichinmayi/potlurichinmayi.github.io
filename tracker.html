@@ -1122,6 +1122,91 @@
     .fin-menu { position: static; margin-left: 0; }
     .fin-menu .menu { top: 44px; }
   }
+
+  /* =====================================================================
+     Inner cards: soft tinted panels sitting inside the glass tiles
+     ===================================================================== */
+  .inner { --tint: #ffffff; position: relative; min-width: 0; padding: 14px 16px; border-radius: 14px;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--tint) 26%, transparent), color-mix(in srgb, var(--tint) 6%, transparent));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 6px 18px rgba(0, 0, 0, 0.18); }
+  .inner.warm { --tint: #f3b667; } .inner.sky { --tint: #78b0f2; } .inner.mint { --tint: #6fd3ae; }
+  .inner.blue { --tint: #7aa8ec; } .inner.sand { --tint: #e8c68f; } .inner.lilac { --tint: #b9a2ec; } .inner.peach { --tint: #f0a58a; }
+  .inner-h { margin: 0 0 8px; font-size: 18px; line-height: 1.2; }
+
+  /* glance */
+  .glance .zone { padding: 8px; justify-content: stretch; }
+  .glance .zone > .inner { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; padding: 14px 14px 10px; }
+  .glance .zone.clock > .inner { justify-content: center; }
+  .g-corner { position: absolute; top: 10px; right: 10px; display: inline-flex; }
+  .g-corner .ic { width: 20px; height: 20px; stroke-width: 1.3; color: var(--ember-hi); }
+  .glance .g-bar { height: 8px; margin-bottom: 8px; background: rgba(255, 255, 255, 0.16); }
+  .glance .g-bar i { background: linear-gradient(90deg, #5b9cf0, #7fd6b0); }
+  .glance .g-lbl { font-size: 12px; line-height: 14px; }
+  @media (max-width: 719px) { .glance .g-bar { height: 6px; } .glance .zone { padding: 5px; } .glance .zone > .inner { padding: 10px 9px 8px; } .g-corner { top: 7px; right: 7px; } .g-corner .ic { width: 14px; height: 14px; } }
+
+  /* goals */
+  .goal-card { padding: 14px 16px 12px; }
+  .goals { display: flex; flex-direction: column; gap: 16px; }
+  .goal { display: flex; flex-direction: column; gap: 7px; width: 100%; padding: 0; border: 0; background: none; text-align: left; color: inherit; }
+  .goal-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .goal-title { font-size: 16px; overflow-wrap: anywhere; }
+  .goal:hover .goal-title { color: var(--ember-hi); }
+  .goal-pct { font-size: 14px; color: var(--ink-2); }
+  .goal-bar { display: block; height: 8px; border-radius: 999px; background: rgba(255, 255, 255, 0.16); overflow: hidden; }
+  .goal-bar i { display: block; height: 100%; border-radius: 999px; transition: width 0.6s var(--ease); }
+  .goal-meta { font-size: 13px; color: var(--ink-3); }
+  .goal.is-done .goal-title { color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--rule-2); }
+  .goal-card .done-group { margin-top: 14px; }
+
+  /* today: a timeline, time then tick then title */
+  .today-card { padding: 8px 10px; }
+  .today-card .list { margin: 0; }
+  .row.timed { grid-template-columns: 64px 38px minmax(0, 1fr); }
+  .row-time { padding: 13px 0 0 6px; font-size: 13px; line-height: 1.3; color: var(--ink-2); white-space: nowrap; }
+  .row-sub { display: block; font-size: 14px; line-height: 1.3; color: var(--ink-3); }
+  .today-card .row + .row { box-shadow: 0 -1px 0 var(--rule); }
+  @media (max-width: 479px) { .row.timed { grid-template-columns: 54px 36px minmax(0, 1fr); } .row-time { font-size: 12px; padding-left: 2px; } }
+
+  /* habits */
+  .habits { padding: 14px 14px 12px; }
+  .hgrid { display: grid; grid-template-columns: minmax(0, 1fr) repeat(7, 26px); align-items: center; gap: 4px; }
+  .hhead { margin-bottom: 6px; font-size: 13px; color: var(--ink-3); }
+  .hhead span:not(:first-child) { text-align: center; }
+  .hhead .is-today { color: var(--ember-hi); }
+  .hrow { padding: 4px 0; }
+  .hname { display: flex; align-items: center; gap: 4px; min-width: 0; font-size: 15px; }
+  .hname > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hdel { display: none; flex: none; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--ink-3); place-items: center; }
+  .hdel .ic { width: 11px; height: 11px; }
+  .hrow:hover .hdel, .hdel:focus-visible { display: inline-grid; }
+  @media (hover: none) { .hdel { display: inline-grid; opacity: 0.6; } }
+  .hcell { display: grid; place-items: center; width: 26px; height: 26px; padding: 0; border: 0; border-radius: 7px; background: rgba(255, 255, 255, 0.1); color: transparent; transition: background-color 0.15s, transform 0.15s; }
+  .hcell .ic { width: 14px; height: 14px; stroke-width: 2; }
+  .hcell:not(:disabled):hover { transform: scale(1.08); background: rgba(255, 255, 255, 0.2); }
+  .hcell[data-state="done"] { background: #4fb987; color: #fff; }
+  .hcell[data-state="missed"] { color: var(--ink-3); }
+  .hcell[data-state="before"], .hcell[data-state="future"] { opacity: 0.5; }
+  .hcell:disabled { cursor: default; }
+  .streak { display: flex; justify-content: center; margin: 12px 0 2px; }
+  .streak span { padding: 3px 14px; border-radius: 999px; font-size: 14px; background: color-mix(in srgb, #f0b46a 30%, transparent); color: var(--ink); }
+  .habit-form { display: flex; gap: 8px; margin-top: 12px; }
+  .habit-form input { flex: 1; min-width: 0; }
+  @media (max-width: 479px) { .hgrid { grid-template-columns: minmax(0, 1fr) repeat(7, 24px); gap: 3px; } .hcell { width: 24px; height: 24px; } }
+
+  /* notes: quick capture */
+  .capture { margin-bottom: 12px; padding: 12px 14px; }
+  .capture textarea { display: block; width: 100%; min-height: 64px; padding: 8px 10px; border: 0; border-radius: 10px; resize: vertical; background: rgba(255, 255, 255, 0.08); font: inherit; font-size: 16px; color: var(--ink); }
+  .capture textarea:focus-visible { outline: 2px solid var(--ember); }
+  .cap-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+  .cap-foot .ic { width: 18px; height: 18px; color: var(--ink-3); }
+
+  /* projects: status pills and white-ish chips */
+  .col-head { align-self: flex-start; width: fit-content; margin-bottom: 12px; padding: 4px 12px 5px; border-radius: 8px; font-size: 15px; line-height: 1.2; color: var(--ink); background: color-mix(in srgb, #7aa8ec 34%, transparent); }
+  .col[data-status="doing"] .col-head { background: color-mix(in srgb, #f3b667 34%, transparent); }
+  .col[data-status="done"] .col-head { background: color-mix(in srgb, #6fd3ae 34%, transparent); }
+  .col-head span { margin-left: 4px; color: var(--ink-2); }
+  .col .col-head, .col:first-child .col-head { justify-content: flex-start; }
+  .proj { margin-bottom: 8px; padding: 10px 12px 8px; border-top: 0; border-radius: 12px; background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.07)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 4px 12px rgba(0, 0, 0, 0.14); }
 </style>
 <script>
   /* the last look (colours, background) is cached so the page never flashes the default one */
@@ -1201,22 +1286,29 @@
     <section class="glance a-glance" aria-label="Right now">
       <div class="zone clock">
         <h2>Hyderabad time</h2>
-        <p class="g-num time"><span id="clock">--:--</span><sup id="clock-ampm"></sup></p>
-        <p class="g-foot date" id="clock-date">&nbsp;</p>
+        <div class="inner warm">
+          <span class="g-corner" id="clock-ic" aria-hidden="true"></span>
+          <p class="g-num time"><span id="clock">--:--</span><sup id="clock-ampm"></sup></p>
+          <p class="g-foot date" id="clock-date">&nbsp;</p>
+        </div>
       </div>
       <div class="zone" aria-live="polite">
         <h2>Weather</h2>
-        <div id="weather" style="display:contents">
-          <div class="skeleton" style="width:80px;height:32px"></div>
-          <div class="skeleton" style="width:120px;height:13px"></div>
+        <div class="inner sky">
+          <div id="weather" style="display:contents">
+            <div class="skeleton" style="width:80px;height:32px"></div>
+            <div class="skeleton" style="width:120px;height:13px"></div>
+          </div>
         </div>
       </div>
       <div class="zone month">
-        <h2>This month</h2>
-        <div class="g-row"><p class="g-num name" id="month-name"></p><span class="g-foot" id="month-day"></span></div>
-        <div>
-          <div class="g-bar" role="img" id="month-bar"><i id="month-fill"></i></div>
-          <div class="g-lbl"><span id="month-count"></span><span id="month-left"></span></div>
+        <h2>Monthly progress</h2>
+        <div class="inner mint">
+          <div class="g-row"><p class="g-num name" id="month-name"></p><span class="g-foot" id="month-day"></span></div>
+          <div>
+            <div class="g-bar" role="img" id="month-bar"><i id="month-fill"></i></div>
+            <div class="g-lbl"><span id="month-count"></span><span id="month-left"></span></div>
+          </div>
         </div>
       </div>
     </section>
@@ -1288,9 +1380,16 @@
       <div class="head ruled">
         <h2 id="h-weekly">Weekly Tasks</h2>
         <span class="sub" id="weekly-sub"></span>
-        <button class="icon-btn" type="button" data-add="weekly" aria-label="Add weekly task"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
+        <button class="icon-btn" type="button" id="habit-add" aria-label="Add a habit"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
       </div>
-      <div id="weekly-body"></div>
+      <div class="inner lilac habits">
+        <p class="inner-h">Habits</p>
+        <div id="weekly-body"></div>
+        <form class="habit-form" id="habit-form" hidden>
+          <input type="text" id="habit-new" maxlength="60" placeholder="New habit, e.g. Meditation" aria-label="New habit" autocomplete="off">
+          <button class="btn small primary" type="submit">Add</button>
+        </form>
+      </div>
     </section>
 
     <section class="a-notes" aria-labelledby="h-notes">
@@ -1857,7 +1956,6 @@ hr.rule { margin: 36px 0; }
       <legend class="sr">What are you adding?</legend>
       <div class="seg-opts">
         <label><input type="radio" name="type" value="personal" checked><span>Personal task</span></label>
-        <label><input type="radio" name="type" value="weekly"><span>Weekly task</span></label>
         <label><input type="radio" name="type" value="goal"><span>Goal</span></label>
         <label><input type="radio" name="type" value="project"><span>Project</span></label>
         <label><input type="radio" name="type" value="projectTask"><span>Project task</span></label>
@@ -1867,6 +1965,22 @@ hr.rule { margin: 36px 0; }
       <label for="entry-title">Title</label>
       <input type="text" id="entry-title" maxlength="200" autocomplete="off" enterkeyhint="done" aria-describedby="entry-title-err">
       <p class="err" id="entry-title-err" hidden>Give it a title first.</p>
+    </div>
+    <div class="field" id="entry-sub-field">
+      <label for="entry-sub">Subtitle (optional)</label>
+      <input type="text" id="entry-sub" maxlength="120" autocomplete="off" placeholder="e.g. Meditate, hydrate">
+    </div>
+    <div class="field" id="entry-goal-field" hidden>
+      <label for="entry-goal">Goal (optional)</label>
+      <select id="entry-goal"></select>
+    </div>
+    <div class="field" id="entry-goalnums" hidden>
+      <label for="entry-target">Progress (optional)</label>
+      <div class="date-row">
+        <input type="number" id="entry-current" min="0" step="any" inputmode="decimal" placeholder="Done so far" aria-label="Done so far">
+        <input type="number" id="entry-target" min="0" step="any" inputmode="decimal" placeholder="Target" aria-label="Target">
+        <input type="text" id="entry-unit" maxlength="16" placeholder="Unit, e.g. km" aria-label="Unit" autocomplete="off">
+      </div>
     </div>
     <div class="field" id="entry-project-field" hidden>
       <label for="entry-project">Project</label>
@@ -1898,6 +2012,13 @@ hr.rule { margin: 36px 0; }
         <button class="chip" type="button" data-date="clear">No end</button>
       </div>
       <p class="err" id="entry-range-err" hidden>The end date is before the start date.</p>
+    </div>
+    <div class="field" id="entry-time-field">
+      <label for="entry-time">Time (optional)</label>
+      <div class="date-row">
+        <input type="time" id="entry-time">
+        <button class="chip" type="button" id="entry-time-clear">No time</button>
+      </div>
     </div>
     <div class="sheet-actions">
       <button class="btn danger" type="button" id="entry-delete" hidden><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg>Delete</button>
@@ -2186,7 +2307,7 @@ hr.rule { margin: 36px 0; }
      status: 'todo' | 'doing' | 'done' | null      date: 'YYYY-MM-DD' | null
      The app only ever calls the five methods below.
      ===================================================================== */
-  const COLLECTIONS = ['tasks', 'projects', 'goals', 'notes', 'meta', 'transactions', 'payees', 'txmeta', 'budgets', 'cash', 'debts', 'deposits', 'savings', 'profiles', 'backgrounds', 'looks'];
+  const COLLECTIONS = ['tasks', 'projects', 'goals', 'notes', 'meta', 'transactions', 'payees', 'txmeta', 'budgets', 'cash', 'debts', 'deposits', 'savings', 'profiles', 'backgrounds', 'looks', 'habits', 'habitlog'];
 
   function createLocalStore() {
     const PREFIX = 'tracker:';
@@ -2390,7 +2511,7 @@ hr.rule { margin: 36px 0; }
   }
 
   const store = CONFIG.firebase ? createFirebaseStore(CONFIG.firebase) : createLocalStore();
-  const state = { tasks: [], projects: [], goals: [], notes: [], meta: [], transactions: [], payees: [], txmeta: [], budgets: [], cash: [], debts: [], deposits: [], savings: [], profiles: [], backgrounds: [], looks: [] };
+  const state = { tasks: [], projects: [], goals: [], notes: [], meta: [], transactions: [], payees: [], txmeta: [], budgets: [], cash: [], debts: [], deposits: [], savings: [], profiles: [], backgrounds: [], looks: [], habits: [], habitlog: [] };
 
   /* =====================================================================
      Dates (everything is reckoned in Hyderabad time)
@@ -2429,6 +2550,9 @@ hr.rule { margin: 36px 0; }
      ===================================================================== */
   const clockFmt = new Intl.DateTimeFormat('en-IN', { timeZone: TZ, hour: 'numeric', minute: '2-digit', hour12: true });
 
+  const hourFmt = new Intl.DateTimeFormat('en-GB', { timeZone: TZ, hour: '2-digit', hour12: false });
+  const fmtClock = (hhmm) => { const [h, m] = hhmm.split(':').map(Number); return `${h % 12 || 12}:${String(m).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`; };
+
   function renderClock() {
     const parts = clockFmt.formatToParts(new Date());
     const get = (type) => parts.find((p) => p.type === type).value;
@@ -2436,6 +2560,8 @@ hr.rule { margin: 36px 0; }
     if ($('clock').textContent !== text) {
       $('clock').textContent = text;
       $('clock-ampm').textContent = get('dayPeriod').toUpperCase();
+      const hour = Number(hourFmt.format(new Date())) % 24;
+      $('clock-ic').replaceChildren(icon(hour >= 6 && hour < 18 ? 'sun' : 'moon'));
       $('clock-date').textContent = fmtLong.format(parseKey(todayKey()));
     }
   }
@@ -2470,10 +2596,10 @@ hr.rule { margin: 36px 0; }
       const at = hi > lo ? Math.min(1, Math.max(0, (data.current.temperature_2m - lo) / (hi - lo))) : 0.5;
       $('weather').replaceChildren(
         el('div', { class: 'g-row top' },
-          el('p', { class: 'g-num deg', style: 'margin:0' }, `${now}`, el('sup', {}, '°')),
+          el('p', { class: 'g-num deg', style: 'margin:0' }, `${now}`, el('sup', {}, '°C')),
           icon(night ? 'moon' : glyph)),
         el('div', {},
-          el('p', { class: 'g-foot g-wx-cond' }, `${label} · feels like ${Math.round(data.current.apparent_temperature)}°`),
+          el('p', { class: 'g-foot g-wx-cond' }, `${CONFIG.place.name} · ${label}, feels like ${Math.round(data.current.apparent_temperature)}°`),
           el('div', { class: 'g-range', role: 'img', 'aria-label': `Now ${now}°, low ${lo}°, high ${hi}°` }, el('i', { style: `left:${(at * 100).toFixed(1)}%` })),
           el('div', { class: 'g-lbl' }, el('span', {}, `${lo}°`), el('span', {}, `${hi}°`))));
       weatherLoaded = true;
@@ -2493,7 +2619,7 @@ hr.rule { margin: 36px 0; }
     const left = days - day;
     $('month-name').textContent = fmtMonth.format(parseKey(today));
     $('month-day').textContent = `${day} / ${days}`;
-    $('month-count').textContent = `Day ${day}`;
+    $('month-count').textContent = `${Math.round((day / days) * 100)}%`;
     $('month-left').textContent = left === 0 ? 'Last day' : `${left} day${left === 1 ? '' : 's'} left`;
     $('month-bar').setAttribute('aria-label', `Day ${day} of ${days}`);
     $('month-fill').style.width = `${(day / days * 100).toFixed(1)}%`;
@@ -2507,6 +2633,7 @@ hr.rule { margin: 36px 0; }
     return [...docs].sort((a, b) =>
       (a.status === 'done') - (b.status === 'done')
       || (spanOf(a).from || '9999').localeCompare(spanOf(b).from || '9999')
+      || (a.time || '99:99').localeCompare(b.time || '99:99')
       || a.createdAt - b.createdAt);
   }
   // a task can have a start, an end, both or neither; with one of them it is a single day
@@ -2519,9 +2646,10 @@ hr.rule { margin: 36px 0; }
   function labelFor(collection, doc) {
     if (collection === 'projects') return 'Project';
     if (collection === 'goals') return 'Goal';
-    if (doc.kind === 'weekly') return 'Weekly';
-    if (doc.kind === 'project') return state.projects.find((p) => p.id === doc.projectId)?.title || 'Project';
-    return 'Personal';
+    const goal = doc.goalId ? state.goals.find((g) => g.id === doc.goalId) : null;
+    const base = doc.kind === 'weekly' ? 'Weekly'
+      : doc.kind === 'project' ? (state.projects.find((p) => p.id === doc.projectId)?.title || 'Project') : 'Personal';
+    return goal ? `${base} · ${goal.title}` : base;
   }
 
   function overdueText(key) {
@@ -2553,9 +2681,10 @@ hr.rule { margin: 36px 0; }
     store.update(collection, doc.id, { status: done ? 'todo' : 'done' });
   }
 
-  function rowEl(listId, collection, doc, { label, showDate, grouped } = {}) {
+  function rowEl(listId, collection, doc, { label, showDate, grouped, timeline } = {}) {
     const status = doc.status === 'done' ? 'done' : doc.status === 'doing' ? 'doing' : 'todo';
-    return el('li', { class: 'row' + (status === 'done' ? ' is-done' : ''), 'data-flip': `${listId}:${doc.id}` },
+    return el('li', { class: 'row' + (status === 'done' ? ' is-done' : '') + (timeline ? ' timed' : ''), 'data-flip': `${listId}:${doc.id}` },
+      timeline ? el('span', { class: 'row-time' }, doc.time ? fmtClock(doc.time) : '') : null,
       el('button', {
         class: 'check' + (justDone === doc.id && status === 'done' ? ' just-done' : ''),
         type: 'button',
@@ -2566,7 +2695,7 @@ hr.rule { margin: 36px 0; }
         onclick: () => toggleDone(collection, doc),
       }, el('span', { class: 'ring' }, icon('check'))),
       el('button', { class: 'row-main', type: 'button', onclick: () => openEntry({ collection, doc }) },
-        el('span', { class: 'row-title' }, doc.title), metaBits(doc, label, showDate, grouped)));
+        el('span', { class: 'row-title' }, doc.title), doc.sub ? el('span', { class: 'row-sub' }, doc.sub) : null, metaBits(doc, label, showDate, grouped)));
   }
 
   const listEl = (listId, entries, options) =>
@@ -2621,29 +2750,91 @@ hr.rule { margin: 36px 0; }
     const openCount = overdue.length + due.filter((e) => e.doc.status !== 'done').length;
     $('today-sub').textContent = overdue.length + due.length ? (openCount ? `${openCount} to do` : 'All done') : '';
 
+    const byTime = (list) => [...list].sort((a, b) => (a.doc.status === 'done') - (b.doc.status === 'done') || (a.doc.time || '99:99').localeCompare(b.doc.time || '99:99'));
+    due.splice(0, due.length, ...byTime(due));
     const kids = [];
     if (!overdue.length && !due.length) {
       kids.push(emptyEl('Nothing is due today. Anything you give today’s date shows up here.',
         'Add for today', () => openEntry({ date: today })));
     } else {
-      if (overdue.length) kids.push(el('p', { class: 'group-label overdue' }, 'Overdue'), listEl('today', overdue, { grouped: true }));
+      if (overdue.length) kids.push(el('p', { class: 'group-label overdue' }, 'Overdue'), listEl('today', overdue, { grouped: true, timeline: true }));
       if (due.length) {
         if (overdue.length) kids.push(el('p', { class: 'group-label' }, 'Due today'));
-        kids.push(listEl('today', due, { showDate: false }));
+        kids.push(listEl('today', due, { showDate: false, timeline: true }));
       }
     }
-    $('today-body').replaceChildren(...kids);
+    $('today-body').replaceChildren(el('div', { class: 'inner sand today-card' }, ...kids));
+  }
+
+  /* ---------- Habits: a Mon–Sun grid; the streak counts days when every habit was done ---------- */
+  const DAY_LETTERS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  const habitDay = (h) => keyFmt.format(new Date(h.createdAt || Date.now()));
+
+  function habitStreak(habits, done) {
+    const today = todayKey();
+    let streak = 0;
+    for (let key = today, n = 0; n < 400; key = addDays(key, -1), n++) {
+      const active = habits.filter((h) => habitDay(h) <= key);
+      if (!active.length) break;
+      if (active.every((h) => done.has(`${h.id}_${key}`))) streak += 1;
+      else if (key !== today) break;   // today is still in progress, so it never breaks the streak
+    }
+    return streak;
   }
 
   function renderWeekly() {
-    const docs = state.tasks.filter((t) => t.kind === 'weekly');
-    const done = docs.filter((t) => t.status === 'done').length;
-    $('weekly-sub').textContent = docs.length ? `${done} of ${docs.length} done` : '';
-    $('weekly-body').replaceChildren(docs.length
-      ? listEl('weekly', sorted(docs).map((doc) => ({ collection: 'tasks', doc })))
-      : emptyEl('Routines you repeat every week. Their ticks clear each Monday.',
-        'Add a weekly task', () => openEntry({ type: 'weekly' })));
+    const habits = [...state.habits].sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+    const today = todayKey();
+    const done = new Set(state.habitlog.map((l) => l.id));
+    const days = Array.from({ length: 7 }, (_, i) => addDays(weekStartKey(), i));
+    const doneToday = habits.filter((h) => done.has(`${h.id}_${today}`)).length;
+    $('weekly-sub').textContent = habits.length ? `${doneToday} of ${habits.length} today` : '';
+    if (!habits.length) {
+      $('weekly-body').replaceChildren(el('p', { class: 'quiet' }, 'Habits you want to keep up. Tick them off each day.'));
+      return;
+    }
+    const head = el('div', { class: 'hgrid hhead', 'aria-hidden': 'true' }, el('span', {}, 'Habit'),
+      days.map((d, i) => el('span', { class: d === today ? 'is-today' : '' }, DAY_LETTERS[i])));
+    const rows = habits.map((h) => el('div', { class: 'hgrid hrow', 'data-flip': `habit:${h.id}` },
+      el('span', { class: 'hname' }, el('span', {}, h.title),
+        el('button', { class: 'hdel', type: 'button', 'aria-label': `Remove ${h.title}`, onclick: () => removeHabit(h) }, icon('x'))),
+      days.map((d) => {
+        const on = done.has(`${h.id}_${d}`);
+        const cell = on ? 'done' : d > today ? 'future' : d >= habitDay(h) ? 'missed' : 'before';
+        return el('button', {
+          class: 'hcell', type: 'button', 'data-state': cell, disabled: d > today,
+          role: 'checkbox', 'aria-checked': String(on), 'aria-label': `${h.title}, ${fmtShort.format(parseKey(d))}`,
+          onclick: () => (on ? store.remove('habitlog', `${h.id}_${d}`) : store.set('habitlog', `${h.id}_${d}`, { habitId: h.id, day: d })),
+        }, icon(cell === 'done' ? 'check' : 'x'));
+      })));
+    const streak = habitStreak(habits, done);
+    $('weekly-body').replaceChildren(head, ...rows,
+      el('p', { class: 'streak' }, el('span', {}, streak ? plural(streak, 'day') + ' streak' : 'Start a streak today')));
   }
+
+  async function removeHabit(habit) {
+    const logs = state.habitlog.filter((l) => l.habitId === habit.id);
+    await store.remove('habits', habit.id);
+    for (const l of logs) await store.remove('habitlog', l.id);
+    toast(`Removed “${habit.title}”`, 'Undo', async () => {
+      await store.set('habits', habit.id, habit);
+      for (const l of logs) await store.set('habitlog', l.id, l);
+    });
+  }
+
+  $('habit-add').addEventListener('click', () => {
+    if (!store.signedIn) { store.signIn(); return; }
+    const form = $('habit-form');
+    form.hidden = !form.hidden;
+    if (!form.hidden) $('habit-new').focus();
+  });
+  $('habit-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const title = $('habit-new').value.trim();
+    if (!title) return;
+    $('habit-new').value = '';
+    await store.add('habits', { title });
+  });
 
   function renderPersonal() {
     const docs = state.tasks.filter((t) => t.kind === 'personal');
@@ -2653,12 +2844,52 @@ hr.rule { margin: 36px 0; }
       emptyEl('One-off things to get done, with a date if they have one.', 'Add a personal task', () => openEntry({ type: 'personal' })));
   }
 
+  // linked tasks drive the bar when there are any; otherwise the typed-in numbers do
+  const fmtNum = (n) => (Number.isInteger(n) ? String(n) : String(Math.round(n * 10) / 10));
+  function goalProgress(goal) {
+    const linked = state.tasks.filter((t) => t.goalId === goal.id);
+    if (linked.length) {
+      const done = linked.filter((t) => t.status === 'done').length;
+      return { ratio: done / linked.length, text: `${done} of ${plural(linked.length, 'task')}` };
+    }
+    const target = Number(goal.target) || 0;
+    if (target > 0) {
+      const current = Number(goal.current) || 0;
+      return { ratio: Math.min(1, current / target), text: `${fmtNum(current)} / ${fmtNum(target)}${goal.unit ? ` ${goal.unit}` : ''}` };
+    }
+    return null;
+  }
+  const GOAL_BARS = ['linear-gradient(90deg, #5b9cf0, #8ec5ff)', 'linear-gradient(90deg, #f0a35a, #f7c873)', 'linear-gradient(90deg, #3fb894, #86e3be)'];
+
+  function goalEl(goal, index) {
+    const progress = goalProgress(goal);
+    const meta = [progress?.text, goal.date ? `by ${dueLabel(goal.date)}` : null].filter(Boolean).join(' · ');
+    return el('button', { class: 'goal' + (goal.status === 'done' ? ' is-done' : ''), type: 'button', 'data-flip': `goal:${goal.id}`,
+      onclick: () => openEntry({ collection: 'goals', doc: goal }) },
+      el('span', { class: 'goal-head' }, el('span', { class: 'goal-title' }, goal.title),
+        progress ? el('span', { class: 'goal-pct' }, `${Math.round(progress.ratio * 100)}%`) : null),
+      progress ? el('span', { class: 'goal-bar', role: 'img', 'aria-label': `${Math.round(progress.ratio * 100)} percent` },
+        el('i', { style: `width:${(progress.ratio * 100).toFixed(1)}%;background:${GOAL_BARS[index % GOAL_BARS.length]}` })) : null,
+      meta ? el('span', { class: 'goal-meta' }, meta) : null);
+  }
+
   function renderGoals() {
-    const docs = state.goals;
-    const done = docs.filter((g) => g.status === 'done').length;
-    $('goals-sub').textContent = docs.length ? `${done} of ${docs.length} reached` : '';
-    renderFolded('goals-body', 'goals', 'goals', docs,
-      emptyEl('Bigger things you are working towards. Give one a target date to see it on the calendar.', 'Add a goal', () => openEntry({ type: 'goal' })));
+    const docs = [...state.goals].sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+    const done = docs.filter((g) => g.status === 'done');
+    const open = docs.filter((g) => g.status !== 'done');
+    $('goals-sub').textContent = docs.length ? `${done.length} of ${docs.length} reached` : '';
+    const kids = [];
+    if (!docs.length) kids.push(emptyEl('Bigger things you are working towards. Add a target, or link tasks to a goal and the bar fills as you finish them.', 'Add a goal', () => openEntry({ type: 'goal' })));
+    else {
+      kids.push(open.length ? el('div', { class: 'goals' }, open.map(goalEl)) : el('p', { class: 'quiet' }, 'Everything here is done.'));
+      if (done.length) {
+        const group = el('details', { class: 'done-group', open: openGroups.has('goals') },
+          el('summary', {}, icon('right'), `${done.length} completed`), el('div', { class: 'goals' }, done.map(goalEl)));
+        group.addEventListener('toggle', () => (group.open ? openGroups.add('goals') : openGroups.delete('goals')));
+        kids.push(group);
+      }
+    }
+    $('goals-body').replaceChildren(el('div', { class: 'inner blue goal-card' }, ...kids));
   }
 
   function renderProjects() {
@@ -2797,11 +3028,29 @@ hr.rule { margin: 36px 0; }
   const NOTES_SHOWN = 6;
   let notesExpanded = false;
 
+  // quick capture lives in the card and is built once, so what is being typed survives a redraw
+  const captureText = el('textarea', { id: 'capture-text', rows: '3', placeholder: 'What’s on your mind today?', 'aria-label': 'Quick capture' });
+  const captureSave = el('button', { class: 'btn small primary', type: 'submit', disabled: true }, 'Save');
+  const captureForm = el('form', { class: 'inner peach capture' },
+    el('p', { class: 'inner-h' }, 'Quick capture'), captureText,
+    el('div', { class: 'cap-foot' }, icon('edit'), captureSave));
+  captureText.addEventListener('input', () => { captureSave.disabled = !captureText.value.trim(); });
+  captureText.addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) captureForm.requestSubmit(); });
+  captureForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const body = captureText.value.trim();
+    if (!body) return;
+    if (!store.signedIn) { store.signIn(); return; }
+    captureText.value = '';
+    captureSave.disabled = true;
+    await store.add('notes', { title: '', body, pinned: false });
+  });
+
   function renderNotes() {
     const notes = [...state.notes].sort((a, b) => Boolean(b.pinned) - Boolean(a.pinned) || b.updatedAt - a.updatedAt);
     $('notes-sub').textContent = notes.length ? plural(notes.length, 'note') : '';
     if (!notes.length) {
-      $('notes-body').replaceChildren(emptyEl('Thoughts, lists and things to remember. Pin the ones you want kept at the top.', 'Write a note', () => openNoteEdit()));
+      $('notes-body').replaceChildren(captureForm, emptyEl('Thoughts, lists and things to remember. Pin the ones you want kept at the top.', 'Write a note', () => openNoteEdit()));
       return;
     }
     const shown = notesExpanded ? notes : notes.slice(0, NOTES_SHOWN);
@@ -2815,7 +3064,7 @@ hr.rule { margin: 36px 0; }
       ? el('button', { class: 'link-btn more', type: 'button', onclick: () => { notesExpanded = !notesExpanded; renderNotes(); } },
         notesExpanded ? 'Show fewer' : `Show all ${notes.length} notes`)
       : null;
-    $('notes-body').replaceChildren(list, more || '');
+    $('notes-body').replaceChildren(captureForm, list, more || '');
   }
 
   /* =====================================================================
@@ -2896,7 +3145,13 @@ hr.rule { margin: 36px 0; }
   function syncEntry() {
     const needsProject = entryType() === 'projectTask';
     const noProjects = needsProject && state.projects.length === 0;
+    const type = entryType();
+    const isTask = type === 'personal' || type === 'weekly' || type === 'projectTask';
     $('entry-project-field').hidden = !needsProject;
+    $('entry-goal-field').hidden = !(type === 'personal' || type === 'projectTask');
+    $('entry-goalnums').hidden = type !== 'goal';
+    $('entry-time-field').hidden = !isTask;
+    $('entry-sub-field').hidden = !isTask;
     $('entry-project').hidden = noProjects;
     $('entry-project-hint').hidden = !noProjects;
     $('entry-save').disabled = noProjects;
@@ -2918,6 +3173,13 @@ hr.rule { margin: 36px 0; }
     $('entry-project').replaceChildren(...sorted(state.projects).map((p) => el('option', { value: p.id }, p.title)));
     if (doc?.projectId || projectId) $('entry-project').value = doc?.projectId || projectId;
     $('entry-title').value = doc?.title || '';
+    $('entry-sub').value = doc?.sub || '';
+    $('entry-time').value = doc?.time || '';
+    $('entry-goal').replaceChildren(el('option', { value: '' }, 'No goal'), ...[...state.goals].sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0)).map((g) => el('option', { value: g.id }, g.title)));
+    $('entry-goal').value = doc?.goalId || '';
+    $('entry-current').value = doc?.current ?? '';
+    $('entry-target').value = doc?.target ?? '';
+    $('entry-unit').value = doc?.unit || '';
     entryForm.elements.status.value = doc?.status || '';
     $('entry-start').value = doc?.start || '';
     $('entry-date').value = doc?.date || date || '';
@@ -2932,6 +3194,7 @@ hr.rule { margin: 36px 0; }
 
   entryForm.addEventListener('change', (e) => { if (e.target.name === 'type') syncEntry(); });
   $('entry-title').addEventListener('input', () => setTitleError(false));
+  $('entry-time-clear').addEventListener('click', () => { $('entry-time').value = ''; });
   entryForm.querySelector('[data-start]').addEventListener('click', () => { $('entry-start').value = ''; });
   entryForm.querySelectorAll('[data-date]').forEach((chip) => chip.addEventListener('click', () => {
     $('entry-date').value = chip.dataset.date === 'clear' ? '' : addDays(todayKey(), Number(chip.dataset.date));
@@ -2947,7 +3210,12 @@ hr.rule { margin: 36px 0; }
     if (start && end && start > end) { $('entry-range-err').hidden = false; return; }
     $('entry-range-err').hidden = true;
     const data = { title, status: entryForm.elements.status.value || null, start, date: end };
+    const num = (id) => (Number($(id).value) > 0 ? Number($(id).value) : null);
+    data.sub = entryType() === 'goal' || entryType() === 'project' ? null : ($('entry-sub').value.trim() || null);
+    data.time = entryType() === 'goal' || entryType() === 'project' ? null : ($('entry-time').value || null);
+    if (type.collection === 'goals') { data.current = num('entry-current'); data.target = num('entry-target'); data.unit = $('entry-unit').value.trim() || null; }
     if (type.collection === 'tasks') {
+      data.goalId = type.kind === 'weekly' ? null : ($('entry-goal').value || null);
       data.kind = type.kind;
       data.projectId = type.kind === 'project' ? $('entry-project').value : null;
     }
