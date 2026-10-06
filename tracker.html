@@ -373,6 +373,8 @@
   .dots i.done { background: var(--ink-3); }
   .agenda { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--rule); }
   .agenda-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .log-total { min-height: 22px; margin: 12px 0 0; padding: 0 8px; font-size: 15px; color: var(--ember); }
+  #log-err { margin: 2px 8px 0; }
   .work-log { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 38px; margin-top: 8px; padding: 0 4px; border: 0; background: none; font-size: 14px; color: var(--ink-2); text-align: left; border-radius: var(--r-sm); }
   .work-log:hover { background: var(--raise); }
   .work-log .ic { width: 16px; height: 16px; color: var(--ember); flex: none; }
@@ -2234,19 +2236,20 @@ hr.rule { margin: 36px 0; }
       <h2 id="log-h">Work hours</h2>
       <button class="icon-btn" type="button" data-close aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
     </div>
-    <div class="field">
-      <label for="log-date">Day</label>
-      <div class="date-row"><input type="date" id="log-date"></div>
+    <div class="prop">
+      <label class="pl" for="log-date"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg>Day</label>
+      <div class="prop-row"><input type="date" id="log-date"></div>
     </div>
-    <div class="field">
-      <label for="log-in">Log in</label>
-      <div class="date-row"><input type="time" id="log-in"></div>
+    <div class="prop">
+      <label class="pl" for="log-in"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>Log in</label>
+      <div class="prop-row"><input type="time" id="log-in"></div>
     </div>
-    <div class="field">
-      <label for="log-out">Log out</label>
-      <div class="date-row"><input type="time" id="log-out"></div>
-      <p class="err" id="log-err" hidden>Add a log in or log out time.</p>
+    <div class="prop">
+      <label class="pl" for="log-out"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>Log out</label>
+      <div class="prop-row"><input type="time" id="log-out"></div>
     </div>
+    <p class="log-total" id="log-total" aria-live="polite"></p>
+    <p class="err" id="log-err" hidden>Add a log in or log out time.</p>
     <div class="sheet-actions">
       <button class="btn danger" type="button" id="log-delete" hidden><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg>Delete</button>
       <span class="grow"></span>
@@ -3212,11 +3215,11 @@ hr.rule { margin: 36px 0; }
     syncFilterBtn('agenda', dayAll.length > 0);
     const log = state.worklog.find((l) => l.id === calSelected);
     const logBits = log ? [log.in ? `In ${fmtClock(log.in)}` : null, log.out ? `Out ${fmtClock(log.out)}` : null].filter(Boolean) : [];
-    $('agenda-body').replaceChildren(
+    $('agenda-body').replaceChildren(...[
       logBits.length ? el('button', { class: 'work-log', type: 'button', 'aria-label': `Work hours: ${logBits.join(', ')}. Edit`, onclick: () => openLog(calSelected) },
         icon('clock'), el('span', {}, 'Work'), el('span', {}, logBits.join(' · '))) : null,
       entries.length ? listEl('agenda', entries, { showDate: false })
-        : el('p', { class: 'quiet' }, dayAll.length ? 'Nothing here matches these filters.' : 'Nothing on this day.'));
+        : el('p', { class: 'quiet' }, dayAll.length ? 'Nothing here matches these filters.' : 'Nothing on this day.')].filter(Boolean));
   }
 
   /* ---------- Work hours: one log in / log out pair per day, kept in worklog (id = the day) ---------- */
@@ -3228,16 +3231,25 @@ hr.rule { margin: 36px 0; }
     $('log-out').value = existing?.out || '';
     $('log-err').hidden = true;
     $('log-delete').hidden = !existing;
+    logTotal();
     $('log-sheet').showModal();
     $('log-in').focus();
   }
   // a day picked on the calendar, otherwise today
   $('cal-log').addEventListener('click', () => openLog(calPicked ? calSelected : todayKey()));
+  function logTotal() {
+    const [a, b] = [$('log-in').value, $('log-out').value];
+    const mins = (v) => { const [h, m] = v.split(':').map(Number); return h * 60 + m; };
+    const diff = a && b ? mins(b) - mins(a) : 0;
+    $('log-total').textContent = diff > 0 ? `${Math.floor(diff / 60)} h ${String(diff % 60).padStart(2, '0')} m at work` : '';
+  }
+  ['log-in', 'log-out'].forEach((id) => $(id).addEventListener('change', logTotal));
   $('log-date').addEventListener('change', () => {
     const existing = state.worklog.find((l) => l.id === $('log-date').value);
     $('log-in').value = existing?.in || '';
     $('log-out').value = existing?.out || '';
     $('log-delete').hidden = !existing;
+    logTotal();
   });
   $('log-form').addEventListener('submit', async (e) => {
     e.preventDefault();
