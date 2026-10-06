@@ -144,6 +144,7 @@
   }
   .link-btn .ic { width: 15px; height: 15px; }
   .link-btn:hover { color: var(--ember); }
+  #entry-work-tag { margin-top: 2px; font-size: 14px; }
 
   @media (pointer: coarse) {
     .icon-btn { width: 44px; height: 44px; }
@@ -213,8 +214,8 @@
   .top-left .a-goals, .a-today > .panel { flex: 1; }
   .top-left .a-goals { display: flex; flex-direction: column; }
   .top-left .a-goals > .panel { flex: 1; }
-  .a-personal { margin-top: 100px; }
-  #personal-body { min-height: 150px; }
+  .a-tasks { margin-top: 100px; }
+  #personal-body, #work-body { min-height: 150px; }
   .a-calendar { margin-top: 28px; }
   .cal-card { min-height: 424px; padding: 24px 28px 20px; }
   #weekly-body { min-height: 270px; }
@@ -754,7 +755,7 @@
   @media (max-width: 900px) {
     .grid { grid-template-columns: minmax(0, 1fr); row-gap: 40px; }
     .side-right { padding-top: 0; }
-    .a-personal, .a-finance { margin-top: 40px; }
+    .a-tasks, .a-finance { margin-top: 40px; }
     #notes-body { aspect-ratio: auto; min-height: 240px; max-height: 380px; }
   }
 
@@ -798,7 +799,7 @@
     .col { min-height: 130px; padding: 24px 20px; }
     .col-head { justify-content: flex-start; }
     #today-body { min-height: 240px; }
-    #weekly-body, #personal-body { min-height: 120px; }
+    #weekly-body, #personal-body, #work-body { min-height: 120px; }
     .a-finance { grid-template-columns: minmax(0, 1fr); }
     .cal-card { min-height: 320px; padding: 18px 16px 16px; }
     .toast { bottom: calc(88px + env(safe-area-inset-bottom)); }
@@ -1424,6 +1425,7 @@
     </section>
     </div>
 
+    <div class="row-2 a-tasks">
     <section class="a-personal" aria-labelledby="h-personal">
       <div class="head ruled">
         <h2 id="h-personal">Personal Tasks</h2>
@@ -1433,6 +1435,16 @@
       </div>
       <div id="personal-body"></div>
     </section>
+    <section class="a-work" aria-labelledby="h-work">
+      <div class="head ruled">
+        <h2 id="h-work">Work Tasks</h2>
+        <span class="sub" id="work-sub"></span>
+        <button class="icon-btn filter-btn" type="button" data-filter="work" aria-label="Filter work tasks" aria-haspopup="dialog" hidden><svg class="ic" aria-hidden="true"><use href="#i-filter"/></svg></button>
+        <button class="icon-btn" type="button" data-add="work" aria-label="Add work task"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
+      </div>
+      <div id="work-body"></div>
+    </section>
+    </div>
 
     <section class="a-calendar" aria-labelledby="h-calendar">
       <div class="head"><h2 id="h-calendar">Calendar</h2></div>
@@ -2084,6 +2096,7 @@ hr.rule { margin: 36px 0; }
           <span class="label-chips" id="entry-label-chips"></span>
           <input type="text" id="entry-label-input" maxlength="30" list="label-options" placeholder="Add a label" autocomplete="off" enterkeyhint="done">
           <datalist id="label-options"></datalist>
+          <button class="link-btn" type="button" id="entry-work-tag">Tag as Work</button>
         </div>
       </div>
       <div class="prop prop-dates">
@@ -2731,6 +2744,7 @@ hr.rule { margin: 36px 0; }
   const coversDay = (doc, key) => { const { from, to } = spanOf(doc); return Boolean(from) && from <= key && key <= to; };
   const hasDates = (doc) => Boolean(doc.start || doc.date);
   const isOverdue = (doc) => Boolean(doc.date) && doc.date < todayKey() && doc.status !== 'done';
+  const isWork = (doc) => labelsOf(doc).some((l) => l.toLowerCase() === 'work');
   const labelsOf = (doc) => (Array.isArray(doc.labels) ? doc.labels : doc.labels ? Object.values(doc.labels) : []);
   const allLabels = () => {
     const seen = new Map();
@@ -2743,7 +2757,7 @@ hr.rule { margin: 36px 0; }
   function labelFor(collection, doc) {
     if (collection === 'projects') return 'Project';
     if (collection === 'goals') return 'Goal';
-    return doc.projectId || doc.goalId ? '' : 'Personal';
+    return doc.projectId || doc.goalId ? '' : isWork(doc) ? 'Work' : 'Personal';
   }
 
   function overdueText(key) {
@@ -2751,7 +2765,7 @@ hr.rule { margin: 36px 0; }
     return `Overdue, ${label === 'Yesterday' ? 'yesterday' : label}`;
   }
 
-  function metaBits(doc, label, showDate = true, grouped = false, inProject = false) {
+  function metaBits(doc, label, showDate = true, grouped = false, inProject = false, hideWork = false) {
     const bits = [];
     if (label) bits.push(el('span', {}, label));
     if (doc.status === 'doing') bits.push(el('span', { class: 'doing' }, 'In progress'));
@@ -2769,12 +2783,12 @@ hr.rule { margin: 36px 0; }
         ? el('span', { class: 'overdue' }, grouped ? `Since ${dueLabel(doc.date) === 'Yesterday' ? 'yesterday' : dueLabel(doc.date)}` : overdueText(doc.date))
         : el('span', {}, dueLabel(doc.date)));
     }
-    labelsOf(doc).forEach((l) => bits.push(el('span', { class: 'pill' }, l)));
+    labelsOf(doc).filter((l) => !(l.toLowerCase() === 'work' && (hideWork || label === 'Work'))).forEach((l) => bits.push(el('span', { class: 'pill' }, l)));
     return bits.length ? el('span', { class: 'meta' }, bits) : null;
   }
 
   /* ---------- Filters: status, project and label, one set each for Today, Personal tasks and the calendar day ---------- */
-  const filters = { today: {}, personal: {}, agenda: {} };
+  const filters = { today: {}, personal: {}, work: {}, agenda: {} };
   const filterActive = (f) => Boolean(f.status || f.project || f.label);
   function matchesFilter(entry, f) {
     const { doc } = entry;
@@ -2788,7 +2802,7 @@ hr.rule { margin: 36px 0; }
   const filterPop = el('div', { class: 'filter-pop', popover: 'auto', role: 'dialog', 'aria-label': 'Filters' });
   document.body.append(filterPop);
   let filterOwner = null;   // { key, btn }
-  const filterRender = { today: () => renderToday(), personal: () => renderPersonal(), agenda: () => renderCalendar() };
+  const filterRender = { today: () => renderToday(), personal: () => renderPersonal(), work: () => renderWork(), agenda: () => renderCalendar() };
 
   function fillFilterPop() {
     const f = filters[filterOwner.key];
@@ -2830,7 +2844,7 @@ hr.rule { margin: 36px 0; }
     store.update(collection, doc.id, { status: done ? 'todo' : 'done' });
   }
 
-  function rowEl(listId, collection, doc, { label, showDate, grouped, timeline, inProject } = {}) {
+  function rowEl(listId, collection, doc, { label, showDate, grouped, timeline, inProject, hideWork } = {}) {
     const status = doc.status === 'done' ? 'done' : doc.status === 'doing' ? 'doing' : doc.status === 'blocked' ? 'blocked' : 'todo';
     return el('li', { class: 'row' + (status === 'done' ? ' is-done' : '') + (timeline ? ' timed' : ''), 'data-flip': `${listId}:${doc.id}` },
       timeline ? el('span', { class: 'row-time' }, doc.time ? fmtClock(doc.time) : '') : null,
@@ -2844,7 +2858,7 @@ hr.rule { margin: 36px 0; }
         onclick: () => toggleDone(collection, doc),
       }, el('span', { class: 'ring' }, icon('check'))),
       el('button', { class: 'row-main', type: 'button', onclick: () => openEntry({ collection, doc }) },
-        el('span', { class: 'row-title' }, doc.title), doc.sub ? el('span', { class: 'row-sub' }, doc.sub) : null, metaBits(doc, label, showDate, grouped, inProject)));
+        el('span', { class: 'row-title' }, doc.title), doc.sub ? el('span', { class: 'row-sub' }, doc.sub) : null, metaBits(doc, label, showDate, grouped, inProject, hideWork)));
   }
 
   const listEl = (listId, entries, options) =>
@@ -2858,17 +2872,17 @@ hr.rule { margin: 36px 0; }
   const openGroups = new Set();   // which "completed" groups are expanded
 
   // open items, with completed ones folded away underneath
-  function renderFolded(bodyId, listId, collection, docs, empty) {
+  function renderFolded(bodyId, listId, collection, docs, empty, options) {
     const open = sorted(docs.filter((d) => d.status !== 'done'));
     const done = docs.filter((d) => d.status === 'done').sort((a, b) => b.updatedAt - a.updatedAt);
     const asEntries = (list) => list.map((doc) => ({ collection, doc }));
     const kids = [];
     if (!docs.length) kids.push(empty);
     else {
-      kids.push(open.length ? listEl(listId, asEntries(open)) : el('p', { class: 'quiet' }, 'Everything here is done.'));
+      kids.push(open.length ? listEl(listId, asEntries(open), options) : el('p', { class: 'quiet' }, 'Everything here is done.'));
       if (done.length) {
         const group = el('details', { class: 'done-group', open: openGroups.has(listId) },
-          el('summary', {}, icon('right'), `${done.length} completed`), listEl(listId, asEntries(done)));
+          el('summary', {}, icon('right'), `${done.length} completed`), listEl(listId, asEntries(done), options));
         group.addEventListener('toggle', () => (group.open ? openGroups.add(listId) : openGroups.delete(listId)));
         kids.push(group);
       }
@@ -2991,8 +3005,9 @@ hr.rule { margin: 36px 0; }
     await store.add('habits', { title });
   });
 
+  // a task tagged Work lives on the Work card, everything else on Personal; a project task shows under its project as well
   function renderPersonal() {
-    const all = state.tasks;
+    const all = state.tasks.filter((t) => !isWork(t));
     const docs = all.filter((t) => matchesFilter({ collection: 'tasks', doc: t }, filters.personal));
     const open = all.filter((t) => t.status !== 'done').length;
     $('personal-sub').textContent = all.length ? `${open} open` : '';
@@ -3000,6 +3015,17 @@ hr.rule { margin: 36px 0; }
       ? el('p', { class: 'quiet' }, 'No tasks match these filters.')
       : emptyEl('Things to get done, with a date, project, goal or labels if they have them.', 'Add a task', () => openEntry({ type: 'task' })));
     syncFilterBtn('personal', all.length > 0);
+  }
+
+  function renderWork() {
+    const all = state.tasks.filter(isWork);
+    const docs = all.filter((t) => matchesFilter({ collection: 'tasks', doc: t }, filters.work));
+    const open = all.filter((t) => t.status !== 'done').length;
+    $('work-sub').textContent = all.length ? `${open} open` : '';
+    renderFolded('work-body', 'work', 'tasks', docs, all.length
+      ? el('p', { class: 'quiet' }, 'No tasks match these filters.')
+      : emptyEl('Tasks tagged Work show up here.', 'Add a work task', () => openEntry({ type: 'work' })), { hideWork: true });
+    syncFilterBtn('work', all.length > 0);
   }
 
   // linked tasks drive the bar when there are any; otherwise the typed-in numbers do
@@ -3247,6 +3273,7 @@ hr.rule { margin: 36px 0; }
     renderToday();
     renderWeekly();
     renderPersonal();
+    renderWork();
     renderGoals();
     renderProjects();
     renderCalendar();
@@ -3333,6 +3360,7 @@ hr.rule { margin: 36px 0; }
     addLabel($('entry-label-input').value);
     $('entry-label-input').value = '';
   });
+  $('entry-work-tag').addEventListener('click', () => addLabel('Work'));
   $('entry-label-input').addEventListener('change', () => { addLabel($('entry-label-input').value); $('entry-label-input').value = ''; });
 
   function setTitleError(show) {
@@ -3345,12 +3373,12 @@ hr.rule { margin: 36px 0; }
     if (!store.signedIn) { store.signIn(); return; }
     editing = doc ? { collection, doc } : null;
     entryForm.reset();
-    const asType = type === 'personal' || type === 'projectTask' || type === 'weekly' ? 'task' : type;
+    const asType = type === 'personal' || type === 'work' || type === 'projectTask' || type === 'weekly' ? 'task' : type;
     entryForm.elements.type.value = doc ? typeOf(collection, doc) : (asType || lastType);
     $('entry-types').hidden = Boolean(doc);
     $('entry-project').replaceChildren(el('option', { value: '' }, 'No project'), ...sorted(state.projects).map((p) => el('option', { value: p.id }, p.title)));
     $('entry-project').value = doc?.projectId || projectId || '';
-    entryLabels = doc ? [...labelsOf(doc)] : [];
+    entryLabels = doc ? [...labelsOf(doc)] : type === 'work' ? ['Work'] : [];
     drawLabelChips();
     $('entry-label-input').value = '';
     $('label-options').replaceChildren(...allLabels().map((l) => el('option', { value: l })));
