@@ -1288,7 +1288,7 @@
   body[data-view="finance"] .brand span.mark-fin { display: inline; }
   .brand img.mark-fin { width: auto; height: 52px; border-radius: 0; }
   @media (max-width: 719px) { .brand img.mark-fin { width: auto; height: 44px; } .brand span.mark-fin { font-size: 17px; } }
-  /* ---------- Investments (reached by link only: #finance/investments) ---------- */
+  /* ---------- Investments (#finance/investments) ---------- */
   .prop .ro { min-height: 38px; display: flex; align-items: center; padding: 4px 8px; font-size: 17px; color: var(--ink); cursor: default; user-select: none; }
   .prop .ro .delta { margin-left: 10px; padding: 1px 10px; border-radius: 999px; font-size: 14px; background: var(--raise-2); }
   .prop .ro .delta .to { opacity: 0.7; margin: 0 1px; }
@@ -2181,6 +2181,7 @@ button.tile:hover { transform: translateY(-2px); }
       <a href="#finance/spending" role="tab" data-tab="spending">Spending</a>
       <a href="#finance/transactions" role="tab" data-tab="transactions">Transactions</a>
       <a href="#finance/budget" role="tab" data-tab="budget">Budget</a>
+      <a href="#finance/investments" role="tab" data-tab="investments">Investments</a>
       <span class="tab-pill" aria-hidden="true"></span>
     </nav>
     <div class="fin-menu">
@@ -2225,7 +2226,6 @@ button.tile:hover { transform: translateY(-2px); }
 
   <section id="tab-budget" role="tabpanel" aria-label="Budget" hidden></section>
 
-  <!-- Investments: not in the tab list above; open it with #finance/investments -->
   <section id="tab-investments" role="tabpanel" aria-label="Investments" hidden></section>
 
 </main>
@@ -4190,25 +4190,25 @@ button.tile:hover { transform: translateY(-2px); }
   let view = 'tracker';
   let finTab = 'spending';
   let finMonth = thisMonth();
-  const FIN_TABS = ['spending', 'transactions', 'budget'];   // the tabs in the bar
-  const LINK_TABS = ['investments'];                        // reached by link only
+  const FIN_TABS = ['spending', 'transactions', 'budget', 'investments'];
 
   function route() {
     const [name, tab] = location.hash.replace(/^#/, '').split('/');
     const before = view;
     const beforeTab = finTab;
     view = name === 'finance' ? 'finance' : 'tracker';   // #overview (or anything else) is the tracker
-    if (view === 'finance') finTab = FIN_TABS.includes(tab) || LINK_TABS.includes(tab) ? tab : 'spending';
+    if (view === 'finance') finTab = FIN_TABS.includes(tab) ? tab : 'spending';
     if (before !== view || beforeTab !== finTab || !routed) animateNext = true;
     document.body.dataset.view = view;
     $('tracker-view').hidden = view !== 'tracker';
     $('finance-view').hidden = view !== 'finance';
     document.querySelectorAll('.views a').forEach((a) => a.setAttribute('aria-current', a.dataset.view === view ? 'page' : 'false'));
     document.querySelectorAll('.fin-tabs a').forEach((a) => a.setAttribute('aria-selected', String(a.dataset.tab === finTab)));
-    [...FIN_TABS, ...LINK_TABS].forEach((t) => { $(`tab-${t}`).hidden = t !== finTab; });
-    const linkOnly = LINK_TABS.includes(finTab);
-    $('fm-prev').closest('.fin-month').hidden = linkOnly;
-    $('fin-menu-btn').closest('.fin-menu').hidden = linkOnly;
+    FIN_TABS.forEach((t) => { $(`tab-${t}`).hidden = t !== finTab; });
+    // Investments has its own range switches and actions, so the month switcher and the menu stay out of its way
+    const own = finTab === 'investments';
+    $('fm-prev').closest('.fin-month').hidden = own;
+    $('fin-menu-btn').closest('.fin-menu').hidden = own;
     if (view === 'finance') { movePill(before !== view || !routed); renderFinance(); if (finTab === 'investments' && (before !== view || beforeTab !== finTab || !routed)) INV.enter(); }
     if (view === 'tracker' && (before !== view || !routed)) enterTracker();
     if (before !== view) window.scrollTo(0, 0);
@@ -6375,7 +6375,7 @@ button.tile:hover { transform: translateY(-2px); }
   }
 
   /* =====================================================================
-     Investments  (reached by link only: #finance/investments, not listed with the Finance tabs)
+     Investments  (#finance/investments)
      Prices come from tracker-scripts/market-quotes.gs; what you own is kept in two collections:
        holdings { id, symbol, name, qty, buyDate, buyPrice }               the baseline lot you start with (NSE ticker)
        trades   { id, symbol, name, date, side: 'buy' | 'sell', qty, price, fees }   buys and sells logged later
@@ -6384,7 +6384,7 @@ button.tile:hover { transform: translateY(-2px); }
      Everything on the tab is recomputed from those and the cached prices whenever either changes.
      ===================================================================== */
   const INV = (() => {
-    const X = { sr: null, range: '3M', focus: '', view: 'gain', day: '', ledgerSym: '', ledgerType: 'all', stock: '', stockRange: 'ALL', timer: 0 };
+    const X = { sr: null, range: 'ALL', focus: '', view: 'gain', day: '', ledgerSym: '', ledgerType: 'all', stock: '', stockRange: 'ALL', timer: 0 };
     const MK = { daily: {}, intra: {}, names: {}, error: '', busy: false, intraAt: 0, tried: {} };
     const BENCH = '^NSEI';
     const SLOTS = 375;   // one-minute bars from 09:15 to 15:30
@@ -6650,7 +6650,10 @@ button.tile:hover { transform: translateY(-2px); }
         let run = 0;
         perf = s.value.map((v, i) => (i === 0 ? 0 : (run += v - s.value[i - 1] - (flows[s.dates[i]] || 0))));
         chg = perf[perf.length - 1] || 0;
-        pct = s.value[0] > 0 ? (chg / s.value[0]) * 100 : 0;
+        // against the money at work: what it was worth at the start plus what was bought since, so late buys don't shrink the base
+        const bought = syms.reduce((a, x) => a + eventsFor(x).filter((e) => e.d > s.dates[0] && e.side === 'buy').reduce((b, e) => b + e.qty * e.price + e.fees, 0), 0);
+        const base = (s.value[0] || 0) + bought;
+        pct = base > 0 ? (chg / base) * 100 : 0;
       }
       return { s, perf, chg, pct, now: s.value[s.value.length - 1] || 0, up: chg >= 0 };
     }
