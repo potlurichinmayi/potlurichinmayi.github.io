@@ -206,7 +206,13 @@
   .head.ruled { padding-bottom: 8px; border-bottom: 1px solid var(--line); margin-bottom: 12px; }
 
   #goals-body { min-height: 236px; }
-  #today-body { min-height: 368px; }
+  #today-body { min-height: 440px; }
+  /* Goal Tracker plus the quote stand as tall as Today: the quote's bottom lines up with Today's */
+  .row-top { align-items: stretch; }
+  .top-left, .a-today { display: flex; flex-direction: column; }
+  .top-left .a-goals, .a-today > .panel { flex: 1; }
+  .top-left .a-goals { display: flex; flex-direction: column; }
+  .top-left .a-goals > .panel { flex: 1; }
   .a-personal { margin-top: 100px; }
   #personal-body { min-height: 150px; }
   .a-calendar { margin-top: 28px; }
@@ -231,8 +237,9 @@
   .g-num { display: block; height: 36px; margin: 0; font-size: 34px; line-height: 36px; letter-spacing: -0.01em; white-space: nowrap; }
   .g-num sup { margin-left: 3px; position: relative; top: 4px; vertical-align: top; font-size: 10px; line-height: 1; letter-spacing: 0.14em; color: var(--ember); }
   .glance .zone.clock { position: relative; justify-content: center; }
-  .zone.clock .g-foot { position: absolute; left: 16px; right: 16px; bottom: 13px; }
-  .g-num.time { position: relative; top: -4px; font-size: 48px; }
+  .zone.clock .g-foot { margin: 0; }
+  .glance .zone.clock > .inner { gap: 8px; }
+  .g-num.time { height: auto; font-size: 48px; line-height: 1; }
   .g-num.time sup { top: 7px; }
   .g-num.deg sup { margin-left: 1px; font-size: 16px; letter-spacing: 0; }
   .g-num.name { letter-spacing: 0; }
@@ -245,8 +252,22 @@
   .g-range { position: relative; height: 3px; margin-bottom: 7px; border-radius: 999px; background: linear-gradient(90deg, #93aee0, var(--ink) 50%, var(--ember)); opacity: 0.9; }
   .g-range i { position: absolute; top: 50%; width: 10px; height: 10px; border-radius: 50%; background: #fff; border: 2px solid var(--ground); box-shadow: 0 0 0 1.5px var(--ember); transform: translate(-50%, -50%); }
   .g-lbl { display: flex; justify-content: space-between; gap: 6px; font-size: 11px; line-height: 13px; color: var(--ink-3); }
+  .g-days { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 2px; align-items: end; height: 26px; }
+  .g-days i { display: block; height: 55%; border-radius: 999px; background: var(--rule); }
+  .g-days i.past { background: var(--ink-3); }
+  .g-days i.now { height: 100%; background: var(--ember); }
+  .month-sub { margin-top: 4px; font-size: 14px; line-height: 1.25; }
   .g-bar { height: 3px; margin-bottom: 7px; border-radius: 999px; background: var(--rule); overflow: hidden; }
   .g-bar i { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--ember); transition: width 0.9s var(--ease); }
+  /* weather: icon and big temperature, two quiet lines, and a thermometer on the right */
+  .wx { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: stretch; flex: 1; }
+  .wx-main { display: flex; flex-direction: column; justify-content: center; gap: 6px; min-width: 0; }
+  .wx-top { display: flex; align-items: center; gap: 14px; }
+  .wx-top .ic { width: 34px; height: 34px; flex: none; stroke-width: 1.1; color: var(--ember); }
+  .wx-temp { font-size: 48px; line-height: 1; letter-spacing: -0.01em; white-space: nowrap; }
+  .wx-line { font-size: 14px; line-height: 1.25; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .wx-gauge { position: relative; align-self: stretch; width: 14px; min-height: 76px; border-radius: 999px; background: color-mix(in srgb, var(--ink) 14%, transparent); }
+  .wx-fill { position: absolute; left: 0; right: 0; bottom: 0; border-radius: 999px; background: linear-gradient(180deg, var(--ember), var(--ink) 55%, #93aee0); box-shadow: 0 -2px 0 #fff; }
   .g-wx-cond { margin-bottom: 7px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
   .skeleton { border-radius: 6px; background: linear-gradient(90deg, var(--raise), var(--raise-2), var(--raise)); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
@@ -757,16 +778,22 @@
     .g-foot, .g-lbl { font-size: 9px; line-height: 11px; }
     .g-num { height: 26px; font-size: 24px; line-height: 26px; }
     .g-num sup { top: 3px; font-size: 7px; }
-    .zone.clock .g-foot { left: 10px; right: 10px; bottom: 9px; }
-    .g-num.time { top: -3px; font-size: 34px; }
+    .glance .zone.clock > .inner { gap: 6px; }
+    .g-num.time { font-size: 34px; }
     .g-num.time sup { top: 5px; }
     .g-num.deg sup { font-size: 11px; }
-    #month-day { display: none; }
+    .month-sub { font-size: 11px; }
+    .g-days { height: 20px; gap: 1px; }
     .g-row .ic { width: 22px; height: 22px; margin-top: 3px; }
     .g-range { height: 2px; margin-bottom: 6px; }
     .g-range i { width: 8px; height: 8px; border-width: 1.5px; }
     .g-bar { height: 2px; margin-bottom: 6px; }
-    .g-wx-cond { margin-bottom: 5px; }
+    .wx { gap: 8px; }
+    .wx-top { gap: 8px; }
+    .wx-top .ic { width: 22px; height: 22px; }
+    .wx-temp { font-size: 32px; }
+    .wx-line { font-size: 10px; }
+    .wx-gauge { width: 9px; min-height: 60px; }
     .board { grid-template-columns: minmax(0, 1fr); }
     .col { min-height: 130px; padding: 24px 20px; }
     .col-head { justify-content: flex-start; }
@@ -1359,19 +1386,19 @@
       <div class="zone month">
         <h2>Monthly progress</h2>
         <div class="inner mint">
-          <div class="g-row"><p class="g-num name" id="month-name"></p><span class="g-foot" id="month-day"></span></div>
           <div>
-            <div class="g-bar" role="img" id="month-bar"><i id="month-fill"></i></div>
-            <div class="g-lbl"><span id="month-count"></span><span id="month-left"></span></div>
+            <p class="g-num name" id="month-name"></p>
+            <p class="g-foot month-sub" id="month-sub"></p>
           </div>
+          <div class="g-days" role="img" id="month-days"></div>
         </div>
       </div>
     </section>
 
     <hr class="rule">
 
-    <div class="row-2">
-    <div>
+    <div class="row-2 row-top">
+    <div class="top-left">
     <section class="a-goals" aria-labelledby="h-goals">
       <div class="head">
         <h2 id="h-goals">Goal Tracker</h2>
@@ -2660,14 +2687,13 @@ hr.rule { margin: 36px 0; }
       const hi = Math.round(data.daily.temperature_2m_max[0]);
       const lo = Math.round(data.daily.temperature_2m_min[0]);
       const at = hi > lo ? Math.min(1, Math.max(0, (data.current.temperature_2m - lo) / (hi - lo))) : 0.5;
-      $('weather').replaceChildren(
-        el('div', { class: 'g-row top' },
-          el('p', { class: 'g-num deg', style: 'margin:0' }, `${now}`, el('sup', {}, '°C')),
-          icon(night ? 'moon' : glyph)),
-        el('div', {},
-          el('p', { class: 'g-foot g-wx-cond' }, `${CONFIG.place.name} · ${label}, feels like ${Math.round(data.current.apparent_temperature)}°`),
-          el('div', { class: 'g-range', role: 'img', 'aria-label': `Now ${now}°, low ${lo}°, high ${hi}°` }, el('i', { style: `left:${(at * 100).toFixed(1)}%` })),
-          el('div', { class: 'g-lbl' }, el('span', {}, `${lo}°`), el('span', {}, `${hi}°`))));
+      $('weather').replaceChildren(el('div', { class: 'wx' },
+        el('div', { class: 'wx-main' },
+          el('div', { class: 'wx-top' }, icon(night ? 'moon' : glyph), el('p', { class: 'wx-temp' }, `${now}°`)),
+          el('p', { class: 'wx-line' }, `${label}, feels like ${Math.round(data.current.apparent_temperature)}°`),
+          el('p', { class: 'wx-line' }, `High ${hi}° · Low ${lo}°`)),
+        el('div', { class: 'wx-gauge', role: 'img', 'aria-label': `Now ${now}°, low ${lo}°, high ${hi}°` },
+          el('i', { class: 'wx-fill', style: `height:${(at * 100).toFixed(1)}%` }))));
       weatherLoaded = true;
     } catch (err) {
       console.error('Weather fetch failed:', err);
@@ -2684,11 +2710,9 @@ hr.rule { margin: 36px 0; }
     const days = new Date(Date.UTC(year, month, 0)).getUTCDate();
     const left = days - day;
     $('month-name').textContent = fmtMonth.format(parseKey(today));
-    $('month-day').textContent = `${day} / ${days}`;
-    $('month-count').textContent = `${Math.round((day / days) * 100)}%`;
-    $('month-left').textContent = left === 0 ? 'Last day' : `${left} day${left === 1 ? '' : 's'} left`;
-    $('month-bar').setAttribute('aria-label', `Day ${day} of ${days}`);
-    $('month-fill').style.width = `${(day / days * 100).toFixed(1)}%`;
+    $('month-sub').textContent = `Day ${day} of ${days} · ${left === 0 ? 'last day' : `${left} day${left === 1 ? '' : 's'} left`}`;
+    $('month-days').setAttribute('aria-label', `Day ${day} of ${days}`);
+    $('month-days').replaceChildren(...Array.from({ length: days }, (_, i) => el('i', { class: i + 1 < day ? 'past' : i + 1 === day ? 'now' : '' })));
   }
 
   /* =====================================================================
