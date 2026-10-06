@@ -3127,11 +3127,14 @@ hr.rule { margin: 36px 0; }
 
   function selectDay(key, focus) {
     const before = calView;
+    const { scrollX, scrollY } = window;
     calPicked = true;
     calSelected = key;
     calView = key.slice(0, 7);
     renderCalendar(calView === before ? 0 : calView > before ? 1 : -1);
-    if (focus) $('cal-grid').querySelector(`[data-key="${key}"]`)?.focus();
+    if (focus) $('cal-grid').querySelector(`[data-key="${key}"]`)?.focus({ preventScroll: true });
+    // rebuilding the grid drops the focused day; keep the page where it was
+    window.scrollTo(scrollX, scrollY);
   }
 
   function shiftMonth(delta) {
@@ -3501,12 +3504,15 @@ hr.rule { margin: 36px 0; }
   const fmtMonthShort = utcFmt({ month: 'short' });
   const fmtWeekdayShort = utcFmt({ weekday: 'short' });
 
-  const BASE_CATEGORIES = ['Groceries', 'Food delivery', 'Eating out & snacks', 'Commute', 'Shopping', 'Health', 'Home services',
+  const BASE_CATEGORIES = ['Groceries', 'Food delivery', 'Coffee', 'Eating out & snacks', 'Commute', 'Shopping', 'Health', 'Home services',
     'Bills & recharges', 'Local shops', 'People', 'Family', 'Miscellaneous', 'Other'];
   const INCOME = 'Income';
   // categories that were renamed: anything saved under the old name reads as the new one
   const RENAMED = { Rides: 'Commute' };
   const canon = (name) => RENAMED[name] || name;
+  // Groceries and Coffee stay their own categories but also count as Food delivery wherever that is shown or filtered
+  const FOOD_DELIVERY_ALSO = ['Groceries', 'Coffee'];
+  const inCategory = (actual, wanted) => actual === wanted || (wanted === 'Food delivery' && FOOD_DELIVERY_ALSO.includes(actual));
   // the built-in categories plus the ones added under Vendors & categories (kept before "Other")
   const CATEGORIES = [...BASE_CATEGORIES];
   const customCategories = () => state.meta.find((m) => m.id === 'categories')?.list || [];
@@ -4509,7 +4515,7 @@ hr.rule { margin: 36px 0; }
       if (SP.month !== s.m) { SP.month = s.m; SP.day = null; spCategory = null; }
       if (!SP.day) SP.day = s.isCurrent ? TODAY : ([...perDay].sort((a, b) => b.spend - a.spend)[0] || perDay[0]).day;
       const picked = SP.day;
-      const test = (t) => !spCategory || t.category === spCategory;
+      const test = (t) => !spCategory || inCategory(t.category, spCategory);
       const shown = (d) => d.items.filter(test).reduce((a, t) => a + t.amount, 0);
       const setFilter = (cat) => { spCategory = spCategory === cat ? null : cat; paint(); };
 
@@ -4547,7 +4553,7 @@ hr.rule { margin: 36px 0; }
 
         // category tiles: ring badge, name and top vendors, a large amount, payment count, and the month strip
         spq('tiles').replaceChildren(...TILES.map((def) => {
-          const mine = P.filter((t) => t.category === def.cat), sum = mine.reduce((a, t) => a + t.amount, 0), n = mine.length;
+          const mine = P.filter((t) => inCategory(t.category, def.cat)), sum = mine.reduce((a, t) => a + t.amount, 0), n = mine.length;
           const vendors = [...mine.reduce((m, t) => m.set(t.payee, (m.get(t.payee) || 0) + t.amount), new Map())].sort((a, c) => c[1] - a[1]).map((x) => x[0]).slice(0, 6), topv = vendors.join(', ');
           const on = spCategory === def.cat, share = spent ? sum / spent : 0, r = 14, c = 2 * Math.PI * r;
           const badge = `<svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="${r}" fill="none" stroke="${SP_G}" stroke-width="3"/><circle cx="17" cy="17" r="${r}" fill="none" stroke="${E}" stroke-width="3" stroke-linecap="round" stroke-dasharray="${c * Math.max(share, 0.02)} ${c}" transform="rotate(-90 17 17)"/><text x="17" y="21" text-anchor="middle">${def.label[0]}</text></svg>`;
@@ -4831,7 +4837,7 @@ hr.rule { margin: 36px 0; }
     const q = txFilter.q.trim().toLowerCase();
     let list = month.filter((t) =>
       (txFilter.type === 'all' || (txFilter.type === 'debit' ? t.type === 'debit' : t.type === 'credit'))
-      && (!txFilter.category || t.category === txFilter.category)
+      && (!txFilter.category || inCategory(t.category, txFilter.category))
       && (!txFilter.payee || t.key === txFilter.payee)
       && (!txFilter.date || t.date === txFilter.date)
       && (!q || `${t.payee} ${t.description || ''} ${t.note || ''} ${t.category} ${t.excerpt || ''}`.toLowerCase().includes(q)));
