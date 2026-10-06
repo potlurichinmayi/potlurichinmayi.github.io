@@ -393,18 +393,24 @@
   /* Budget and spending card on the tracker */
   .spend { min-height: 206px; cursor: pointer; transition: box-shadow 0.2s, transform 0.2s var(--ease); }
   .spend:hover { box-shadow: inset 0 0 0 1px var(--rule-2), var(--shadow-lift); transform: translateY(-2px); }
-  .spend h2 { font-family: var(--serif); font-size: 21px; line-height: 0.95; letter-spacing: 0.01em; }
-  .spend .when { margin-top: 14px; font-size: 14px; color: var(--ink-3); }
-  .spend .total { margin-top: 2px; font-family: var(--serif); font-size: 30px; line-height: 1.1; }
-  .spend .in { font-size: 14px; color: var(--ink-2); }
+  .spend .keys { display: flex; justify-content: flex-end; gap: 6px 16px; margin: 0 0 2px; font-size: 13px; color: var(--ink-2); }
+  .spend .keys span { display: inline-flex; align-items: center; gap: 6px; }
+  .spend .keys i { width: 9px; height: 9px; border-radius: 50%; background: var(--ember); }
+  .spend .keys i.b { background: #93aee0; }
+  .spend .chart { flex: 1; min-height: 120px; }
+  .spend .chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .spend .chart text { font-family: var(--serif); font-size: 12px; fill: var(--ink-3); }
+  .spend .chart text.v { fill: var(--ink); }
+  .spend .so-far { margin-top: 6px; font-size: 14px; color: var(--ink-3); }
+  .spend .so-far b { font-weight: 400; color: var(--ink); }
+  .spend .bal { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--rule); }
+  .spend .bal small { display: block; font-size: 14px; color: var(--ink-3); }
+  .spend .bal b { display: block; font-weight: 400; font-size: 28px; line-height: 1.1; }
+  .spend .pill { padding: 4px 12px; border-radius: 999px; font-size: 13px; white-space: nowrap; }
+  .spend .pill.good { background: color-mix(in srgb, #a9d6b0 20%, transparent); color: #a9d6b0; }
+  .spend .pill.bad { background: color-mix(in srgb, var(--danger) 16%, transparent); color: var(--danger); }
   .spend p.lead { margin: 12px 0 14px; font-size: 15px; color: var(--ink-2); }
-  .spend-recent { list-style: none; margin: 12px 0 4px; padding: 10px 0 0; border-top: 1px solid var(--rule); }
-  .spend-recent li { display: flex; justify-content: space-between; gap: 8px; padding: 3px 0; font-size: 14px; }
-  .spend-recent span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink-2); }
-  .spend-recent span:last-child { flex: none; }
-  .spend .mini-track { height: 5px; margin: 10px 0 4px; border-radius: 3px; background: var(--rule); overflow: hidden; }
-  .spend .mini-track i { display: block; height: 100%; border-radius: 3px; background: var(--ember); }
-  .spend .mini-track.over i { background: var(--danger); }
+  .spend h2 { font-family: var(--serif); font-size: 21px; line-height: 0.95; letter-spacing: 0.01em; }
   .credit { color: var(--ember); }
 
   /* ---------- Finance view ---------- */
@@ -4999,31 +5005,50 @@ hr.rule { margin: 36px 0; }
   function renderSpending() {
     const card = $('spend-card');
     const sync = state.meta.find((m) => m.id === 'finance');
-    const title = el('h2', {}, 'Budget and spending');
     if (!sync && !finData().list.length) {
-      card.replaceChildren(title,
+      card.replaceChildren(el('h2', {}, 'Budget and spending'),
         el('p', { class: 'lead' }, 'Fill this in from your Axis Bank alert emails.'),
         el('button', { class: 'btn small', type: 'button', onclick: (e) => { e.stopPropagation(); openFinanceSetup(); } }, 'Connect Gmail'));
       return;
     }
     const month = thisMonth();
-    const list = monthOf(month);
-    const net = Math.max(0, sumSpend(list));
-    const received = list.filter((t) => t.income && !t.excluded).reduce((s, t) => s + t.amount, 0);
-    const recent = [...list].sort((a, b) => b.createdAt - a.createdAt).slice(0, 3);
-    const b = budget();
-    card.replaceChildren(title,
-      el('p', { class: 'when' }, `${fmtMonth.format(parseKey(`${month}-01`))} so far`),
-      el('p', { class: 'total' }, rupees.format(net)),
-      ...(b?.total
-        ? [el('div', { class: 'mini-track' + (net > b.total ? ' over' : '') }, el('i', { style: `width:${Math.min(100, pct(net, b.total))}%` })),
-          el('p', { class: 'in' }, `of ${rupees.format(b.total)} budget`)]
-        : [el('p', { class: 'in' }, `spent · ${rupees.format(received)} in`)]),
-      recent.length
-        ? el('ul', { class: 'spend-recent' }, recent.map((t) =>
-          el('li', {}, el('span', {}, t.payee), el('span', { class: t.type === 'credit' ? 'credit' : '' }, `${t.type === 'credit' ? '+' : '−'}${rupees.format(t.amount)}`))))
-        : el('p', { class: 'in', style: 'margin-top:12px' }, 'Nothing yet this month.'));
+    const story = monthStory(month);
+    const spent = Math.max(0, story.net);
+    const limit = Number(budget()?.total) || 0;
+    const projected = Math.round((spent / Math.max(1, story.elapsed)) * story.days);
+    const months = finData().months.filter((m) => m <= month).slice(-3)
+      .map((m) => ({ name: fmtMonthShort.format(parseKey(`${m}-01`)), v: m === month ? spent : Math.max(0, monthStory(m).net) }));
+    const pill = limit ? (projected <= limit ? { good: true, text: 'On track' } : { good: false, text: `${rupees.format(projected - limit)} over pace` }) : null;
+    const chart = el('div', { class: 'chart', role: 'img', 'aria-label': 'Monthly spending against budget' });
+    card.replaceChildren(
+      el('div', { class: 'keys' }, el('span', {}, el('i', { class: 'b' }), 'Budget'), el('span', {}, el('i'), 'Spending')),
+      chart,
+      el('p', { class: 'so-far' }, `${fmtMonth.format(parseKey(`${month}-01`))} `, el('b', {}, rupees.format(spent)), limit ? ` of ${rupees.format(limit)}` : ' so far'),
+      el('div', { class: 'bal' },
+        el('div', {}, el('small', {}, 'Current balance'), el('b', {}, rupees.format(balances().current))),
+        pill ? el('span', { class: `pill ${pill.good ? 'good' : 'bad'}` }, pill.text) : null));
+    const draw = () => {
+      const W = Math.max(200, Math.round(chart.clientWidth || 300)), H = Math.max(120, Math.round(chart.clientHeight || 130));
+      const pl = 12, pr = 12, pt = 14, pb = 22;
+      const hi = Math.max(1000, Math.max(limit, ...months.map((q) => q.v)) * 1.2);
+      const x = (i) => (months.length > 1 ? pl + 14 + (i / (months.length - 1)) * (W - pl - pr - 28) : W / 2);
+      const y = (v) => pt + (H - pt - pb) * (1 - v / hi);
+      let g = [0, 0.5, 1].map((f) => `<line x1="${pl}" x2="${W - pr}" y1="${y(hi * f * 0.83)}" y2="${y(hi * f * 0.83)}" stroke="rgba(240,232,217,.14)" stroke-dasharray="2 5"/>`).join('');
+      if (limit) g += `<line x1="${pl}" x2="${W - pr}" y1="${y(limit)}" y2="${y(limit)}" stroke="#93aee0" stroke-width="2.2"/>`;
+      const pts = months.map((q, i) => [x(i), y(q.v)]);
+      const path = pts.map((q, i) => `${i ? 'L' : 'M'}${q[0].toFixed(1)} ${q[1].toFixed(1)}`).join('');
+      if (pts.length > 1) g += `<defs><linearGradient id="spend-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--ember)" stop-opacity="0.38"/><stop offset="1" stop-color="var(--ember)" stop-opacity="0.02"/></linearGradient></defs><path d="${path}L${pts[pts.length - 1][0]},${y(0)}L${pts[0][0]},${y(0)}Z" fill="url(#spend-fill)"/><path d="${path}" fill="none" stroke="var(--ember)" stroke-width="2.2" stroke-linejoin="round"/>`;
+      pts.forEach((q, i) => { g += `<circle cx="${q[0]}" cy="${q[1]}" r="4.5" fill="var(--ember)"/><text class="v" x="${q[0]}" y="${q[1] - 10}" text-anchor="middle">${compact(months[i].v)}</text><text x="${x(i)}" y="${H - 4}" text-anchor="middle">${months[i].name}</text>`; });
+      chart.innerHTML = `<svg viewBox="0 0 ${W} ${H}" aria-hidden="true">${g}</svg>`;
+    };
+    draw();
+    // the width is settled after layout, and changes with the window
+    let last = chart.clientWidth;
+    spendObserver?.disconnect();
+    spendObserver = new ResizeObserver(() => { if (Math.abs(chart.clientWidth - last) > 4) { last = chart.clientWidth; draw(); } });
+    spendObserver.observe(chart);
   }
+  let spendObserver = null;
   $('spend-card').addEventListener('click', () => goFinance('spending'));
   $('spend-card').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goFinance('spending'); } });
 
