@@ -206,7 +206,7 @@
   .head.ruled { padding-bottom: 8px; border-bottom: 1px solid var(--line); margin-bottom: 12px; }
 
   #goals-body { min-height: 236px; }
-  #today-body { min-height: 440px; }
+  #today-body { min-height: 236px; }
   /* Goal Tracker plus the quote stand as tall as Today: the quote's bottom lines up with Today's */
   .row-top { align-items: stretch; }
   .top-left, .a-today { display: flex; flex-direction: column; }
@@ -263,11 +263,11 @@
   .wx { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: stretch; flex: 1; }
   .wx-main { display: flex; flex-direction: column; justify-content: center; gap: 6px; min-width: 0; }
   .wx-top { display: flex; align-items: center; gap: 14px; }
-  .wx-top .ic { width: 34px; height: 34px; flex: none; stroke-width: 1.1; color: var(--ember); }
-  .wx-temp { font-size: 48px; line-height: 1; letter-spacing: -0.01em; white-space: nowrap; }
-  .wx-line { font-size: 14px; line-height: 1.25; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .wx-gauge { position: relative; align-self: stretch; width: 14px; min-height: 76px; border-radius: 999px; background: color-mix(in srgb, var(--ink) 14%, transparent); }
-  .wx-fill { position: absolute; left: 0; right: 0; bottom: 0; border-radius: 999px; background: linear-gradient(180deg, var(--ember), var(--ink) 55%, #93aee0); box-shadow: 0 -2px 0 #fff; }
+  .wx-top .ic { width: 30px; height: 30px; flex: none; stroke-width: 1.1; color: var(--ember); }
+  .wx-temp { font-size: 42px; line-height: 1; letter-spacing: -0.01em; white-space: nowrap; }
+  .wx-line { font-size: 13px; line-height: 1.25; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .wx-gauge { position: relative; align-self: stretch; width: 4px; min-height: 76px; border-radius: 999px; background: var(--rule); }
+  .wx-fill { position: absolute; left: 0; right: 0; bottom: 0; border-radius: 999px; background: linear-gradient(180deg, var(--ember), var(--ink) 55%, #93aee0); opacity: 0.85; }
   .g-wx-cond { margin-bottom: 7px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
   .skeleton { border-radius: 6px; background: linear-gradient(90deg, var(--raise), var(--raise-2), var(--raise)); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
@@ -791,9 +791,9 @@
     .wx { gap: 8px; }
     .wx-top { gap: 8px; }
     .wx-top .ic { width: 22px; height: 22px; }
-    .wx-temp { font-size: 32px; }
-    .wx-line { font-size: 10px; }
-    .wx-gauge { width: 9px; min-height: 60px; }
+    .wx-temp { font-size: 30px; }
+    .wx-line { font-size: 9.5px; }
+    .wx-gauge { width: 3px; min-height: 60px; }
     .board { grid-template-columns: minmax(0, 1fr); }
     .col { min-height: 130px; padding: 24px 20px; }
     .col-head { justify-content: flex-start; }
@@ -3758,10 +3758,25 @@ hr.rule { margin: 36px 0; }
   }
   let routed = false;
 
+  // Today (and the Goal Tracker and quote beside it) end level with the Projects cards when the two columns sit side by side
+  function alignTodayToProjects() {
+    const today = $('today-body'), board = document.querySelector('.a-projects .board');
+    if (!today || !board || $('tracker-view').hidden) return;
+    today.style.minHeight = '';
+    const sideBySide = document.querySelector('.side-right').getBoundingClientRect().left > document.querySelector('.side-left').getBoundingClientRect().left + 50;
+    if (!sideBySide) return;
+    const want = Math.round(board.getBoundingClientRect().bottom - today.getBoundingClientRect().top);
+    if (want > 0) today.style.minHeight = `${want}px`;
+  }
+  window.addEventListener('resize', alignTodayToProjects);
+  if (window.ResizeObserver) new ResizeObserver(alignTodayToProjects).observe(document.querySelector('.side-right'));
+  document.fonts?.ready.then(alignTodayToProjects);
+
   function enterTracker() {
     stagger(document.querySelectorAll('#tracker-view .side-left > *'));
     stagger(document.querySelectorAll('#tracker-view .side-right > *'), 1);
     drawIn($('tracker-view'));
+    setTimeout(alignTodayToProjects, 1500);   // once the entrance animation has settled
   }
   window.addEventListener('hashchange', route);
 
