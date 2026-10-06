@@ -373,6 +373,10 @@
   .dots i.done { background: var(--ink-3); }
   .agenda { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--rule); }
   .agenda-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .work-log { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 38px; margin-top: 8px; padding: 0 4px; border: 0; background: none; font-size: 14px; color: var(--ink-2); text-align: left; border-radius: var(--r-sm); }
+  .work-log:hover { background: var(--raise); }
+  .work-log .ic { width: 16px; height: 16px; color: var(--ember); flex: none; }
+  .work-log span:nth-of-type(2) { margin-left: auto; color: var(--ink); }
   .agenda-head h3 { font-size: 16px; font-weight: 400; }
 
   /* ---------- Notes ---------- */
@@ -1452,6 +1456,7 @@
       <div class="cal-head">
         <h3 id="cal-title" aria-live="polite"></h3>
         <button class="btn small" type="button" id="cal-today">Today</button>
+        <button class="icon-btn" type="button" id="cal-log" aria-label="Log work hours" title="Log work hours"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
         <button class="icon-btn" type="button" id="cal-prev" aria-label="Previous month"><svg class="ic" aria-hidden="true"><use href="#i-left"/></svg></button>
         <button class="icon-btn" type="button" id="cal-next" aria-label="Next month"><svg class="ic" aria-hidden="true"><use href="#i-right"/></svg></button>
       </div>
@@ -2222,6 +2227,35 @@ hr.rule { margin: 36px 0; }
   </form>
 </dialog>
 
+<!-- Log work hours for a day -->
+<dialog class="sheet" id="log-sheet" aria-labelledby="log-h">
+  <form class="sheet-body" id="log-form" novalidate>
+    <div class="sheet-head">
+      <h2 id="log-h">Work hours</h2>
+      <button class="icon-btn" type="button" data-close aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="field">
+      <label for="log-date">Day</label>
+      <div class="date-row"><input type="date" id="log-date"></div>
+    </div>
+    <div class="field">
+      <label for="log-in">Log in</label>
+      <div class="date-row"><input type="time" id="log-in"></div>
+    </div>
+    <div class="field">
+      <label for="log-out">Log out</label>
+      <div class="date-row"><input type="time" id="log-out"></div>
+      <p class="err" id="log-err" hidden>Add a log in or log out time.</p>
+    </div>
+    <div class="sheet-actions">
+      <button class="btn danger" type="button" id="log-delete" hidden><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg>Delete</button>
+      <span class="grow"></span>
+      <button class="btn" type="button" data-close>Cancel</button>
+      <button class="btn primary" type="submit">Save</button>
+    </div>
+  </form>
+</dialog>
+
 <!-- Set the current balance -->
 <dialog class="sheet" id="bal-sheet" aria-labelledby="bal-h">
   <form class="sheet-body" id="bal-form" novalidate>
@@ -2413,7 +2447,7 @@ hr.rule { margin: 36px 0; }
      status: 'todo' | 'doing' | 'blocked' | 'done' | null      date: 'YYYY-MM-DD' | null
      The app only ever calls the five methods below.
      ===================================================================== */
-  const COLLECTIONS = ['tasks', 'projects', 'goals', 'notes', 'meta', 'transactions', 'payees', 'txmeta', 'budgets', 'cash', 'debts', 'deposits', 'savings', 'profiles', 'backgrounds', 'looks', 'habits', 'habitlog'];
+  const COLLECTIONS = ['tasks', 'projects', 'goals', 'notes', 'meta', 'transactions', 'payees', 'txmeta', 'budgets', 'cash', 'debts', 'deposits', 'savings', 'profiles', 'backgrounds', 'looks', 'habits', 'habitlog', 'worklog'];
 
   function createLocalStore() {
     const PREFIX = 'tracker:';
@@ -2617,7 +2651,7 @@ hr.rule { margin: 36px 0; }
   }
 
   const store = CONFIG.firebase ? createFirebaseStore(CONFIG.firebase) : createLocalStore();
-  const state = { tasks: [], projects: [], goals: [], notes: [], meta: [], transactions: [], payees: [], txmeta: [], budgets: [], cash: [], debts: [], deposits: [], savings: [], profiles: [], backgrounds: [], looks: [], habits: [], habitlog: [] };
+  const state = { tasks: [], projects: [], goals: [], notes: [], meta: [], transactions: [], payees: [], txmeta: [], budgets: [], cash: [], debts: [], deposits: [], savings: [], profiles: [], backgrounds: [], looks: [], habits: [], habitlog: [], worklog: [] };
 
   /* =====================================================================
      Dates (everything is reckoned in Hyderabad time)
@@ -3176,10 +3210,51 @@ hr.rule { margin: 36px 0; }
     const entries = sortEntries(dayAll.filter((e) => matchesFilter(e, filters.agenda)));
     $('agenda-title').textContent = calSelected === today ? `Today, ${fmtShort.format(parseKey(today))}` : fmtLong.format(parseKey(calSelected));
     syncFilterBtn('agenda', dayAll.length > 0);
+    const log = state.worklog.find((l) => l.id === calSelected);
+    const logBits = log ? [log.in ? `In ${fmtClock(log.in)}` : null, log.out ? `Out ${fmtClock(log.out)}` : null].filter(Boolean) : [];
     $('agenda-body').replaceChildren(
+      logBits.length ? el('button', { class: 'work-log', type: 'button', 'aria-label': `Work hours: ${logBits.join(', ')}. Edit`, onclick: () => openLog(calSelected) },
+        icon('clock'), el('span', {}, 'Work'), el('span', {}, logBits.join(' · '))) : null,
       entries.length ? listEl('agenda', entries, { showDate: false })
         : el('p', { class: 'quiet' }, dayAll.length ? 'Nothing here matches these filters.' : 'Nothing on this day.'));
   }
+
+  /* ---------- Work hours: one log in / log out pair per day, kept in worklog (id = the day) ---------- */
+  function openLog(day) {
+    if (!store.signedIn) { store.signIn(); return; }
+    const existing = state.worklog.find((l) => l.id === day);
+    $('log-date').value = day;
+    $('log-in').value = existing?.in || '';
+    $('log-out').value = existing?.out || '';
+    $('log-err').hidden = true;
+    $('log-delete').hidden = !existing;
+    $('log-sheet').showModal();
+    $('log-in').focus();
+  }
+  // a day picked on the calendar, otherwise today
+  $('cal-log').addEventListener('click', () => openLog(calPicked ? calSelected : todayKey()));
+  $('log-date').addEventListener('change', () => {
+    const existing = state.worklog.find((l) => l.id === $('log-date').value);
+    $('log-in').value = existing?.in || '';
+    $('log-out').value = existing?.out || '';
+    $('log-delete').hidden = !existing;
+  });
+  $('log-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const day = $('log-date').value || todayKey();
+    const inTime = $('log-in').value || null, outTime = $('log-out').value || null;
+    if (!inTime && !outTime) { $('log-err').hidden = false; return; }
+    await store.set('worklog', day, { day, in: inTime, out: outTime });
+    $('log-sheet').close();
+  });
+  $('log-delete').addEventListener('click', async () => {
+    const day = $('log-date').value;
+    const old = state.worklog.find((l) => l.id === day);
+    $('log-sheet').close();
+    if (!old) return;
+    await store.remove('worklog', day);
+    toast('Work hours removed', 'Undo', () => store.set('worklog', day, { day, in: old.in || null, out: old.out || null }));
+  });
 
   function selectDay(key, focus) {
     const before = calView;
