@@ -1288,6 +1288,60 @@
   body[data-view="finance"] .brand span.mark-fin { display: inline; }
   .brand img.mark-fin { width: auto; height: 52px; border-radius: 0; }
   @media (max-width: 719px) { .brand img.mark-fin { width: auto; height: 44px; } .brand span.mark-fin { font-size: 17px; } }
+  /* ---------- Investments (reached by link only: #finance/investments) ---------- */
+  .prop .ro { min-height: 38px; display: flex; align-items: center; padding: 4px 8px; font-size: 17px; color: var(--ink); cursor: default; user-select: none; }
+  .prop .ro .delta { margin-left: 10px; padding: 1px 10px; border-radius: 999px; font-size: 14px; background: var(--raise-2); }
+  .prop .ro .delta .to { opacity: 0.7; margin: 0 1px; }
+  .prop .ro .delta.over { box-shadow: inset 0 0 0 1px var(--danger); }
+  .prop .ro .delta.up { background: rgba(169, 223, 178, 0.14); color: var(--good); }
+  .prop .ro .delta.down { background: rgba(245, 168, 150, 0.16); color: var(--danger); }
+  .prop input[type="text"].caps { text-transform: uppercase; }
+  .seg-two .seg-opts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .inv-name { min-height: 1.3em; margin: -6px 0 12px; font-size: 14px; color: var(--ink-3); }
+  dialog.sheet.inv-big { width: min(940px, calc(100vw - 32px)); }
+  dialog.sheet.inv-stock { width: min(640px, calc(100vw - 32px)); }
+  .inv-sub { margin: -10px 0 14px; font-size: 14px; color: var(--ink-3); }
+  .inv-tools { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .inv-tools .l, .inv-tools .r { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .inv-pick { -webkit-appearance: none; appearance: none; padding: 6px 38px 6px 16px; border: 0; border-radius: 999px; background: var(--raise-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' fill='none' stroke='%23d9d2c3' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 16px center; color: var(--ink); font-size: 15px; cursor: pointer; }
+  .inv-pick option { background: var(--sheet); }
+  .inv-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .inv-chips button { border: 0; padding: 5px 13px; border-radius: 999px; background: var(--raise-2); font-size: 14px; color: var(--ink-2); }
+  .inv-chips button.on { background: var(--ember); color: var(--on-ember); }
+  .inv-scroll { overflow-x: auto; }
+  table.inv-lg { width: 100%; border-collapse: collapse; }
+  .inv-lg th { text-align: right; font-weight: 400; font-size: 13px; color: var(--ink-3); padding: 0 10px 10px; }
+  .inv-lg th.l, .inv-lg td.l { text-align: left; } .inv-lg th:first-child, .inv-lg td:first-child { padding-left: 0; }
+  .inv-lg td { padding: 11px 10px; border-top: 1px solid var(--rule); text-align: right; font-size: 16px; }
+  .inv-lg td small { display: block; font-size: 12px; color: var(--ink-3); }
+  .inv-lg tr.r { cursor: pointer; } .inv-lg tr.r:hover td { background: var(--raise); } .inv-lg tr.r:focus-visible { outline: 2px solid var(--ember); outline-offset: -2px; }
+  .inv-lg td.pc { width: 1%; padding-right: 0; }
+  .inv-lg .up, .inv-sd .up, .inv-stats .up { color: var(--good); } .inv-lg .down, .inv-stats .down { color: var(--danger); }
+  .tg { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 12px; background: var(--raise-2); color: var(--ink-2); margin-left: 8px; }
+  .tg.buy { background: rgba(169, 223, 178, 0.14); color: var(--good); } .tg.sell { background: rgba(245, 168, 150, 0.16); color: var(--danger); }
+  .pen { width: 30px; height: 30px; border-radius: 50%; color: var(--ink-3); display: inline-grid; place-items: center; }
+  .inv-lg tr.r:hover .pen { background: var(--raise-2); color: var(--ink); }
+  .pen svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .inv-quiet { padding: 14px 0; color: var(--ink-3); }
+  .inv-sd-top { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 10px; }
+  .inv-sd-price { font-size: 32px; line-height: 1.05; }
+  .inv-chg { display: inline-flex; align-items: center; gap: 5px; font-size: 15px; color: var(--ink-2); } .inv-chg svg { width: 8px; height: 8px; fill: currentColor; }
+  .inv-chg.up { color: var(--good); } .inv-chg.down { color: var(--danger); } .inv-chg.down svg { transform: rotate(180deg); }
+  .inv-sd-chart { position: relative; height: 260px; margin: 10px 0 6px; }
+  .inv-sd-chart svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .inv-sd-chart svg text { font-family: var(--serif); fill: var(--ink-3); font-size: 11px; }
+  .inv-sd-chart .cross { stroke: var(--rule-2); }
+  .inv-sd-chart .tip { position: absolute; pointer-events: none; padding: 6px 10px; border-radius: 8px; background: var(--sheet); box-shadow: var(--shadow); font-size: 13px; white-space: nowrap; transform: translate(-50%, -110%); z-index: 3; }
+  .inv-sd-chart .tip small { display: block; color: var(--ink-3); }
+  .inv-keys { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--ink-2); margin-bottom: 14px; }
+  .inv-keys span { display: inline-flex; align-items: center; gap: 6px; }
+  .inv-keys i { width: 18px; height: 0; border-top: 2px solid var(--ember); } .inv-keys i.c { border-top-style: dashed; border-top-color: var(--ink-3); }
+  .inv-keys i.d { width: 9px; height: 9px; border: 0; border-radius: 50%; background: var(--good); } .inv-keys i.d.s { background: var(--danger); }
+  .inv-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--rule); }
+  .inv-stats > div { padding: 12px 8px 4px; } .inv-stats small { display: block; font-size: 13px; color: var(--ink-3); }
+  .inv-stats b { font-weight: 400; font-size: 20px; } .inv-stats em { display: block; font-style: normal; font-size: 13px; color: var(--ink-3); }
+  .inv-sd-actions { margin-top: 12px; }
+  @media (max-width: 719px) { .inv-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } .inv-lg .hide-s { display: none; } }
 </style>
 <script>
   /* the last look (colours, background) is cached so the page never flashes the default one */
@@ -1343,6 +1397,8 @@
     <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3.500a8.500 8.500 0 1 0 0 17c1.500 0 2-1 1.500-2-.600-1.200.200-2.500 1.600-2.500H17a3.500 3.500 0 0 0 3.500-3.500C20.500 6.500 16.800 3.500 12 3.500z"/><circle cx="7.800" cy="11" r="1"/><circle cx="10.500" cy="7.500" r="1"/><circle cx="15" cy="8" r="1"/></symbol>
     <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5.500" width="16" height="14.500" rx="2.500"/><path d="M4 10h16M8.500 3.500v4M15.500 3.500v4"/></symbol>
     <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.500"/><path d="M12 7.500V12l3 2"/></symbol>
+    <symbol id="i-shares" viewBox="0 0 24 24"><path d="M12 4l8 4-8 4-8-4z"/><path d="M4 12l8 4 8-4M4 16l8 4 8-4"/></symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M4 7.500h14a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zM4 7.500l11-3.500v3.500"/><circle cx="16" cy="13.500" r="1"/></symbol>
     <symbol id="i-fog" viewBox="0 0 24 24"><path d="M4 9h16M6 13h12M4 17h16"/></symbol>
   </defs>
 </svg>
@@ -1988,6 +2044,137 @@ hr.rule { margin: 36px 0; }
 #fd-add { width: 23px; height: 23px; padding: 0; border-radius: 50%; display: inline-grid; place-items: center; font-size: 17px; line-height: 1; flex: none; }
 </style></template>
 
+<template id="inv-tpl"><style>
+:host { display: block; --good: #a9dfb2; --gap: 20px; container-type: inline-size; font-family: var(--serif); font-size: 16px; line-height: 1.3; color: var(--ink); font-variant-numeric: lining-nums tabular-nums; }
+*, *::before, *::after { box-sizing: border-box; }
+h1, h2, h3, p { margin: 0; font-weight: 400; }
+button, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+.sp-wrap { padding-bottom: 8px; }
+hr.rule { width: 100%; margin: 26px 0; border: 0; border-top: 1px solid var(--line); }
+.up { color: var(--good); } .down { color: var(--danger); }
+.panel { display: flex; flex-direction: column; min-width: 0; padding: 20px; gap: 0; background: var(--panel); border-radius: var(--r); box-shadow: var(--shadow); }
+.kicker { margin-bottom: 4px; font-size: 13px; color: var(--ink-3); }
+.finding { margin-bottom: 10px; font-size: 19px; line-height: 1.2; }
+.sub { margin-bottom: 10px; font-size: 14px; color: var(--ink-2); }
+.meta { font-size: 13px; color: var(--ink-3); }
+.stat-num { font-size: 36px; line-height: 1.05; margin: 4px 0 0; }
+svg text { font-family: var(--serif); fill: var(--ink-3); font-size: 11px; }
+.gl { stroke: var(--rule); stroke-dasharray: 2 5; }
+.chart { position: relative; flex: 1; min-height: 110px; }
+.chart svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.keys { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 8px; font-size: 13px; color: var(--ink-2); }
+.keys span { display: inline-flex; align-items: center; gap: 6px; }
+.keys i { width: 18px; height: 0; border-top: 2px solid var(--ember); }
+.keys i.c { border-top-style: dashed; border-top-color: var(--ink-3); }
+.keys i.dot { width: 9px; height: 9px; border: 0; border-radius: 50%; background: var(--good); }
+.keys i.dot.s { background: var(--danger); }
+.scroll { flex: 1 1 0; min-height: 0; contain: size; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--rule-2) transparent; }
+.rowh { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 10px; margin-bottom: 8px; }
+.rowh .kicker { margin: 0; }
+.pick { -webkit-appearance: none; appearance: none; padding: 6px 38px 6px 16px; border: 0; border-radius: 999px; background: var(--raise-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' fill='none' stroke='%23d9d2c3' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 16px center; font-size: 14px; color: var(--ink); cursor: pointer; }
+.pick option { background: #101a3a; }
+.pill { display: inline-flex; align-items: center; padding: 6px 14px; border: 0; border-radius: 999px; font-size: 14px; background: var(--raise-2); color: var(--ink-2); white-space: nowrap; }
+.pill:hover { background: color-mix(in srgb, var(--ink) 18%, transparent); color: var(--ink); }
+.pill.go { background: var(--ember); color: var(--on-ember); } .pill.go:hover { background: var(--ember-hi); }
+.link-btn { padding: 0; border: 0; background: none; font-size: 14px; color: var(--ink-3); } .link-btn:hover { color: var(--ember); }
+.midcol { display: flex; flex-direction: column; gap: 12px; } .midcol > .panel { flex: 1; }
+
+/* the status line above the cards */
+.status { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 16px; margin-bottom: var(--gap); font-size: 14px; color: var(--ink-2); }
+.status .st { display: inline-flex; align-items: center; gap: 8px; }
+.status .st i { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-3); }
+.status .st.live i { background: var(--good); box-shadow: 0 0 0 0 rgba(169, 223, 178, .6); animation: inv-pulse 2s infinite; }
+.status .st.warn i { background: var(--danger); }
+.status .acts { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+@keyframes inv-pulse { 70% { box-shadow: 0 0 0 7px rgba(169, 223, 178, 0); } 100% { box-shadow: 0 0 0 0 rgba(169, 223, 178, 0); } }
+@media (prefers-reduced-motion: reduce) { .status .st.live i { animation: none; } }
+.empty { max-width: 560px; padding: 28px; } .empty .finding { font-size: 26px; } .empty .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+
+/* the five figures across the top */
+.strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--gap); margin-bottom: var(--gap); }
+.strip > .panel { padding: 16px 18px; min-height: 108px; justify-content: center; }
+.strip .t { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.strip .t .kicker { margin: 0; } .strip .t .meta { font-size: 12px; text-align: right; }
+
+/* two columns, like Overview, with the Spending tab's card heights */
+.cols2 { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--gap) 40px; align-items: start; }
+.colx { min-width: 0; } .colx > * + * { margin-top: var(--gap); }
+.pair2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); } .pair2 > * { min-width: 0; }
+@media (min-width: 1101px) {
+  .cols2 { grid-template-columns: minmax(0, 643fr) minmax(0, 633fr); gap: 0 40px; }
+  .cols2 .overview { height: 27.96cqw; } .pair2.h1, .pair2.h2 { height: 27.96cqw; }
+  .cols2 .tiles { height: 27.96cqw; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: minmax(0, 1fr); } .cols2 .tile { aspect-ratio: auto; }
+  .cols2 #calendar, .cols2 #months { height: 21.48cqw; }
+  .pair2 > .midcol > .panel, .pair2 > .panel { height: 100%; }
+}
+@media (max-width: 1100px) { .overview.ov4 { min-height: 380px; } .scroll { contain: none; flex: none; } #months, #calendar { min-height: 280px; } .strip { grid-template-columns: repeat(3, minmax(0, 1fr)); } .cols2 { gap: var(--gap); } }
+@media (max-width: 719px) { .panel { padding: 16px; } .finding { font-size: 20px; } .pair2 { grid-template-columns: minmax(0, 1fr); } .strip { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } .tiles { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; } }
+
+/* portfolio chart: the chart fills the card, the figure floats over it */
+.overview { container-type: inline-size; }
+.overview.ov4 { position: relative; padding: 0; }
+.ov4 > .hd { position: absolute; left: 20px; right: 20px; top: 18px; z-index: 2; pointer-events: none; } .ov4 > .hd * { pointer-events: auto; }
+.ov4 > .plot { position: absolute; inset: 0 0 64px 0; }
+.plot { position: relative; } .plot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.plot .cross { stroke: var(--rule-2); }
+.tip { position: absolute; pointer-events: none; padding: 6px 10px; border-radius: 8px; background: color-mix(in srgb, var(--ground) 92%, var(--ink)); box-shadow: var(--shadow); font-size: 13px; white-space: nowrap; transform: translate(-50%, -110%); z-index: 3; }
+.tip small { display: block; color: var(--ink-3); }
+.ov4 > .ctl4 { position: absolute; left: 20px; right: 20px; bottom: 14px; z-index: 2; display: flex; flex-wrap: nowrap; gap: 8px; align-items: center; } .ctl4 .keys { margin: 0; white-space: nowrap; }
+@container (max-width: 540px) { .ctl4 .keys { display: none; } }
+.segr, .segt { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--raise); }
+.segr button, .segt button { border: 0; background: none; padding: 4px 13px; border-radius: 999px; font-size: 13px; color: var(--ink-3); }
+.segr button.on, .segt button.on { background: var(--raise-2); color: var(--ink); box-shadow: inset 0 0 0 1px var(--rule); }
+.ovval { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 2px 0 4px; }
+.ovval .amt { font-size: 30px; line-height: 1.1; } .ovval .small { font-size: 15px; color: var(--ink-3); } .ovval .chg { font-size: 15px; }
+.chg { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; color: var(--ink-2); }
+.chg svg { width: 8px; height: 8px; fill: currentColor; } .chg.down svg { transform: rotate(180deg); }
+.chg.up { color: var(--good); } .chg.down { color: var(--danger); }
+
+/* what changed */
+.hdr { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.hdr .d { font-size: 19px; line-height: 1.2; } .hdr .d small { font-size: 13px; color: var(--ink-3); margin-left: 8px; }
+.step { display: flex; align-items: center; gap: 6px; flex: none; }
+.step button { width: 28px; height: 28px; border: 0; border-radius: 50%; background: var(--raise-2); display: grid; place-items: center; } .step button:disabled { opacity: .3; cursor: default; }
+.step svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.heat { position: relative; display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; margin-bottom: 4px; border-radius: 10px; font-size: 15px; overflow: hidden; background: var(--raise); }
+.heat::before { content: ''; position: absolute; inset: 0 auto 0 0; width: var(--w); background: var(--c); opacity: .22; }
+.heat > * { position: relative; } .heat small { font-size: 12px; color: var(--ink-3); margin-left: 6px; }
+.tchip { display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 999px; font-size: 11px; background: var(--raise-2); color: var(--ink-2); }
+.tchip.buy { background: rgba(169, 223, 178, .14); color: var(--good); } .tchip.sell { background: rgba(245, 168, 150, .16); color: var(--danger); }
+
+/* where the money came from */
+.fillcol { flex: 1; display: flex; flex-direction: column; justify-content: space-between; min-height: 0; gap: 6px; }
+.ra { padding: 2px 0; } .ra .l { display: flex; justify-content: space-between; align-items: baseline; font-size: 16px; }
+.ra .t { position: relative; height: 10px; margin-top: 7px; border-radius: 999px; background: var(--raise); }
+.ra .t::before { content: ''; position: absolute; left: 50%; top: -3px; bottom: -3px; border-left: 1px solid var(--rule-2); }
+.ra .t i { position: absolute; top: 0; bottom: 0; border-radius: 999px; }
+
+/* stock tiles */
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; }
+.tile { position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 6px; aspect-ratio: 1 / 1; padding: 14px; border: 0; border-radius: var(--r); background: var(--panel); box-shadow: var(--shadow); text-align: left; transition: background .2s; }
+button.tile:hover { background: color-mix(in srgb, var(--ground) 70%, var(--ink) 8%); }
+.tile .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; } .tile .nm { font-size: 17px; }
+.tile .bg { position: absolute; left: 0; right: 0; top: 46%; bottom: 64px; pointer-events: none; } .tile .bg svg { width: 100%; height: 100%; display: block; }
+.tile .fg { position: relative; display: flex; flex-direction: column; gap: 6px; height: 100%; text-shadow: 0 1px 8px var(--ground); }
+.tile .hero { font-size: 26px; line-height: 1; }
+.tile .foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-top: 8px; border-top: 1px solid var(--rule); }
+.tile .foot .val { font-size: 19px; line-height: 1.1; }
+.tile .foot .two { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; font-size: 13px; line-height: 1.2; } .tile .foot .two .meta { font-size: 12px; }
+
+/* where it sits */
+.half { display: block; width: min(100%, 250px); margin: 6px auto 8px; overflow: visible; filter: drop-shadow(0 8px 14px rgba(1, 3, 14, .45)); flex: none; }
+.alloc-list { list-style: none; margin: 0; padding: 0; flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; }
+.alloc-list li { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto auto; gap: 8px 10px; align-items: center; padding: 5px 0; border-top: 1px solid var(--rule); font-size: 15px; } .alloc-list li:first-child { border-top: 0; }
+.alloc-list i { width: 10px; height: 10px; border-radius: 50%; }
+.alloc-list small { color: var(--ink-3); font-size: 12px; } .alloc-list b { font-weight: 400; color: var(--ink-2); font-size: 14px; min-width: 2.4em; text-align: right; }
+
+/* day by day */
+.cal { display: grid; grid-auto-flow: column; gap: 4px; flex: 1; min-height: 110px; justify-content: start; align-content: center; }
+.cal button { border: 0; padding: 0; min-width: 0; min-height: 0; border-radius: 5px; background: var(--raise); }
+.cal button.sel { outline: 2px solid var(--ink); } .cal button.empty { background: none; pointer-events: none; }
+</style></template>
+
 <main class="page fin-page" id="finance-view" hidden>
   <div class="fin-head">
     <nav class="fin-tabs" role="tablist" aria-label="Finance">
@@ -2037,6 +2224,9 @@ hr.rule { margin: 36px 0; }
   </section>
 
   <section id="tab-budget" role="tabpanel" aria-label="Budget" hidden></section>
+
+  <!-- Investments: not in the tab list above; open it with #finance/investments -->
+  <section id="tab-investments" role="tabpanel" aria-label="Investments" hidden></section>
 
 </main>
 
@@ -2389,6 +2579,153 @@ hr.rule { margin: 36px 0; }
   </div>
 </dialog>
 
+<!-- Investments: add or edit a holding (the baseline lot) -->
+<datalist id="inv-syms"></datalist>
+<dialog class="sheet" id="inv-hold" aria-labelledby="inv-hold-h">
+  <form class="sheet-body" id="inv-hold-form" novalidate>
+    <div class="sheet-head">
+      <h2 id="inv-hold-h">Add a holding</h2>
+      <button class="icon-btn" type="button" data-close aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="props">
+      <div class="prop">
+        <label class="pl" for="ih-sym"><svg class="ic" aria-hidden="true"><use href="#i-tag"/></svg>NSE ticker</label>
+        <div class="prop-row"><input type="text" id="ih-sym" class="caps" list="inv-syms" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="e.g. RELIANCE"></div>
+      </div>
+      <div class="prop">
+        <label class="pl" for="ih-qty"><svg class="ic" aria-hidden="true"><use href="#i-shares"/></svg>Shares</label>
+        <div class="prop-row"><input type="number" id="ih-qty" min="1" step="1" inputmode="numeric" placeholder="e.g. 25"></div>
+      </div>
+      <div class="prop">
+        <label class="pl" for="ih-price"><svg class="ic" aria-hidden="true"><use href="#i-finance"/></svg>Buy price</label>
+        <div class="prop-row"><input type="number" id="ih-price" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 1450.50"></div>
+      </div>
+      <div class="prop">
+        <label class="pl" for="ih-date"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg>Date bought</label>
+        <div class="prop-row"><input type="date" id="ih-date"></div>
+      </div>
+    </div>
+    <p class="inv-name" id="ih-name" aria-live="polite"></p>
+    <p class="sheet-note">The baseline lot you started with. Later buys and sells go in as trades.</p>
+    <p class="err" id="ih-err" role="alert" hidden></p>
+    <div class="sheet-actions">
+      <button class="btn danger" type="button" id="ih-del" hidden><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg>Delete</button>
+      <span class="grow"></span>
+      <button class="btn" type="button" data-close>Cancel</button>
+      <button class="btn primary" type="submit" id="ih-save">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Investments: log a buy or a sell -->
+<dialog class="sheet" id="inv-trade" aria-labelledby="inv-trade-h">
+  <form class="sheet-body" id="inv-trade-form" novalidate>
+    <div class="sheet-head">
+      <h2 id="inv-trade-h">Log a trade</h2>
+      <button class="icon-btn" type="button" data-close aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <fieldset class="seg seg-types seg-two">
+      <legend class="sr">Bought or sold</legend>
+      <div class="seg-opts">
+        <label><input type="radio" name="it-side" value="buy" checked><span>Bought</span></label>
+        <label><input type="radio" name="it-side" value="sell"><span>Sold</span></label>
+      </div>
+    </fieldset>
+    <div class="props">
+      <div class="prop">
+        <label class="pl" for="it-sym"><svg class="ic" aria-hidden="true"><use href="#i-tag"/></svg>NSE ticker</label>
+        <div class="prop-row"><input type="text" id="it-sym" class="caps" list="inv-syms" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="e.g. RELIANCE"></div>
+      </div>
+      <div class="prop">
+        <label class="pl" for="it-date"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg>Date</label>
+        <div class="prop-row"><input type="date" id="it-date"></div>
+      </div>
+      <div class="prop">
+        <span class="pl"><svg class="ic" aria-hidden="true"><use href="#i-wallet"/></svg>Current stock</span>
+        <div class="prop-row"><div class="ro" id="it-held" aria-live="polite"></div></div>
+      </div>
+      <div class="prop">
+        <label class="pl" for="it-qty"><svg class="ic" aria-hidden="true"><use href="#i-shares"/></svg>Shares</label>
+        <div class="prop-row"><input type="number" id="it-qty" min="1" step="1" inputmode="numeric" placeholder="e.g. 10"></div>
+      </div>
+      <div class="prop">
+        <label class="pl" for="it-price"><svg class="ic" aria-hidden="true"><use href="#i-finance"/></svg>Price</label>
+        <div class="prop-row"><input type="number" id="it-price" min="0" step="0.01" inputmode="decimal"></div>
+      </div>
+      <div class="prop">
+        <label class="pl" for="it-fees"><svg class="ic" aria-hidden="true"><use href="#i-finance"/></svg>Fees</label>
+        <div class="prop-row"><input type="number" id="it-fees" min="0" step="0.01" inputmode="decimal" placeholder="Optional"></div>
+      </div>
+    </div>
+    <p class="inv-name" id="it-name" aria-live="polite"></p>
+    <p class="err" id="it-err" role="alert" hidden></p>
+    <div class="sheet-actions">
+      <button class="btn danger" type="button" id="it-del" hidden><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg>Delete</button>
+      <span class="grow"></span>
+      <button class="btn" type="button" data-close>Cancel</button>
+      <button class="btn primary" type="submit" id="it-save">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Investments: connect the price service -->
+<dialog class="sheet" id="inv-market" aria-labelledby="inv-market-h">
+  <form class="sheet-body" id="inv-market-form" novalidate>
+    <div class="sheet-head">
+      <h2 id="inv-market-h">Market data</h2>
+      <button class="icon-btn" type="button" data-close aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <p style="margin-bottom:14px;color:var(--ink-2)">Share prices come from a small script in your own Google account, because browsers can’t ask Yahoo Finance directly. Set it up once:</p>
+    <ol class="steps">
+      <li>Open <a href="https://script.google.com/home/projects/create" target="_blank" rel="noopener">a new Apps Script project</a>. In <strong>Project Settings</strong>, tick <em>Show “appsscript.json” manifest file in editor</em>, then paste this into it:<br>
+        <button class="btn small" type="button" data-copy="tracker-scripts/market-appsscript.json">Copy manifest</button></li>
+      <li>Replace everything in <code>Code.gs</code> with the script, and change <code>SECRET</code> at the top to any long random text:<br>
+        <button class="btn small" type="button" data-copy="tracker-scripts/market-quotes.gs">Copy script</button></li>
+      <li><strong>Deploy → New deployment → Web app</strong>. Execute as <em>Me</em>, access <em>Anyone</em>. Approve access, then copy the web app URL.</li>
+    </ol>
+    <div class="props">
+      <div class="prop">
+        <label class="pl" for="im-url"><svg class="ic" aria-hidden="true"><use href="#i-folder"/></svg>Web app URL</label>
+        <div class="prop-row"><input type="text" id="im-url" autocomplete="off" spellcheck="false" placeholder="https://script.google.com/macros/s/…/exec"></div>
+      </div>
+      <div class="prop">
+        <label class="pl" for="im-key"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg>Secret</label>
+        <div class="prop-row"><input type="text" id="im-key" autocomplete="off" spellcheck="false" placeholder="The same text as SECRET"></div>
+      </div>
+    </div>
+    <p class="err" id="im-err" role="alert" hidden></p>
+    <div class="sheet-actions">
+      <button class="btn danger" type="button" id="im-disconnect" hidden>Disconnect</button>
+      <span class="grow"></span>
+      <button class="btn" type="button" data-close>Cancel</button>
+      <button class="btn primary" type="submit" id="im-save">Save and test</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Investments: the full ledger -->
+<dialog class="sheet inv-big" id="inv-ledger" aria-labelledby="inv-ledger-h">
+  <div class="sheet-body">
+    <div class="sheet-head">
+      <h2 id="inv-ledger-h">Ledger</h2>
+      <button class="icon-btn" type="button" data-close aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <div id="inv-ledger-body"></div>
+  </div>
+</dialog>
+
+<!-- Investments: one stock in full -->
+<dialog class="sheet inv-stock" id="inv-stock" aria-labelledby="inv-stock-h">
+  <div class="sheet-body">
+    <div class="sheet-head">
+      <h2 id="inv-stock-h">Stock</h2>
+      <button class="icon-btn" type="button" data-close aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <p class="inv-sub" id="inv-stock-sub"></p>
+    <div id="inv-stock-body"></div>
+  </div>
+</dialog>
+
 <div class="chart-tip" id="chart-tip" role="tooltip" hidden></div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden><span id="toast-text"></span><button type="button" id="toast-action"></button></div>
 
@@ -2447,10 +2784,11 @@ hr.rule { margin: 36px 0; }
        meta     { id: 'weekly', weekStart } and { id: 'finance', lastSync }
        transactions { id: gmail message id, amount, type: 'debit' | 'credit' | 'unknown', description,
                   account, channel, date, time, subject, excerpt, needsReview }   (written by tracker-scripts/axis-alerts.gs)
+     holdings { id, symbol, name, qty, buyDate, buyPrice } and trades { id, symbol, name, date, side, qty, price, fees }   (the Investments tab)
      status: 'todo' | 'doing' | 'blocked' | 'done' | null      date: 'YYYY-MM-DD' | null
      The app only ever calls the five methods below.
      ===================================================================== */
-  const COLLECTIONS = ['tasks', 'projects', 'goals', 'notes', 'meta', 'transactions', 'payees', 'txmeta', 'budgets', 'cash', 'debts', 'deposits', 'savings', 'profiles', 'backgrounds', 'looks', 'habits', 'habitlog', 'worklog'];
+  const COLLECTIONS = ['tasks', 'projects', 'goals', 'notes', 'meta', 'transactions', 'payees', 'txmeta', 'budgets', 'cash', 'debts', 'deposits', 'savings', 'profiles', 'backgrounds', 'looks', 'habits', 'habitlog', 'worklog', 'holdings', 'trades'];
 
   function createLocalStore() {
     const PREFIX = 'tracker:';
@@ -2654,7 +2992,7 @@ hr.rule { margin: 36px 0; }
   }
 
   const store = CONFIG.firebase ? createFirebaseStore(CONFIG.firebase) : createLocalStore();
-  const state = { tasks: [], projects: [], goals: [], notes: [], meta: [], transactions: [], payees: [], txmeta: [], budgets: [], cash: [], debts: [], deposits: [], savings: [], profiles: [], backgrounds: [], looks: [], habits: [], habitlog: [], worklog: [] };
+  const state = { tasks: [], projects: [], goals: [], notes: [], meta: [], transactions: [], payees: [], txmeta: [], budgets: [], cash: [], debts: [], deposits: [], savings: [], profiles: [], backgrounds: [], looks: [], habits: [], habitlog: [], worklog: [], holdings: [], trades: [] };
 
   /* =====================================================================
      Dates (everything is reckoned in Hyderabad time)
@@ -3838,6 +4176,7 @@ hr.rule { margin: 36px 0; }
   function movePill(instant) {
     const active = document.querySelector('.fin-tabs a[aria-selected="true"]');
     const pill = document.querySelector('.tab-pill');
+    pill.style.opacity = active ? '' : '0';
     if (!active || !active.offsetWidth) return;
     pill.classList.toggle('instant', Boolean(instant));
     pill.style.width = `${active.offsetWidth}px`;
@@ -3851,22 +4190,26 @@ hr.rule { margin: 36px 0; }
   let view = 'tracker';
   let finTab = 'spending';
   let finMonth = thisMonth();
-  const FIN_TABS = ['spending', 'transactions', 'budget'];
+  const FIN_TABS = ['spending', 'transactions', 'budget'];   // the tabs in the bar
+  const LINK_TABS = ['investments'];                        // reached by link only
 
   function route() {
     const [name, tab] = location.hash.replace(/^#/, '').split('/');
     const before = view;
     const beforeTab = finTab;
     view = name === 'finance' ? 'finance' : 'tracker';   // #overview (or anything else) is the tracker
-    if (view === 'finance') finTab = FIN_TABS.includes(tab) ? tab : 'spending';
+    if (view === 'finance') finTab = FIN_TABS.includes(tab) || LINK_TABS.includes(tab) ? tab : 'spending';
     if (before !== view || beforeTab !== finTab || !routed) animateNext = true;
     document.body.dataset.view = view;
     $('tracker-view').hidden = view !== 'tracker';
     $('finance-view').hidden = view !== 'finance';
     document.querySelectorAll('.views a').forEach((a) => a.setAttribute('aria-current', a.dataset.view === view ? 'page' : 'false'));
     document.querySelectorAll('.fin-tabs a').forEach((a) => a.setAttribute('aria-selected', String(a.dataset.tab === finTab)));
-    FIN_TABS.forEach((t) => { $(`tab-${t}`).hidden = t !== finTab; });
-    if (view === 'finance') { movePill(before !== view || !routed); renderFinance(); }
+    [...FIN_TABS, ...LINK_TABS].forEach((t) => { $(`tab-${t}`).hidden = t !== finTab; });
+    const linkOnly = LINK_TABS.includes(finTab);
+    $('fm-prev').closest('.fin-month').hidden = linkOnly;
+    $('fin-menu-btn').closest('.fin-menu').hidden = linkOnly;
+    if (view === 'finance') { movePill(before !== view || !routed); renderFinance(); if (finTab === 'investments' && (before !== view || beforeTab !== finTab || !routed)) INV.enter(); }
     if (view === 'tracker' && (before !== view || !routed)) enterTracker();
     if (before !== view) window.scrollTo(0, 0);
     routed = true;
@@ -3929,6 +4272,7 @@ hr.rule { margin: 36px 0; }
     if (finTab === 'spending') renderSpendingTab();
     if (finTab === 'transactions') renderTransactionsTab();
     if (finTab === 'budget') renderBudgetTab();
+    if (finTab === 'investments') INV.render();
     applyVeil();
     if (animate) {
       const panel = $(`tab-${finTab}`);
@@ -3950,6 +4294,7 @@ hr.rule { margin: 36px 0; }
     spending: '.panel > :not(.kicker), .tile > *',
     transactions: '#tx-summary, #tx-list',
     budget: '.fin-grid .panel > :not(.ptitle)',
+    investments: '.panel > :not(.kicker), .tile > *',
   };
   const veilCards = (root, tab) => (tab === 'transactions' ? [...root.querySelectorAll('#tx-summary, #tx-list')]
     : [...root.querySelectorAll(tab === 'budget' ? '.fin-grid .panel' : '.panel, .tile')]);
@@ -3979,10 +4324,10 @@ hr.rule { margin: 36px 0; }
   const tipVeiled = (target) => Boolean(target.closest('[data-veil="on"]')) && !target.closest('.open');
 
   function applyVeil() {
-    for (const tab of ['spending', 'transactions', 'budget']) {
+    for (const tab of ['spending', 'transactions', 'budget', 'investments']) {
       const host = $(`tab-${tab}`);
       host.dataset.veil = veilOn ? 'on' : 'off';
-      const root = tab === 'spending' ? (SP.sr || host) : host;
+      const root = tab === 'spending' ? (SP.sr || host) : tab === 'investments' ? (INV.root() || host) : host;
       veilCards(root, tab).forEach((card, i) => {
         const open = veilOpen.has(`${tab}:${i}`);
         card.classList.toggle('open', open);
@@ -5227,7 +5572,7 @@ hr.rule { margin: 36px 0; }
   let lastFinWidth = 0;
   new ResizeObserver((entries) => {
     const width = Math.round(entries[0].contentRect.width);
-    if (view === 'finance' && finTab === 'spending' && Math.abs(width - lastFinWidth) > 4) { lastFinWidth = width; requestAnimationFrame(renderFinance); }
+    if (view === 'finance' && (finTab === 'spending' || finTab === 'investments') && Math.abs(width - lastFinWidth) > 4) { lastFinWidth = width; requestAnimationFrame(renderFinance); }
   }).observe($('finance-view'));
 
   /* ---------- Connecting Gmail ---------- */
@@ -5254,7 +5599,7 @@ hr.rule { margin: 36px 0; }
   }));
 
   // what the first sign-in copies from this browser into the account
-  const BACKED_UP = ['tasks', 'projects', 'goals', 'notes', 'payees', 'txmeta', 'budgets', 'cash', 'debts', 'deposits', 'savings', 'profiles', 'backgrounds', 'looks'];
+  const BACKED_UP = ['tasks', 'projects', 'goals', 'notes', 'payees', 'txmeta', 'budgets', 'cash', 'debts', 'deposits', 'savings', 'profiles', 'backgrounds', 'looks', 'holdings', 'trades'];
 
 
   if (!CONFIG.firebase) document.body.classList.remove('locked');
@@ -6028,6 +6373,866 @@ hr.rule { margin: 36px 0; }
     await store.set('meta', 'weekly', { weekStart: week });
     resetting = false;
   }
+
+  /* =====================================================================
+     Investments  (reached by link only: #finance/investments, not listed with the Finance tabs)
+     Prices come from tracker-scripts/market-quotes.gs; what you own is kept in two collections:
+       holdings { id, symbol, name, qty, buyDate, buyPrice }               the baseline lot you start with (NSE ticker)
+       trades   { id, symbol, name, date, side: 'buy' | 'sell', qty, price, fees }   buys and sells logged later
+     meta/market { url, key } is the price service. A holding and its trades are walked in date order with the
+     average-cost method; splits, bonuses and dividends are not handled (edit the holding to correct for them).
+     Everything on the tab is recomputed from those and the cached prices whenever either changes.
+     ===================================================================== */
+  const INV = (() => {
+    const X = { sr: null, range: '3M', focus: '', view: 'gain', day: '', ledgerSym: '', ledgerType: 'all', stock: '', stockRange: 'ALL', timer: 0 };
+    const MK = { daily: {}, intra: {}, names: {}, error: '', busy: false, intraAt: 0, tried: {} };
+    const BENCH = '^NSEI';
+    const SLOTS = 375;   // one-minute bars from 09:15 to 15:30
+    const RANGES = { '1D': 1, '1W': 5, '1M': 21, '3M': 63, 'ALL': 9999 };
+    const N = (s) => s;
+    const rs = (n) => rupees.format(Math.round(n));
+    const rs2 = (n) => rupeesExact.format(n);
+    const sgn = (n, f = rs) => `${n > 0.0049 ? '+' : n < -0.0049 ? '−' : ''}${f(Math.abs(n))}`;
+    const pctS = (n) => `${n > 0.004 ? '+' : n < -0.004 ? '−' : ''}${Math.abs(n).toFixed(2)}%`;
+    const cls = (n) => (n > 0.0049 ? 'up' : n < -0.0049 ? 'down' : '');
+    const dn = (k) => { const d = parseKey(k); return `${d.getUTCDate()} ${SP_MON[d.getUTCMonth()]} ${d.getUTCFullYear()}`; };
+    const dShort = (k) => { const d = parseKey(k); return `${d.getUTCDate()} ${SP_MON[d.getUTCMonth()]}`; };
+    const isWeekday = (k) => { const w = parseKey(k).getUTCDay(); return w !== 0 && w !== 6; };
+    const lsGet = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
+    const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* storage full or blocked: prices are just fetched again */ } };
+    const q = (id) => X.sr.getElementById(id);
+    const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    const clean = (s) => String(s || '').trim().toUpperCase().replace(/\.NS$/, '').replace(/[^A-Z0-9&-]/g, '');
+    MK.names = lsGet('inv:names') || {};
+    MK.intra = lsGet('inv:intra') || {};
+
+    /* ---------- the price service ---------- */
+    const cfg = () => { const m = state.meta.find((x) => x.id === 'market'); return m && m.url && m.key ? m : null; };
+    async function api(op, params = {}) {
+      const c = cfg();
+      if (!c) throw new Error('Market data isn’t connected yet.');
+      const u = new URL(c.url);
+      u.searchParams.set('key', c.key);
+      u.searchParams.set('op', op);
+      for (const [k, v] of Object.entries(params)) u.searchParams.set(k, v);
+      const res = await fetch(u.toString(), { cache: 'no-store' });
+      if (!res.ok) throw new Error(`The price service answered ${res.status}.`);
+      const data = await res.json();
+      if (data && data.error) throw new Error(data.error);
+      return data;
+    }
+    const rememberName = (sym, name) => { if (!name || MK.names[sym] === name) return; MK.names[sym] = name; lsSet('inv:names', MK.names); };
+    const nameOf = (sym) => state.holdings.concat(state.trades).find((d) => clean(d.symbol) === sym && d.name)?.name || MK.names[sym] || sym;
+    const nameKnown = (sym) => Boolean(MK.names[sym] || state.holdings.concat(state.trades).some((d) => clean(d.symbol) === sym));
+
+    const dayOf = (ts) => keyFmt.format(new Date(ts * 1000));
+    const slotOf = (ts) => (Math.floor((ts + 19800) / 60) % 1440) - 555;   // minutes after 09:15 Hyderabad time
+    const slotTime = (i) => { const m = 555 + i; return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`; };
+    function marketOpenNow() {
+      const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: TZ, weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false }).formatToParts(new Date()).map((p) => [p.type, p.value]));
+      const mins = Number(parts.hour) * 60 + Number(parts.minute);
+      return !['Sat', 'Sun'].includes(parts.weekday) && mins >= 555 && mins <= 15 * 60 + 35;
+    }
+
+    const symbols = () => [...new Set(state.holdings.concat(state.trades).map((d) => clean(d.symbol)).filter(Boolean))];
+    const firstDate = () => state.holdings.map((h) => h.buyDate).concat(state.trades.map((t) => t.date)).filter(Boolean).sort()[0] || todayKey();
+
+    async function loadDaily(force) {
+      const syms = symbols();
+      if (!syms.length) return;
+      const from = addDays(firstDate(), -10);
+      const need = [];
+      for (const s of [...syms, BENCH]) {
+        let c = MK.daily[s] || lsGet(`inv:daily:${s}`);
+        if (c) MK.daily[s] = c;
+        if (!c || c.from > from || Date.now() - c.stamp > 6 * 3600e3 || force) need.push(s);
+      }
+      if (!need.length) return;
+      const data = await api('daily', { s: need.join(','), from });
+      for (const s of need) {
+        const r = data[s];
+        if (!r || r.error || !r.t || !r.t.length) continue;
+        const byDay = new Map();
+        r.t.forEach((t, i) => byDay.set(dayOf(t), r.c[i]));
+        const rec = { from, stamp: Date.now(), d: [...byDay.keys()], c: [...byDay.values()] };
+        MK.daily[s] = rec;
+        lsSet(`inv:daily:${s}`, rec);
+        if (r.name && s !== BENCH) rememberName(s, r.name);
+      }
+    }
+
+    async function loadIntra() {
+      const syms = symbols();
+      if (!syms.length) return;
+      const data = await api('intraday', { s: syms.join(',') });
+      for (const s of syms) {
+        const r = data[s];
+        if (!r || r.error || !r.t || !r.t.length) continue;
+        const slots = new Array(SLOTS).fill(null);
+        r.t.forEach((t, i) => { const k = slotOf(t); if (k >= 0 && k < SLOTS) slots[k] = r.c[i]; });
+        const cur = Math.min(SLOTS - 1, Math.max(0, slotOf(r.t[r.t.length - 1])));
+        let carry = null;
+        for (let i = 0; i < SLOTS; i += 1) { if (slots[i] == null) slots[i] = carry; else carry = slots[i]; }
+        MK.intra[s] = { day: dayOf(r.t[r.t.length - 1]), price: r.price ?? r.c[r.c.length - 1], prev: r.prev, cur, slots };
+        if (r.name) rememberName(s, r.name);
+      }
+      MK.intraAt = Date.now();
+      lsSet('inv:intra', MK.intra);
+    }
+
+    async function refresh({ force = false, daily = true } = {}) {
+      if (!cfg() || MK.busy || !symbols().length) { draw(); return; }
+      MK.busy = true;
+      try {
+        if (daily) await loadDaily(force);
+        await loadIntra();
+        MK.error = '';
+      } catch (err) {
+        console.error('Market data:', err);
+        MK.error = err.message || 'Prices could not be loaded.';
+      }
+      MK.busy = false;
+      draw();
+    }
+
+    /* ---------- positions: the baseline and the trades walked in date order, average cost ---------- */
+    function eventsFor(sym, hs = state.holdings, ts = state.trades) {
+      const ev = [];
+      hs.filter((h) => clean(h.symbol) === sym).forEach((h) => ev.push({ kind: 'base', id: h.id, d: h.buyDate, side: 'buy', qty: +h.qty, price: +h.buyPrice, fees: 0 }));
+      ts.filter((t) => clean(t.symbol) === sym).forEach((t) => ev.push({ kind: 'trade', id: t.id, d: t.date, side: t.side, qty: +t.qty, price: +t.price, fees: +t.fees || 0 }));
+      const order = (e) => (e.kind === 'base' ? 0 : 1) + (e.side === 'sell' ? 2 : 0);
+      return ev.sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : order(a) - order(b)));
+    }
+    function walk(events) {
+      let qty = 0, cost = 0, realised = 0;
+      return events.map((e) => {
+        let gain = null;
+        if (e.side === 'buy') { cost += e.qty * e.price + e.fees; qty += e.qty; }
+        else { const avg = qty ? cost / qty : 0; gain = e.qty * (e.price - avg) - e.fees; realised += gain; cost -= avg * e.qty; qty -= e.qty; }
+        return { ...e, qtyAfter: qty, costAfter: cost, realisedAfter: realised, gain };
+      });
+    }
+    const firstShort = (sym, hs, ts) => walk(eventsFor(sym, hs, ts)).find((e) => e.qtyAfter < -1e-9)?.d || null;
+    function stateOn(sym, d) {
+      const w = walk(eventsFor(sym)).filter((e) => e.d <= d);
+      const last = w[w.length - 1];
+      return last ? { qty: last.qtyAfter, cost: last.costAfter, realised: last.realisedAfter } : { qty: 0, cost: 0, realised: 0 };
+    }
+
+    /* the trading days we have prices for, the last session, and the one before it */
+    let cache = null;
+    function ctx() {
+      if (cache) return cache;
+      const syms = symbols();
+      const set = new Set();
+      for (const s of [...syms, BENCH]) (MK.daily[s]?.d || []).forEach((d) => set.add(d));
+      const today = todayKey();
+      const live = syms.map((s) => MK.intra[s]).filter(Boolean).map((x) => x.day).sort();
+      const lastClose = [...set].sort().filter((d) => d <= today).pop();   // an older cached session must not hide a newer close
+      let last = [live[live.length - 1], lastClose].filter(Boolean).sort().pop() || today;
+      if (last > today) last = today;
+      set.add(last);
+      const days = [...set].filter((d) => d <= last).sort();
+      cache = { syms, days, last, prev: days[days.indexOf(last) - 1] || null, isToday: last === today, hasPrices: set.size > 1 };
+      return cache;
+    }
+    function dailyClose(sym, d) {
+      const m = MK.daily[sym];
+      if (!m) return null;
+      let lo = 0, hi = m.d.length - 1, ans = -1;
+      while (lo <= hi) { const mid = (lo + hi) >> 1; if (m.d[mid] <= d) { ans = mid; lo = mid + 1; } else hi = mid - 1; }
+      return ans >= 0 ? m.c[ans] : null;
+    }
+    const liveRec = (sym) => { const i = MK.intra[sym]; return i && i.day === ctx().last ? i : null; };
+    // what it cost: the average cost of what was held on that day, or the first price paid. Stands in until a price is known, so gains read as zero rather than wrong
+    const costPrice = (sym, d) => { const st = stateOn(sym, d); return st.qty > 0 ? st.cost / st.qty : eventsFor(sym)[0]?.price || 0; };
+    // the price on a day: the live price on the last session, else the latest close at or before it
+    function px(sym, d) {
+      const C = ctx();
+      if (d >= C.last) return liveRec(sym)?.price ?? dailyClose(sym, d) ?? costPrice(sym, d);
+      return dailyClose(sym, d) ?? costPrice(sym, d);
+    }
+    const prevClose = (sym) => { const l = liveRec(sym); const C = ctx(); return (l && l.prev) || (C.prev && dailyClose(sym, C.prev)) || px(sym, C.last); };
+    const slotPx = (sym, i) => liveRec(sym)?.slots[i] ?? prevClose(sym);
+
+    function position(sym) {
+      const C = ctx();
+      const w = walk(eventsFor(sym));
+      const now = w.length ? w[w.length - 1] : { qtyAfter: 0, costAfter: 0, realisedAfter: 0 };
+      const prev = C.prev ? stateOn(sym, C.prev) : { qty: 0, cost: 0 };
+      const today = w.filter((e) => e.d === C.last);
+      const flow = today.reduce((s, e) => s + (e.side === 'buy' ? e.qty * e.price + e.fees : -(e.qty * e.price - e.fees)), 0);
+      const last = px(sym, C.last), pc = prevClose(sym);
+      const value = now.qtyAfter * last;
+      const dayChg = value - prev.qty * pc - flow;
+      const dayBase = prev.qty * pc + Math.max(0, flow);
+      return {
+        sym, name: nameOf(sym), qty: now.qtyAfter, cost: now.costAfter, avg: now.qtyAfter ? now.costAfter / now.qtyAfter : 0,
+        last, prevClose: pc, value, dayChg, dayPct: dayBase ? (dayChg / dayBase) * 100 : 0,
+        unreal: value - now.costAfter, unrealPct: now.costAfter ? ((value - now.costAfter) / now.costAfter) * 100 : 0,
+        realised: now.realisedAfter, since: eventsFor(sym)[0]?.d,
+      };
+    }
+    function summary() {
+      const rows = ctx().syms.map(position);
+      const open = rows.filter((r) => r.qty > 1e-9).sort((a, b) => b.value - a.value);
+      const closed = rows.filter((r) => r.qty <= 1e-9);
+      const sum = (k, list = rows) => list.reduce((s, r) => s + r[k], 0);
+      const t = { value: sum('value', open), cost: sum('cost', open), dayChg: sum('dayChg'), unreal: sum('unreal', open), realised: sum('realised') };
+      const base = t.value - t.dayChg;
+      t.dayPct = base > 0 ? (t.dayChg / base) * 100 : 0;
+      t.unrealPct = t.cost ? (t.unreal / t.cost) * 100 : 0;
+      t.xirr = xirr(t.value);
+      return { open, closed, rows, t };
+    }
+    function xirr(value) {
+      const flows = [];
+      ctx().syms.forEach((s) => eventsFor(s).forEach((e) => flows.push([e.d, e.side === 'buy' ? -(e.qty * e.price + e.fees) : e.qty * e.price - e.fees])));
+      if (!flows.length) return null;
+      flows.push([todayKey(), value]);
+      const t0 = parseKey(flows.reduce((m, f) => (f[0] < m ? f[0] : m), todayKey())).getTime();
+      const f = (r) => flows.reduce((s, [d, a]) => s + a / Math.pow(1 + r, (parseKey(d).getTime() - t0) / (365 * 864e5)), 0);
+      let lo = -0.9, hi = 5;
+      if (f(lo) * f(hi) > 0) return null;
+      for (let i = 0; i < 80; i += 1) { const mid = (lo + hi) / 2; if (f(lo) * f(mid) <= 0) hi = mid; else lo = mid; }
+      const span = (parseKey(todayKey()).getTime() - t0) / 864e5;
+      return span < 30 ? null : ((lo + hi) / 2) * 100;   // under a month the annual rate means little
+    }
+
+    /* the chart series for the whole portfolio, or one stock */
+    function seriesFor(sym, range) {
+      const C = ctx();
+      const syms = sym ? [sym] : C.syms;
+      const evs = syms.flatMap((s) => walk(eventsFor(s)).map((e) => ({ ...e, sym: s })));
+      const first = evs.reduce((m, e) => (e.d < m ? e.d : m), C.last);
+      if (range === '1D' && syms.some((s) => liveRec(s))) {
+        const states = syms.map((s) => ({ s, now: stateOn(s, C.last), prev: C.prev ? stateOn(s, C.prev) : { qty: 0 } }));
+        const cur = Math.max(0, ...syms.map((s) => liveRec(s)?.cur ?? 0));
+        const value = [], labels = [];
+        for (let i = 0; i <= cur; i += 1) { value.push(states.reduce((a, x) => a + x.now.qty * slotPx(x.s, i), 0)); labels.push(slotTime(i)); }
+        const ref = states.reduce((a, x) => a + x.prev.qty * prevClose(x.s), 0);
+        const cost = states.reduce((a, x) => a + x.now.cost, 0);
+        const xticks = []; for (let i = 0; i < SLOTS; i += 75) xticks.push({ i, t: slotTime(i) }); xticks.push({ i: SLOTS - 1, t: slotTime(SLOTS - 1) });
+        return { range, value, cost: value.map(() => cost), labels, total: SLOTS, xticks, ref, markers: [], dates: value.map(() => C.last), intraday: true };
+      }
+      const want = range === '1D' ? '1W' : range;
+      const startDay = want === 'ALL' ? first : C.days[Math.max(0, C.days.length - RANGES[want])] || first;
+      const dates = C.days.filter((d) => d >= (first > startDay ? first : startDay));
+      const per = syms.map((s) => ({ s, w: walk(eventsFor(s)) }));
+      const value = [], cost = [], realised = [];
+      dates.forEach((d) => {
+        let v = 0, c = 0, r = 0;
+        per.forEach(({ s, w }) => { let st = { qtyAfter: 0, costAfter: 0, realisedAfter: 0 }; for (const e of w) { if (e.d <= d) st = e; else break; } v += st.qtyAfter * px(s, d); c += st.costAfter; r += st.realisedAfter; });
+        value.push(v); cost.push(c); realised.push(r);
+      });
+      const idxOf = (d) => dates.findIndex((x) => x >= d);
+      const markers = evs.filter((e) => e.d >= dates[0]).map((e) => ({ i: idxOf(e.d), side: e.side, sym: e.sym, tip: `${e.side === 'buy' ? 'Bought' : 'Sold'} ${e.qty} ${e.sym} @ ${rupeesExact.format(e.price)}` })).filter((m) => m.i >= 0);
+      const labels = dates.map(dShort);
+      const n = dates.length, step = Math.max(1, Math.round(n / 5));
+      const xticks = []; for (let i = 0; i < n; i += step) xticks.push({ i, t: labels[i] });
+      return { range, value, cost, realised, labels, total: n, xticks, ref: null, markers, dates };
+    }
+    function flowsByDay(syms) {
+      const m = {};
+      syms.forEach((s) => eventsFor(s).forEach((e) => { m[e.d] = (m[e.d] || 0) + (e.side === 'buy' ? e.qty * e.price + e.fees : -(e.qty * e.price - e.fees)); }));
+      return m;
+    }
+    // what the money did over a range, with buys and sells taken out
+    function figures(sym, range) {
+      const C = ctx(), s = seriesFor(sym || null, range), syms = sym ? [sym] : C.syms, T = summary().t;
+      const flows = flowsByDay(syms);
+      let perf, chg, pct;
+      if (s.intraday) {
+        perf = s.value.map((v) => v - s.ref - (flows[C.last] || 0));
+        const p = sym ? position(sym) : T;
+        chg = p.dayChg; pct = p.dayPct;
+      } else {
+        let run = 0;
+        perf = s.value.map((v, i) => (i === 0 ? 0 : (run += v - s.value[i - 1] - (flows[s.dates[i]] || 0))));
+        chg = perf[perf.length - 1] || 0;
+        pct = s.value[0] > 0 ? (chg / s.value[0]) * 100 : 0;
+      }
+      return { s, perf, chg, pct, now: s.value[s.value.length - 1] || 0, up: chg >= 0 };
+    }
+    function dayReport(d) {
+      const C = ctx();
+      const i = C.days.indexOf(d), pd = i > 0 ? C.days[i - 1] : null;
+      const rows = C.syms.map((s) => {
+        const st = pd ? stateOn(s, pd) : { qty: 0 };
+        const now = d === C.last ? px(s, d) : dailyClose(s, d) ?? px(s, d);
+        const before = d === C.last ? prevClose(s) : pd ? dailyClose(s, pd) ?? now : now;
+        return { sym: s, move: st.qty * (now - before), held: st.qty, trades: walk(eventsFor(s)).filter((e) => e.d === d) };
+      }).filter((r) => r.held > 0 || r.trades.length);
+      return { rows, total: rows.reduce((a, r) => a + r.move, 0) };
+    }
+    function analytics() {
+      const C = ctx(), s = seriesFor(null, 'ALL'), fl = flowsByDay(C.syms);
+      const dates = s.dates, v = s.value;
+      const pnl = dates.map((d, i) => (i === 0 ? v[0] - (fl[d] || 0) : v[i] - v[i - 1] - (fl[d] || 0)));
+      const tw = dates.map((d, i) => (i === 0 ? 0 : v[i - 1] > 0 ? pnl[i] / v[i - 1] : 0));
+      let g = 1; const idx = tw.map((r) => (g *= 1 + r));
+      // the same money put into the Nifty on the same days, if the index prices are in
+      const bench = (d) => dailyClose(BENCH, d);
+      const haveBench = MK.daily[BENCH] && dates.every((d) => bench(d) != null);
+      let alt = null, niftyRet = null;
+      if (haveBench) { let units = 0; alt = dates.map((d) => { units += (fl[d] || 0) / bench(d); return units * bench(d); }); niftyRet = (bench(dates[dates.length - 1]) / bench(dates[0]) - 1) * 100; }
+      const contrib = C.syms.map((x) => { const p = position(x); return { sym: x, total: p.unreal + p.realised, open: p.qty > 0 }; }).sort((a, b) => b.total - a.total);
+      const months = {}; dates.forEach((d, i) => { const k = d.slice(0, 7); months[k] = (months[k] || 0) + pnl[i]; });
+      return { s, dates, pnl, v, alt, twr: (idx[idx.length - 1] - 1) * 100, niftyRet, contrib, months, up: pnl.filter((x, i) => i && x > 0).length, days: Math.max(0, pnl.length - 1) };
+    }
+
+    /* ---------- drawing ---------- */
+    const smooth = (P) => {
+      let d = `M${P[0][0].toFixed(1)},${P[0][1].toFixed(1)}`;
+      for (let i = 0; i < P.length - 1; i += 1) {
+        const a = P[i - 1] || P[i], b = P[i], c = P[i + 1], e = P[i + 2] || c;
+        d += `C${(b[0] + (c[0] - a[0]) / 7).toFixed(1)},${(b[1] + (c[1] - a[1]) / 7).toFixed(1)} ${(c[0] - (e[0] - b[0]) / 7).toFixed(1)},${(c[1] - (e[1] - b[1]) / 7).toFixed(1)} ${c[0].toFixed(1)},${c[1].toFixed(1)}`;
+      }
+      return d;
+    };
+    const lin = (P) => P.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join('');
+    const GREEN = '169,223,178', RED = '245,168,150';
+
+    /* one chart: o = { v, cost, labels, xticks, markers, total, up, mode: 'perf' | 'value', padTop, padX, onPick, label } */
+    function plot(host, o) {
+      if (!o.v.length) { host.replaceChildren(); return; }
+      const W = Math.max(240, host.clientWidth || 500), H = Math.max(110, host.clientHeight || 200);
+      const pl = o.padX ?? 4, pr = o.padX ?? 8, pt = o.padTop ?? 10, pb = 22, n = o.v.length, total = o.total || n;
+      const all = [...o.v, ...(o.cost || []), ...(o.mode === 'perf' ? [0] : [])];
+      let lo = Math.min(...all), hi = Math.max(...all);
+      if (!(hi > lo)) { hi = lo + 1; lo -= 1; }
+      const pad = (hi - lo) * 0.1; lo -= pad; hi += pad;
+      if (o.mode === 'value') lo = Math.max(0, lo);
+      const x = (i) => pl + (i / Math.max(1, total - 1)) * (W - pl - pr), y = (v) => pt + (H - pt - pb) * (1 - (v - lo) / (hi - lo));
+      const tone = o.up ? GREEN : RED, id = 'p' + Math.random().toString(36).slice(2, 6);
+      const P = o.v.map((v, i) => [x(i), y(v)]), line = P.length > 2 ? smooth(P) : lin(P), last = P[P.length - 1];
+      let s = '';
+      if (o.mode === 'perf') {
+        const z = Math.min(1, Math.max(0, (y(0) - y(hi)) / (y(lo) - y(hi))));
+        s += `<defs><linearGradient id="${id}f" gradientUnits="userSpaceOnUse" x1="0" y1="${y(hi)}" x2="0" y2="${y(lo)}"><stop offset="0" stop-color="rgb(${GREEN})" stop-opacity=".42"/><stop offset="${z}" stop-color="rgb(${GREEN})" stop-opacity=".02"/><stop offset="${z}" stop-color="rgb(${RED})" stop-opacity=".02"/><stop offset="1" stop-color="rgb(${RED})" stop-opacity=".42"/></linearGradient>
+          <linearGradient id="${id}s" gradientUnits="userSpaceOnUse" x1="0" y1="${y(hi)}" x2="0" y2="${y(lo)}"><stop offset="${z}" stop-color="rgb(${GREEN})"/><stop offset="${z}" stop-color="rgb(${RED})"/></linearGradient></defs>
+          <line x1="${pl}" x2="${W - pr}" y1="${y(0)}" y2="${y(0)}" stroke="var(--rule-2)" stroke-dasharray="3 5"/><text x="${pl}" y="${y(0) - 5}">₹0</text>
+          <path d="${line}L${last[0]},${y(0)}L${P[0][0]},${y(0)}Z" fill="url(#${id}f)"/><path d="${line}" fill="none" stroke="url(#${id}s)" stroke-width="2"/>`;
+      } else {
+        s += `<defs><linearGradient id="${id}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgb(${tone})" stop-opacity=".38"/><stop offset=".85" stop-color="rgb(${tone})" stop-opacity=".03"/><stop offset="1" stop-color="rgb(${tone})" stop-opacity="0"/></linearGradient></defs>
+          ${o.cost ? `<path d="${lin(o.cost.map((v, i) => [x(i), y(v)]))}" fill="none" stroke="var(--ink-3)" stroke-width="1.4" stroke-dasharray="4 5" opacity=".7"/>` : ''}
+          <path d="${line}L${last[0]},${y(lo)}L${P[0][0]},${y(lo)}Z" fill="url(#${id}f)"/><path d="${line}" fill="none" stroke="rgb(${tone})" stroke-width="2"/>`;
+      }
+      s += `<circle cx="${last[0]}" cy="${last[1]}" r="8" fill="rgb(${tone})" opacity=".22"/><circle cx="${last[0]}" cy="${last[1]}" r="4" fill="rgb(${tone})"/>`;
+      (o.xticks || []).forEach((t) => { s += `<text x="${x(t.i)}" y="${H - 5}" text-anchor="${t.i === 0 ? 'start' : t.i >= total - 1 ? 'end' : 'middle'}">${t.t}</text>`; });
+      (o.markers || []).forEach((m) => { s += `<circle cx="${x(m.i)}" cy="${y(o.v[m.i])}" r="5.5" fill="${m.side === 'buy' ? `rgb(${GREEN})` : `rgb(${RED})`}" stroke="#0c1531" stroke-width="2"><title>${spEsc(m.tip)}</title></circle>`; });
+      s += `<line class="cross" y1="${pt}" y2="${H - pb}" style="display:none"/><rect class="hit" x="0" y="0" width="${W}" height="${H}" fill="transparent"/>`;
+      host.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${spEsc(o.label || 'Chart')}">${s}</svg><div class="tip" hidden></div>`;
+      const svgEl = host.querySelector('svg'), tip = host.querySelector('.tip'), cx = host.querySelector('.cross'), hit = host.querySelector('.hit');
+      const at = (e) => { const r = svgEl.getBoundingClientRect(); return Math.max(0, Math.min(n - 1, Math.round(((((e.clientX - r.left) / r.width) * W - pl) / (W - pl - pr)) * (total - 1)))); };
+      hit.addEventListener('pointermove', (e) => {
+        const i = at(e), px_ = x(i);
+        cx.setAttribute('x1', px_); cx.setAttribute('x2', px_); cx.style.display = '';
+        tip.innerHTML = `${spEsc(o.labels[i])} · ${o.mode === 'perf' ? sgn(o.v[i]) : rs(o.v[i])}${(o.markers || []).filter((m) => m.i === i).map((m) => `<small>${spEsc(m.tip)}</small>`).join('')}`;
+        tip.hidden = false; tip.style.left = `${Math.max(70, Math.min(W - 70, px_))}px`; tip.style.top = `${y(o.v[i])}px`;
+      });
+      hit.addEventListener('pointerleave', () => { tip.hidden = true; cx.style.display = 'none'; });
+      if (o.onPick) hit.addEventListener('click', (e) => o.onPick(at(e)));
+    }
+
+    /* the 1-month trend behind a stock tile */
+    const area = (values) => {
+      if (values.length < 2) return '';
+      const lo = Math.min(...values), hi = Math.max(...values), w = 100, h = 40, up = values[values.length - 1] >= values[0];
+      const p = values.map((v, i) => `${i ? 'L' : 'M'}${((i / (values.length - 1)) * w).toFixed(1)},${(h - 3 - ((v - lo) / (hi - lo || 1)) * (h - 10)).toFixed(1)}`).join('');
+      const c = up ? GREEN : RED, id = 'g' + Math.random().toString(36).slice(2, 7);
+      return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgb(${c})" stop-opacity=".34"/><stop offset="1" stop-color="rgb(${c})" stop-opacity="0"/></linearGradient></defs><path d="${p}L${w},${h}L0,${h}Z" fill="url(#${id})"/><path d="${p}" fill="none" stroke="rgb(${c})" stroke-width="1.8" vector-effect="non-scaling-stroke"/></svg>`;
+    };
+    const TRI = '<svg viewBox="0 0 8 8" aria-hidden="true"><path d="M4 1l3.2 5.5H.8z"/></svg>';
+    const PEN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16zM13 7l4 4"/></svg>';
+
+    const MARKUP = `<div class="sp-wrap">
+      <div class="status" id="inv-status"></div>
+      <div id="inv-full">
+        <div class="strip" id="strip" role="group" aria-label="Summary"></div>
+        <div class="cols2">
+          <div class="colx"><section class="panel overview" id="ov" aria-label="Portfolio"></section></div>
+          <div class="colx"><div class="pair2 h1"><div class="midcol"><section class="panel" id="dayinfo" aria-label="What changed"></section></div><section class="panel" id="contrib" aria-label="Where the money came from"></section></div></div>
+        </div>
+        <hr class="rule">
+        <div class="cols2">
+          <div class="colx"><div class="tiles" id="cards"></div><section class="panel" id="months" aria-label="Month by month"></section></div>
+          <div class="colx"><section class="panel" id="calendar" aria-label="Day by day"></section><div class="pair2 h2"><section class="panel" id="vs" aria-label="Versus the market"></section><div class="midcol"><section class="panel" id="alloc" aria-label="Where it sits"></section></div></div></div>
+        </div>
+      </div>
+      <div id="inv-empty" hidden></div>
+    </div>`;
+
+    function shell() {
+      const host = $('tab-investments');
+      X.sr = host.attachShadow({ mode: 'open' });
+      X.sr.append(document.getElementById('inv-tpl').content.cloneNode(true));
+      X.sr.append(el('slot'));
+      const body = el('div', { id: 'inv-body' });
+      body.innerHTML = MARKUP;
+      X.sr.append(body);
+      veilClick('investments', X.sr);
+      watchVeil(X.sr);
+    }
+
+    function draw() {
+      if (view !== 'finance' || finTab !== 'investments') return;
+      if (!X.sr) shell();
+      cache = null;
+      const hasAny = state.holdings.length || state.trades.length;
+      q('inv-full').hidden = !hasAny;
+      q('inv-empty').hidden = Boolean(hasAny);
+      drawStatus();
+      if (!hasAny) { drawEmpty(); return; }
+      const S = summary(), T = S.t, A = analytics(), C = ctx();
+      drawStrip(S, A);
+      drawChart(S);
+      drawDay(S);
+      drawContrib(A);
+      drawTiles(S);
+      drawMonths(A);
+      drawCalendar(A);
+      drawVs(A);
+      drawAlloc(S);
+      if (!C.hasPrices) q('inv-status').dataset.noprices = '1'; else delete q('inv-status').dataset.noprices;
+      // anything a holding is missing prices for gets asked for once
+      const missing = C.syms.filter((s) => !MK.daily[s] && !(MK.tried[s] && Date.now() - MK.tried[s] < 5 * 60e3));
+      if (missing.length && cfg() && !MK.busy) { missing.forEach((s) => { MK.tried[s] = Date.now(); }); refresh(); }
+    }
+
+    function drawStatus() {
+      const C = ctx(), live = C.isToday && marketOpenNow() && liveRec(C.syms[0]);
+      let text;
+      if (!cfg()) text = 'Prices aren’t connected yet.';
+      else if (MK.error) text = `Couldn’t refresh prices (${spEsc(MK.error)}).`;
+      else if (MK.busy && !C.hasPrices) text = 'Loading prices…';
+      else if (live) text = `Live · prices as of ${spEsc(new Intl.DateTimeFormat('en-GB', { timeZone: TZ, hour: '2-digit', minute: '2-digit' }).format(new Date(MK.intraAt || Date.now())))}`;
+      else if (C.hasPrices) text = `Market closed · prices as of ${spEsc(dn(C.last))}`;
+      else text = 'No prices yet.';
+      const tone = !cfg() || MK.error ? 'warn' : live ? 'live' : '';
+      q('inv-status').innerHTML = `<span class="st ${tone}"><i></i>${text}</span><span class="acts">${!cfg() || MK.error ? '<button class="pill go" type="button" data-a="market">Market data</button>' : '<button class="link-btn" type="button" data-a="market">Market data</button>'}<button class="pill" type="button" data-a="ledger">Open ledger</button><button class="pill" type="button" data-a="hold">Add holding</button><button class="pill go" type="button" data-a="trade">Log a trade</button></span>`;
+      wireActions(q('inv-status'));
+    }
+    function wireActions(root) {
+      root.querySelectorAll('[data-a]').forEach((b) => (b.onclick = () => ({ market: openMarket, ledger: openLedger, hold: () => openHolding(), trade: () => openTrade() })[b.dataset.a]()));
+    }
+    function drawEmpty() {
+      const e = q('inv-empty');
+      e.innerHTML = `<section class="panel empty"><p class="kicker">Investments</p><h2 class="finding">Track your stocks.</h2>
+        <p class="sub">Add what you own and what you paid. Prices, gains and charts come from the NSE; buys and sells you log later are taken into account.</p>
+        <div class="actions"><button class="pill go" type="button" data-a="hold">Add a holding</button>${cfg() ? '' : '<button class="pill" type="button" data-a="market">Connect market data</button>'}</div></section>`;
+      wireActions(e);
+    }
+
+    function drawStrip(S, A) {
+      const T = S.t, nSells = state.trades.filter((t) => t.side === 'sell').length;
+      q('strip').innerHTML = [
+        ['Value', rs(T.value), '', `${rs(T.cost)} invested`, ''],
+        ['Today', sgn(T.dayChg), cls(T.dayChg), pctS(T.dayPct), ''],
+        ['Unrealised', sgn(T.unreal), cls(T.unreal), pctS(T.unrealPct), ''],
+        ['Realised', sgn(T.realised), cls(T.realised), `${nSells} ${nSells === 1 ? 'sell' : 'sells'}`, ''],
+        ['XIRR', T.xirr == null ? '—' : pctS(T.xirr), '', 'a year', 'Annual return, counting when you added or took out money'],
+      ].map(([k, big, c, note, tip]) => `<div class="panel"><div class="t"><p class="kicker"${tip ? ` title="${tip}"` : ''}>${k}</p><p class="meta">${note}</p></div><p class="stat-num ${c}">${big}</p></div>`).join('');
+    }
+
+    function drawChart(S) {
+      if (X.focus && !symbols().includes(X.focus)) X.focus = '';
+      const gain = X.view === 'gain', F = figures(X.focus, X.range), sr = F.s;
+      const valHtml = gain
+        ? `<div class="ovval"><span class="amt ${cls(F.chg)}">${sgn(F.chg)}</span><span class="chg ${cls(F.chg)}">${TRI}${Math.abs(F.pct).toFixed(2)}%</span><span class="small">${rs(F.now)} · ${X.range}</span></div>`
+        : `<div class="ovval"><span class="amt">${rs(F.now)}</span><span class="chg ${cls(F.chg)}">${TRI}${Math.abs(F.pct).toFixed(2)}% · ${sgn(F.chg)} <span style="color:var(--ink-3)">(${X.range})</span></span></div>`;
+      const ov = q('ov');
+      ov.classList.add('ov4');
+      ov.innerHTML = `<div class="hd"><div class="rowh" style="align-items:flex-start"><span><p class="kicker" style="margin:0 0 2px">${X.focus ? spEsc(X.focus) : 'Portfolio'} over time</p>${valHtml}</span>
+          <select class="pick" id="f-sym" aria-label="Stock"><option value="">All stocks</option>${S.open.map((r) => `<option value="${r.sym}"${X.focus === r.sym ? ' selected' : ''}>${r.sym}</option>`).join('')}</select></div></div>
+        <div class="plot" id="tl"></div>
+        <div class="ctl4"><span class="segr" role="group" aria-label="Range">${Object.keys(RANGES).map((r) => `<button class="${r === X.range ? 'on' : ''}" type="button" data-r="${r}">${r}</button>`).join('')}</span>
+          <span class="segt" role="group" aria-label="View">${[['gain', 'Gain'], ['value', 'Value']].map(([k, t]) => `<button class="${X.view === k ? 'on' : ''}" type="button" data-v="${k}">${t}</button>`).join('')}</span>
+          <span style="flex:1"></span><span class="keys"><span><i class="dot"></i>Bought</span><span><i class="dot s"></i>Sold</span></span></div>`;
+      plot(q('tl'), { labels: sr.labels, xticks: sr.xticks, markers: sr.markers, total: sr.total, up: F.up, padTop: 96, padX: 0,
+        ...(gain ? { v: F.perf, mode: 'perf' } : { v: sr.value, cost: sr.cost, mode: 'value' }),
+        label: gain ? 'Gain or loss' : 'Portfolio value', onPick: (i) => { if (!sr.intraday) { X.day = sr.dates[i]; draw(); } } });
+      ov.querySelectorAll('[data-v]').forEach((b) => (b.onclick = () => { X.view = b.dataset.v; draw(); }));
+      ov.querySelectorAll('[data-r]').forEach((b) => (b.onclick = () => { X.range = b.dataset.r; draw(); }));
+      q('f-sym').onchange = (e) => { X.focus = e.target.value; draw(); };
+    }
+
+    function drawDay(S) {
+      const C = ctx();
+      if (!X.day || X.day > C.last) X.day = C.last;
+      const day = X.day, rep = dayReport(day);
+      const sorted = rep.rows.filter((r) => !X.focus || r.sym === X.focus).sort((a, b) => b.move - a.move);
+      const mxm = Math.max(...sorted.map((r) => Math.abs(r.move)), 1), di = C.days.indexOf(day);
+      const tgl = (dir) => `<svg viewBox="0 0 24 24"><path d="${dir < 0 ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7'}"/></svg>`;
+      q('dayinfo').innerHTML = `<p class="kicker">What changed</p>
+        <div class="hdr"><span class="d">${dn(day)}${day === todayKey() ? '<small>today</small>' : ''}</span><span class="step"><button type="button" data-st="-1" aria-label="Previous trading day" ${di <= 0 ? 'disabled' : ''}>${tgl(-1)}</button><button type="button" data-st="1" aria-label="Next trading day" ${day >= C.last ? 'disabled' : ''}>${tgl(1)}</button></span></div>
+        <div class="scroll">${isWeekday(day) ? '' : '<p class="sub">The market was closed.</p>'}${sorted.map((r) => `<div class="heat" style="--w:${((Math.abs(r.move) / mxm) * 100).toFixed(0)}%;--c:${r.move >= 0 ? 'var(--good)' : 'var(--danger)'}"><span>${spEsc(r.sym)}<small>${r.held ? `${r.held} held` : ''}</small>${r.trades.map((e) => `<span class="tchip ${e.side}">${e.side === 'buy' ? 'bought' : 'sold'} ${e.qty}</span>`).join('')}</span><span class="${cls(r.move)}">${sgn(r.move)}</span></div>`).join('')}</div>`;
+      q('dayinfo').querySelectorAll('[data-st]').forEach((b) => (b.onclick = () => { X.day = C.days[Math.max(0, Math.min(C.days.length - 1, di + Number(b.dataset.st)))]; draw(); }));
+    }
+
+    function drawContrib(A) {
+      const c = A.contrib, mx = Math.max(...c.map((x) => Math.abs(x.total)), 1);
+      q('contrib').innerHTML = `<p class="kicker">Where the money came from</p><h3 class="finding">${spEsc(c[0].sym)} did the most: <span class="${cls(c[0].total)}">${sgn(c[0].total)}</span></h3>
+        <div class="fillcol">${c.map((x) => `<div class="ra"><div class="l"><span>${spEsc(x.sym)}</span><span class="${cls(x.total)}">${sgn(x.total)}</span></div><div class="t"><i style="${x.total >= 0 ? 'left:50%' : 'right:50%'};width:${(Math.abs(x.total) / mx) * 50}%;background:${x.total >= 0 ? 'var(--good)' : 'var(--danger)'}"></i></div></div>`).join('')}</div>`;
+    }
+
+    function drawTiles(S) {
+      q('cards').innerHTML = S.open.map((r) => `<button class="tile" type="button" data-sym="${r.sym}" aria-label="Open ${spEsc(r.name)}" title="${spEsc(r.name)}">
+          <span class="bg">${area(seriesFor(r.sym, '1M').value)}</span>
+          <span class="fg">
+            <span class="top"><span class="nm">${spEsc(r.sym)}</span><span class="chg ${cls(r.dayChg)}" title="Today">${TRI}${Math.abs(r.dayPct).toFixed(2)}%</span></span>
+            <span class="hero ${cls(r.unreal)}">${pctS(r.unrealPct)}</span>
+            <span style="flex:1"></span>
+            <span class="foot"><span class="val">${rs(r.value)}</span><span class="two"><span class="${cls(r.unreal)}">${sgn(r.unreal)}</span><span class="meta">${r.qty} sh · ${rs2(r.avg)}</span></span></span>
+          </span></button>`).join('')
+        + S.closed.map((r) => `<div class="tile" style="justify-content:center"><span class="meta">Fully sold</span><span class="nm">${spEsc(r.sym)}</span><span class="${cls(r.realised)}">${sgn(r.realised)} realised</span></div>`).join('');
+      q('cards').querySelectorAll('.tile[data-sym]').forEach((t) => (t.onclick = () => openStock(t.dataset.sym)));
+    }
+
+    function drawMonths(A) {
+      const mk = Object.keys(A.months).sort().slice(-12);
+      if (!mk.length) { q('months').innerHTML = '<p class="kicker">Month by month</p><p class="sub">Nothing to show yet.</p>'; return; }
+      const mm = Math.max(...mk.map((k) => Math.abs(A.months[k])), 1), best = mk.reduce((a, k) => (A.months[k] > A.months[a] ? k : a), mk[0]);
+      q('months').innerHTML = `<p class="kicker">Month by month</p><h3 class="finding">${SP_MON[+best.slice(5) - 1]} was your best month: <span class="${cls(A.months[best])}">${sgn(A.months[best])}</span></h3><div class="chart" id="mo-chart"></div>`;
+      const host = q('mo-chart'), MW = Math.max(240, host.clientWidth || 500), MH = Math.max(110, host.clientHeight || 150), bw = MW / mk.length, mid = (MH - 20) / 2 + 2;
+      const bars = mk.map((k, i) => { const v = A.months[k], h = (Math.abs(v) / mm) * (mid - 14); return `<rect x="${i * bw + bw * 0.22}" y="${v >= 0 ? mid - h : mid}" width="${bw * 0.56}" height="${Math.max(2, h)}" rx="4" fill="${v >= 0 ? 'var(--good)' : 'var(--danger)'}" opacity=".85"><title>${SP_MON[+k.slice(5) - 1]} · ${sgn(v)}</title></rect><text x="${i * bw + bw / 2}" y="${MH - 3}" text-anchor="middle">${SP_MON[+k.slice(5) - 1]}</text>`; }).join('');
+      host.innerHTML = `<svg viewBox="0 0 ${MW} ${MH}" role="img" aria-label="Monthly profit and loss"><line class="gl" x1="0" x2="${MW}" y1="${mid}" y2="${mid}"/>${bars}</svg>`;
+    }
+
+    function drawCalendar(A) {
+      const lastD = A.dates[A.dates.length - 1] || ctx().last;
+      const monday = (k) => { const d = parseKey(k); return toKey(new Date(d.getTime() - ((d.getUTCDay() + 6) % 7) * 864e5)); };
+      const start = toKey(new Date(parseKey(monday(lastD)).getTime() - 19 * 7 * 864e5)), pmap = Object.fromEntries(A.dates.map((d, i) => [d, A.pnl[i]]));
+      const pm = Math.max(...Object.values(pmap).map(Math.abs), 1);
+      let cells = '';
+      for (let w = 0; w < 20; w += 1) for (let k = 0; k < 5; k += 1) {
+        const d = toKey(new Date(parseKey(start).getTime() + (w * 7 + k) * 864e5)), v = pmap[d];
+        cells += v == null ? '<button class="empty" tabindex="-1" aria-hidden="true"></button>'
+          : `<button type="button" data-d="${d}" class="${d === X.day ? 'sel' : ''}" title="${dn(d)} · ${sgn(v)}" aria-label="${dn(d)} ${sgn(v)}" style="background:${v >= 0 ? `rgba(169,223,178,${(0.14 + (Math.abs(v) / pm) * 0.75).toFixed(2)})` : `rgba(245,168,150,${(0.14 + (Math.abs(v) / pm) * 0.75).toFixed(2)})`}"></button>`;
+      }
+      q('calendar').innerHTML = `<p class="kicker">Day by day · last 20 weeks</p><h3 class="finding">${A.up} of ${A.days} days in the green</h3><div class="cal">${cells}</div>`;
+      const cal = q('calendar').querySelector('.cal'), gap = 4;   // square cells, as big as the width and the height allow
+      const size = Math.max(8, Math.floor(Math.min((cal.clientWidth - 19 * gap) / 20, (cal.clientHeight - 4 * gap) / 5)));
+      cal.style.gridTemplateColumns = `repeat(20, ${size}px)`; cal.style.gridTemplateRows = `repeat(5, ${size}px)`;
+      q('calendar').querySelectorAll('[data-d]').forEach((b) => (b.onclick = () => { X.day = b.dataset.d; draw(); }));
+    }
+
+    function drawVs(A) {
+      const vs = q('vs');
+      if (!A.alt) {
+        vs.innerHTML = `<p class="kicker">Versus the market</p><h3 class="finding">Nifty 50 prices aren’t loaded.</h3><p class="sub">${cfg() ? 'They arrive with the next price refresh.' : 'Connect market data to compare with the index.'}</p>`;
+        return;
+      }
+      const alpha = A.twr - A.niftyRet, cut = Math.max(0, A.dates.length - 130);
+      const labels = A.s.labels.slice(cut), total = A.dates.length - cut, st = Math.max(1, Math.round(total / 3)), xticks = [];
+      for (let i = 0; i < total; i += st) xticks.push({ i, t: labels[i] });
+      vs.innerHTML = `<p class="kicker">Versus the market</p><h3 class="finding">${alpha >= 0 ? 'Ahead of' : 'Behind'} Nifty 50 by <span class="${cls(alpha)}">${Math.abs(alpha).toFixed(1)} pts</span></h3>
+        <div class="chart" id="vs-chart"></div><div class="keys"><span><i></i>You ${pctS(A.twr)}</span><span><i class="c"></i>Nifty ${pctS(A.niftyRet)}</span></div>`;
+      plotPair(q('vs-chart'), A.v.slice(cut), A.alt.slice(cut), labels, xticks, total, alpha >= 0);
+    }
+    // two lines on one scale: your portfolio and the same cash in the index
+    function plotPair(host, a, b, labels, xticks, total, up) {
+      const W = Math.max(240, host.clientWidth || 300), H = Math.max(110, host.clientHeight || 150), pl = 6, pr = 10, pt = 14, pb = 22;
+      let lo = Math.min(...a, ...b), hi = Math.max(...a, ...b);
+      const g = (hi - lo) * 0.12 || 1; lo = Math.max(0, lo - g); hi += g;
+      const x = (i) => pl + (i / Math.max(1, total - 1)) * (W - pl - pr), y = (v) => pt + (H - pt - pb) * (1 - (v - lo) / (hi - lo));
+      const path = (v) => lin(v.map((d, i) => [x(i), y(d)]));
+      let s = '';
+      for (let k = 0; k < 4; k += 1) { const v = lo + ((hi - lo) * k) / 3; s += `<line class="gl" x1="${pl}" x2="${W - pr}" y1="${y(v)}" y2="${y(v)}"/><text x="${pl}" y="${y(v) - 5}">${compact(v)}</text>`; }
+      xticks.forEach((t) => { s += `<text x="${x(t.i)}" y="${H - 5}" text-anchor="${t.i === 0 ? 'start' : t.i >= total - 1 ? 'end' : 'middle'}">${t.t}</text>`; });
+      s += `<path d="${path(b)}" fill="none" stroke="var(--ink-3)" stroke-width="1.6" stroke-dasharray="4 5"/><path d="${path(a)}" fill="none" stroke="var(--ember)" stroke-width="2.2" stroke-linejoin="round"/><circle cx="${x(a.length - 1)}" cy="${y(a[a.length - 1])}" r="4.5" fill="var(--ember)"/>`;
+      host.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Portfolio against Nifty 50">${s}</svg>`;
+    }
+
+    function drawAlloc(S) {
+      const T = S.t, gl = S.open.map((r) => [r.sym, r.value]);
+      const colour = (i) => { const n = gl.length, t = n > 1 ? i / (n - 1) : 0, a = [196, 88, 30], b = [248, 222, 196]; return `rgb(${a.map((c, k) => Math.round(c + (b[k] - c) * t)).join(',')})`; };
+      const R = 48, r0 = 30, rc = 2.6, gap = 1.4, Ro = R - rc, ri = r0 + rc, tot = gl.reduce((a, [, v]) => a + v, 0) || 1;
+      const pt = (ang, rad) => `${(rad * Math.cos(ang)).toFixed(2)} ${(rad * Math.sin(ang)).toFixed(2)}`;
+      let acc = -Math.PI;
+      // each slice is drawn smaller by the corner radius, then stroked in its own colour with round joins, which rounds all four corners
+      const slices = gl.map(([k, v], i) => {
+        const sw = (v / tot) * Math.PI, a0 = acc; acc += sw;
+        const pO = (rc + gap / 2) / Ro, pI = (rc + gap / 2) / ri, oa = a0 + pO, ob = a0 + sw - pO, ia = a0 + pI, ib = a0 + sw - pI;
+        const body = ob > oa && ib > ia ? `M${pt(oa, Ro)}A${Ro} ${Ro} 0 ${ob - oa > Math.PI ? 1 : 0} 1 ${pt(ob, Ro)}L${pt(ib, ri)}A${ri} ${ri} 0 ${ib - ia > Math.PI ? 1 : 0} 0 ${pt(ia, ri)}Z` : `M${pt(a0 + sw / 2, (Ro + ri) / 2)}Z`;
+        return `<path d="${body}" fill="${colour(i)}" stroke="${colour(i)}" stroke-width="${rc * 2}" stroke-linejoin="round"><title>${spEsc(k)} · ${rs(v)} · ${((v / tot) * 100).toFixed(0)}%</title></path>`;
+      }).join('');
+      q('alloc').innerHTML = `<div class="rowh"><p class="kicker">Where it sits</p></div>
+        <svg class="half" viewBox="-50 -50 100 54" role="img" aria-label="Allocation">${slices}</svg>
+        <ul class="alloc-list">${gl.map(([k, v], i) => `<li><i style="background:${colour(i)}"></i><span>${spEsc(k)}</span><small>${rs(v)}</small><b>${((v / (T.value || 1)) * 100).toFixed(0)}%</b></li>`).join('')}</ul>`;
+    }
+
+    /* ---------- the dialogs (they sit in the page, so they look like Add task and Work hours) ---------- */
+    const dlgErr = (id, text) => { const e = $(id); e.textContent = text || ''; e.hidden = !text; };
+
+    async function resolveTicker(raw) {
+      const sym = clean(raw);
+      if (!sym) throw new Error('Enter an NSE ticker, like RELIANCE.');
+      if (nameKnown(sym)) return { symbol: sym, name: nameOf(sym) };
+      if (!cfg()) throw new Error('Connect market data first, so tickers can be checked.');
+      const list = await api('search', { q: sym });
+      const hit = list.find((x) => x.symbol === sym);
+      if (!hit) throw new Error(`“${sym}” isn’t an NSE ticker${list.length ? `. Did you mean ${list.slice(0, 3).map((x) => x.symbol).join(', ')}?` : '.'}`);
+      rememberName(hit.symbol, hit.name);
+      return hit;
+    }
+    // suggestions while typing a ticker
+    function suggest(input, nameEl) {
+      const list = $('inv-syms');
+      const own = () => symbols().map((s) => `<option value="${s}" label="${spEsc(nameOf(s))}"></option>`).join('');
+      list.innerHTML = own();
+      if (input.dataset.suggest) return;   // the listener is added once
+      input.dataset.suggest = '1';
+      let timer = 0;
+      input.addEventListener('input', () => {
+        input.value = input.value.toUpperCase();
+        nameEl.textContent = nameKnown(clean(input.value)) ? nameOf(clean(input.value)) : '';
+        clearTimeout(timer);
+        const text = clean(input.value);
+        if (text.length < 2 || !cfg()) { list.innerHTML = own(); return; }
+        timer = setTimeout(async () => {
+          try { const found = await api('search', { q: text }); found.forEach((f) => rememberName(f.symbol, f.name)); list.innerHTML = own() + found.map((f) => `<option value="${f.symbol}" label="${spEsc(f.name)}"></option>`).join(''); } catch { /* suggestions are a convenience */ }
+        }, 300);
+      });
+    }
+
+    let editHolding = null;
+    function openHolding(id) {
+      if (!store.signedIn) { store.signIn(); return; }
+      editHolding = id ? state.holdings.find((h) => h.id === id) : null;
+      const h = editHolding;
+      $('inv-hold-h').textContent = h ? 'Edit baseline' : 'Add a holding';
+      $('ih-sym').value = h ? clean(h.symbol) : '';
+      $('ih-sym').readOnly = false;
+      $('ih-name').textContent = h ? nameOf(clean(h.symbol)) : '';
+      $('ih-qty').value = h ? h.qty : '';
+      $('ih-price').value = h ? h.buyPrice : '';
+      $('ih-date').value = h ? h.buyDate : '';
+      $('ih-del').hidden = !h;
+      dlgErr('ih-err');
+      suggest($('ih-sym'), $('ih-name'));
+      $('inv-hold').showModal();
+      (h ? $('ih-qty') : $('ih-sym')).focus();
+    }
+    async function saveHolding(e) {
+      e.preventDefault();
+      const qty = Number($('ih-qty').value), price = Number($('ih-price').value), date = $('ih-date').value;
+      if (!(qty > 0) || !Number.isInteger(qty)) return dlgErr('ih-err', 'Shares must be a whole number above zero.');
+      if (!(price > 0)) return dlgErr('ih-err', 'Enter the price you paid.');
+      if (!date || date > todayKey()) return dlgErr('ih-err', 'Pick a date that is not in the future.');
+      $('ih-save').disabled = true;
+      try {
+        const t = await resolveTicker($('ih-sym').value);
+        const old = editHolding, id = old ? old.id : newId();
+        const doc = { symbol: t.symbol, name: t.name, qty, buyPrice: price, buyDate: date };
+        const next = old ? state.holdings.map((x) => (x.id === id ? { ...x, ...doc } : x)) : [...state.holdings, { id, ...doc }];
+        for (const sym of new Set([t.symbol, old && clean(old.symbol)].filter(Boolean))) {
+          const bad = firstShort(sym, next, state.trades);
+          if (bad) return dlgErr('ih-err', `This would leave you short of ${sym} on ${dn(bad)}. Fix the sells first.`);
+        }
+        await store.set('holdings', id, doc);
+        $('inv-hold').close();
+        toast(old ? 'Baseline updated.' : `${t.symbol} added.`, 'Undo', () => (old ? store.set('holdings', id, old) : store.remove('holdings', id)));
+        if (!MK.daily[t.symbol]) refresh();
+      } catch (err) { dlgErr('ih-err', err.message); }
+      $('ih-save').disabled = false;
+    }
+    async function deleteHolding() {
+      const h = editHolding;
+      if (!h) return;
+      const bad = firstShort(clean(h.symbol), state.holdings.filter((x) => x.id !== h.id), state.trades);
+      if (bad) return dlgErr('ih-err', `Its sells depend on this lot (short on ${dn(bad)}). Delete those trades first.`);
+      $('inv-hold').close();
+      await store.remove('holdings', h.id);
+      toast(`Deleted ${clean(h.symbol)} baseline.`, 'Undo', () => store.set('holdings', h.id, h));
+    }
+
+    let editTrade = null, tradePriceTouched = false;
+    function heldOn(sym, day) {
+      const t = editTrade;
+      return stateOn(sym, day).qty - (t && clean(t.symbol) === sym && t.date <= day ? (t.side === 'buy' ? t.qty : -t.qty) : 0);
+    }
+    function paintHeld() {
+      const sym = clean($('it-sym').value), day = $('it-date').value || todayKey();
+      const held = sym ? heldOn(sym, day) : 0;
+      const qty = Math.floor(Number($('it-qty').value)) || 0, sell = document.querySelector('#inv-trade [name="it-side"]:checked').value === 'sell';
+      const after = held + (sell ? -qty : qty);
+      $('it-held').innerHTML = `${held} ${held === 1 ? 'share' : 'shares'}${qty > 0 ? `<span class="delta ${sell ? 'down' : 'up'}${after < 0 ? ' over' : ''}">${sell ? '−' : '+'}${qty} <span class="to">→</span> ${after < 0 ? '−' + Math.abs(after) : after}</span>` : ''}`;
+      const known = sym && (dailyClose(sym, day) ?? (day >= ctx().last ? liveRec(sym)?.price : null));
+      if (!tradePriceTouched && known) $('it-price').value = known.toFixed(2);
+    }
+    function openTrade(preSym, id) {
+      if (!store.signedIn) { store.signIn(); return; }
+      editTrade = id ? state.trades.find((t) => t.id === id) : null;
+      const t = editTrade;
+      tradePriceTouched = Boolean(t);
+      $('inv-trade-h').textContent = t ? 'Edit trade' : 'Log a trade';
+      document.querySelector(`#inv-trade [name="it-side"][value="${t?.side === 'sell' ? 'sell' : 'buy'}"]`).checked = true;
+      $('it-sym').value = t ? clean(t.symbol) : preSym || '';
+      $('it-name').textContent = $('it-sym').value ? nameOf($('it-sym').value) : '';
+      $('it-date').value = t ? t.date : todayKey();
+      $('it-qty').value = t ? t.qty : '';
+      $('it-price').value = t ? t.price : '';
+      $('it-fees').value = t && t.fees ? t.fees : '';
+      $('it-del').hidden = !t;
+      dlgErr('it-err');
+      suggest($('it-sym'), $('it-name'));
+      paintHeld();
+      $('inv-trade').showModal();
+      (t ? $('it-qty') : $('it-sym').value ? $('it-qty') : $('it-sym')).focus();
+    }
+    async function saveTrade(e) {
+      e.preventDefault();
+      const side = document.querySelector('#inv-trade [name="it-side"]:checked').value, date = $('it-date').value;
+      const qty = Number($('it-qty').value), price = Number($('it-price').value), fees = Number($('it-fees').value) || 0;
+      if (!date || date > todayKey()) return dlgErr('it-err', 'Pick a date that is not in the future.');
+      if (!isWeekday(date)) return dlgErr('it-err', 'The market is closed on weekends. Pick a weekday.');
+      if (!(qty > 0) || !Number.isInteger(qty)) return dlgErr('it-err', 'Shares must be a whole number above zero.');
+      if (!(price > 0)) return dlgErr('it-err', 'Enter the price.');
+      $('it-save').disabled = true;
+      try {
+        const tk = await resolveTicker($('it-sym').value);
+        const old = editTrade, id = old ? old.id : newId();
+        const doc = { symbol: tk.symbol, name: tk.name, side, date, qty, price, fees };
+        const next = old ? state.trades.map((x) => (x.id === id ? { ...x, ...doc } : x)) : [...state.trades, { id, ...doc }];
+        for (const sym of new Set([tk.symbol, old && clean(old.symbol)].filter(Boolean))) {
+          const bad = firstShort(sym, state.holdings, next);
+          if (bad) return dlgErr('it-err', `You would hold fewer than zero ${sym} on ${dn(bad)}. Check the quantity or date.`);
+        }
+        await store.set('trades', id, doc);
+        $('inv-trade').close();
+        toast(`${side === 'buy' ? 'Bought' : 'Sold'} ${qty} ${tk.symbol} logged.`, 'Undo', () => (old ? store.set('trades', id, old) : store.remove('trades', id)));
+        if (!MK.daily[tk.symbol]) refresh();
+      } catch (err) { dlgErr('it-err', err.message); }
+      $('it-save').disabled = false;
+    }
+    async function deleteTrade() {
+      const t = editTrade;
+      if (!t) return;
+      const bad = firstShort(clean(t.symbol), state.holdings, state.trades.filter((x) => x.id !== t.id));
+      if (bad) return dlgErr('it-err', `Later sells depend on this buy (short on ${dn(bad)}).`);
+      $('inv-trade').close();
+      await store.remove('trades', t.id);
+      toast('Trade deleted.', 'Undo', () => store.set('trades', t.id, t));
+    }
+
+    function openMarket() {
+      if (!store.signedIn) { store.signIn(); return; }
+      const c = state.meta.find((x) => x.id === 'market');
+      $('im-url').value = c?.url || '';
+      $('im-key').value = c?.key || '';
+      $('im-disconnect').hidden = !c;
+      dlgErr('im-err');
+      $('inv-market').showModal();
+    }
+    async function saveMarket(e) {
+      e.preventDefault();
+      const url = $('im-url').value.trim(), key = $('im-key').value.trim();
+      if (!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(url)) return dlgErr('im-err', 'Paste the web app URL, which ends in /exec.');
+      if (!key) return dlgErr('im-err', 'Enter the secret you put in the script.');
+      $('im-save').disabled = true;
+      try {
+        const u = new URL(url); u.searchParams.set('key', key); u.searchParams.set('op', 'search'); u.searchParams.set('q', 'RELIANCE');
+        const res = await fetch(u.toString(), { cache: 'no-store' });
+        const data = await res.json();
+        if (data && data.error) throw new Error(data.error === 'Wrong key' ? 'That secret doesn’t match the one in the script.' : data.error);
+        if (!Array.isArray(data) || !data.some((x) => x.symbol === 'RELIANCE')) throw new Error('The service answered, but not with NSE data.');
+        await store.set('meta', 'market', { url, key });
+        $('inv-market').close();
+        toast('Market data connected.');
+        MK.error = '';
+        setTimeout(() => refresh({ force: true }), 50);
+      } catch (err) { dlgErr('im-err', /Failed to fetch|NetworkError/i.test(err.message) ? 'Couldn’t reach the service. Check the URL, and that access is set to Anyone.' : err.message); }
+      $('im-save').disabled = false;
+    }
+    async function disconnectMarket() {
+      const c = state.meta.find((x) => x.id === 'market');
+      $('inv-market').close();
+      if (!c) return;
+      await store.remove('meta', 'market');
+      toast('Market data disconnected.', 'Undo', () => store.set('meta', 'market', { url: c.url, key: c.key }));
+    }
+
+    /* ---------- the ledger and one stock in full ---------- */
+    const kindOf = (e) => (e.kind === 'base' ? 'base' : e.side);
+    const kindLabel = (e) => (e.kind === 'base' ? 'Baseline' : e.side === 'buy' ? 'Bought' : 'Sold');
+    function openLedger() { fillLedger(); $('inv-ledger').showModal(); }
+    function fillLedger() {
+      const host = $('inv-ledger-body');
+      const led = symbols().flatMap((x) => walk(eventsFor(x)).map((e) => ({ ...e, sym: x }))).filter((e) => (!X.ledgerSym || e.sym === X.ledgerSym) && (X.ledgerType === 'all' || kindOf(e) === X.ledgerType)).sort((a, b) => (a.d < b.d ? 1 : a.d > b.d ? -1 : 0));
+      host.innerHTML = `<div class="inv-tools"><span class="l"><select id="il-sym" class="inv-pick" aria-label="Filter by stock"><option value="">All stocks</option>${symbols().map((x) => `<option value="${x}"${x === X.ledgerSym ? ' selected' : ''}>${x}</option>`).join('')}</select>
+          <span class="inv-chips" role="group" aria-label="Type">${[['all', 'All'], ['base', 'Baseline'], ['buy', 'Bought'], ['sell', 'Sold']].map(([k, l]) => `<button class="${X.ledgerType === k ? 'on' : ''}" type="button" data-t="${k}">${l}</button>`).join('')}</span></span>
+          <span class="r"><button class="btn small" type="button" id="il-hold">Add holding</button><button class="btn small primary" type="button" id="il-trade">Log a trade</button></span></div>
+        <div class="inv-scroll"><table class="inv-lg"><thead><tr><th class="l">Date</th><th class="l">Stock</th><th>Shares</th><th>Price</th><th class="hide-s">Amount</th><th>Realised</th><th></th></tr></thead><tbody>
+        ${led.map((e) => `<tr class="r" data-edit="${e.kind}:${e.id}" tabindex="0"><td class="l">${dn(e.d)}</td><td class="l">${spEsc(e.sym)}<span class="tg ${kindOf(e)}">${kindLabel(e)}</span></td><td>${e.qty}</td><td>${rs2(e.price)}</td><td class="hide-s">${rs(e.qty * e.price)}${e.fees ? `<small>fees ${rs2(e.fees)}</small>` : ''}</td><td class="${cls(e.gain || 0)}">${e.gain != null ? sgn(e.gain) : '—'}</td><td class="pc"><span class="pen">${PEN}</span></td></tr>`).join('')}
+        </tbody></table></div>${led.length ? '' : '<p class="inv-quiet">No entries match.</p>'}`;
+      $('il-sym').onchange = (e) => { X.ledgerSym = e.target.value; fillLedger(); };
+      host.querySelectorAll('[data-t]').forEach((b) => (b.onclick = () => { X.ledgerType = b.dataset.t; fillLedger(); }));
+      $('il-hold').onclick = () => openHolding(); $('il-trade').onclick = () => openTrade();
+      host.querySelectorAll('[data-edit]').forEach((r) => {
+        const go = () => { const [k, id] = r.dataset.edit.split(':'); if (k === 'base') openHolding(id); else openTrade(null, id); };
+        r.onclick = go; r.onkeydown = (e) => { if (e.key === 'Enter') go(); };
+      });
+    }
+
+    function openStock(sym) { X.stock = sym; $('inv-stock').showModal(); fillStock(); }
+    function fillStock() {
+      const sym = X.stock;
+      if (!sym || !$('inv-stock').open) return;
+      const host = $('inv-stock-body'), p = position(sym), range = X.stockRange;
+      const F = figures(sym, range), sr = F.s;
+      host.innerHTML = `<div class="inv-sd-top"><div class="inv-sd-price">${rs2(p.last)}</div><span class="inv-chg ${cls(p.dayChg)}">${TRI}${Math.abs(p.dayPct).toFixed(2)}% · ${sgn(p.dayChg)} today</span></div>
+        <div class="inv-chips" role="group" aria-label="Range">${Object.keys(RANGES).map((r) => `<button class="${r === range ? 'on' : ''}" type="button" data-r="${r}">${r}</button>`).join('')}</div>
+        <div class="inv-sd-chart" id="is-chart"></div>
+        <div class="inv-keys"><span><i></i>Your holding’s value</span><span><i class="c"></i>Invested</span><span><i class="d"></i>Bought</span><span><i class="d s"></i>Sold</span></div>
+        <div class="inv-stats">
+          <div><small>Shares</small><b>${p.qty}</b></div><div><small>Average cost</small><b>${rs2(p.avg)}</b></div><div><small>Invested</small><b>${rs(p.cost)}</b></div>
+          <div><small>Value</small><b>${rs(p.value)}</b></div><div><small>Unrealised</small><b class="${cls(p.unreal)}">${sgn(p.unreal)}</b><em>${pctS(p.unrealPct)}</em></div><div><small>Realised</small><b class="${cls(p.realised)}">${sgn(p.realised)}</b></div>
+        </div>
+        <div class="inv-sd-actions"><button class="btn small" type="button" id="is-trade">Log a trade</button></div>`;
+      $('inv-stock-h').textContent = `${p.name}`;
+      $('inv-stock-sub').textContent = `${sym} · NSE`;
+      plot($('is-chart'), { labels: sr.labels, xticks: sr.xticks, markers: sr.markers, total: sr.total, up: F.up, v: sr.value, cost: sr.cost, mode: 'value', padX: 0, label: `${sym} over ${range}` });
+      host.querySelectorAll('[data-r]').forEach((b) => (b.onclick = () => { X.stockRange = b.dataset.r; fillStock(); }));
+      $('is-trade').onclick = () => { $('inv-stock').close(); openTrade(sym); };
+    }
+
+    /* ---------- wiring ---------- */
+    function wire() {
+      $('inv-hold-form').addEventListener('submit', saveHolding);
+      $('ih-del').addEventListener('click', deleteHolding);
+      $('inv-trade-form').addEventListener('submit', saveTrade);
+      $('it-del').addEventListener('click', deleteTrade);
+      $('inv-market-form').addEventListener('submit', saveMarket);
+      $('im-disconnect').addEventListener('click', disconnectMarket);
+      $('it-qty').addEventListener('input', paintHeld);
+      $('it-sym').addEventListener('input', paintHeld);
+      $('it-price').addEventListener('input', () => { tradePriceTouched = true; });
+      document.querySelectorAll('#inv-trade [name="it-side"]').forEach((r) => r.addEventListener('change', paintHeld));
+      // a price filled in for one stock or day shouldn't stick when the stock or day changes
+      ['it-sym', 'it-date'].forEach((id) => $(id).addEventListener('change', () => { if (!editTrade) tradePriceTouched = false; paintHeld(); }));
+      $('inv-stock').addEventListener('close', () => { X.stock = ''; });
+      // numbers move once a minute while the market is open and this tab is showing
+      X.timer = setInterval(() => {
+        if (view !== 'finance' || finTab !== 'investments' || document.hidden || !cfg()) return;
+        if (marketOpenNow()) refresh({ daily: false });
+      }, 60 * 1000);
+      document.addEventListener('visibilitychange', () => { if (!document.hidden && view === 'finance' && finTab === 'investments' && cfg() && Date.now() - MK.intraAt > 60e3) refresh({ daily: false }); });
+    }
+    wire();
+
+    return {
+      /* called when the data changes, the tab opens, or the page is resized */
+      render() {
+        draw();
+        if ($('inv-ledger').open) fillLedger();
+        if ($('inv-stock').open) fillStock();
+      },
+      enter() { draw(); refresh({ daily: true }); },
+      redraw: draw,
+      root: () => X.sr,
+    };
+  })();
 
   /* =====================================================================
      Boot
