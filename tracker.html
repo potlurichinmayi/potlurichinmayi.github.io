@@ -395,17 +395,17 @@
   .spend:hover { box-shadow: inset 0 0 0 1px var(--rule-2), var(--shadow-lift); transform: translateY(-2px); }
   .spend .keys { display: flex; justify-content: flex-end; gap: 6px 16px; margin: 0 0 2px; font-size: 13px; color: var(--ink-2); }
   .spend .keys span { display: inline-flex; align-items: center; gap: 6px; }
-  .spend .keys i { width: 9px; height: 9px; border-radius: 50%; background: var(--ember); }
+  .spend .keys i { width: 9px; height: 9px; border: 0; border-radius: 50%; background: var(--ember); }
   .spend .keys i.b { background: #93aee0; }
   .spend .chart { flex: 1; min-height: 120px; }
   .spend .chart svg { display: block; width: 100%; height: auto; overflow: visible; }
   .spend .chart text { font-family: var(--serif); font-size: 12px; fill: var(--ink-3); }
   .spend .chart text.v { fill: var(--ink); }
-  .spend .so-far { margin-top: 6px; font-size: 14px; color: var(--ink-3); }
+  .spend .so-far { margin-top: 6px; font-size: 13px; color: var(--ink-3); white-space: nowrap; }
   .spend .so-far b { font-weight: 400; color: var(--ink); }
-  .spend .bal { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--rule); }
-  .spend .bal small { display: block; font-size: 14px; color: var(--ink-3); }
-  .spend .bal b { display: block; font-weight: 400; font-size: 28px; line-height: 1.1; }
+  .spend .bal { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 8px 10px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--rule); }
+  .spend .bal small { display: block; font-size: 13px; color: var(--ink-3); }
+  .spend .bal b { display: block; font-weight: 400; font-size: 26px; line-height: 1.1; }
   .spend .pill { padding: 4px 12px; border-radius: 999px; font-size: 13px; white-space: nowrap; }
   .spend .pill.good { background: color-mix(in srgb, #a9d6b0 20%, transparent); color: #a9d6b0; }
   .spend .pill.bad { background: color-mix(in srgb, var(--danger) 16%, transparent); color: var(--danger); }
@@ -5017,7 +5017,7 @@ hr.rule { margin: 36px 0; }
     const limit = Number(budget()?.total) || 0;
     const projected = Math.round((spent / Math.max(1, story.elapsed)) * story.days);
     const months = finData().months.filter((m) => m <= month).slice(-3)
-      .map((m) => ({ name: fmtMonthShort.format(parseKey(`${m}-01`)), v: m === month ? spent : Math.max(0, monthStory(m).net) }));
+      .map((m) => ({ name: fmtMonthShort.format(parseKey(`${m}-01`)).slice(0, 3), v: m === month ? spent : Math.max(0, monthStory(m).net) }));
     const pill = limit ? (projected <= limit ? { good: true, text: 'On track' } : { good: false, text: `${rupees.format(projected - limit)} over pace` }) : null;
     const chart = el('div', { class: 'chart', role: 'img', 'aria-label': 'Monthly spending against budget' });
     card.replaceChildren(
