@@ -5,12 +5,15 @@
  * and runs at the end of every syncAxisAlerts(), so a trip's bank alert has already been saved
  * by the time it is looked for.
  *
+ * The reading, matching and filing below work for any ride provider. A provider is a small object
+ * (see UBER_PROVIDER); rapido-trips.gs adds Rapido the same way.
+ *
  * Each "trip with Uber" email from noreply@uber.com says what was paid and when. The rider usually
  * pays the driver by UPI, so the bank sees a payment to a person, not to Uber. This finds that
  * payment and files it under Uber, category Commute, with the person's name in the note.
  *
  *   rides/{gmail id}   { provider, total, paid, method, date, time, paidAt, status, txId }
- *   txmeta/{tx id}     { vendor: 'Uber', category: 'Commute', note: 'Paid to ...', ride: ride id }
+ *   txmeta/{tx id}     { vendor: provider.vendor, category: 'Commute', note: 'Paid to ...', ride: ride id }
  *
  * status: 'pending' (looking, retried every run for a day), 'matched', 'direct' (paid to Uber
  * itself, nothing to change) or 'unmatched' (nothing fitted; left alone for you to sort out by hand).
@@ -29,11 +32,32 @@ const UBER = {
   slack: 1.5,                  // paid slightly less than the fare (rounding) still counts
 };
 
-/** Reads new trip emails, then tries to match every trip that is still looking. */
+/**
+ * One ride provider. The functions are wrapped so files can load in any order.
+ *   key      stored as rides/{id}.provider
+ *   vendor   the name payments are filed under
+ *   paidTo   matches a bank description that is the provider itself (paid straight to them)
+ *   query    the Gmail search for its trip emails
+ *   lastProp script property remembering how far the emails have been read
+ */
+const UBER_PROVIDER = {
+  key: 'uber',
+  vendor: 'Uber',
+  paidTo: /\buber\b/i,
+  query: `from:${UBER.sender} subject:"trip with Uber"`,
+  lastProp: 'lastUberDate',
+  parse: (text, internalDate) => parseUberTrip(text, internalDate),
+};
+
 function syncUberTrips() {
+  syncRideEmails(UBER_PROVIDER);
+}
+
+/** Reads a provider's new trip emails, then tries to match every one of its trips that is still looking. */
+function syncRideEmails(provider) {
   const props = PropertiesService.getScriptProperties();
-  const since = Number(props.getProperty('lastUberDate') || 0);
-  const query = `from:${UBER.sender} subject:"trip with Uber" ` +
+  const since = Number(props.getProperty(provider.lastProp) || 0);
+  const query = `${provider.query} ` +
     (since ? `after:${Math.floor(since / 1000)}` : `newer_than:${UBER.firstRunDays}d`);
   const ids = listMessageIds(query).reverse();
 
@@ -43,21 +67,21 @@ function syncUberTrips() {
     const message = getMessage(ids[i]);
     if (!message) break;   // rate limited: the next run carries on
     checkpoint = Math.max(checkpoint, Number(message.internalDate));
-    const ride = parseUberTrip(messageText(message), Number(message.internalDate));
+    const ride = provider.parse(messageText(message), Number(message.internalDate));
     if (ride) fresh[ids[i]] = ride;
     Utilities.sleep(SETTINGS.pauseMs);
   }
   if (Object.keys(fresh).length) firebasePatch(`users/${SETTINGS.uid}/rides`, fresh);
-  if (checkpoint > since) props.setProperty('lastUberDate', String(checkpoint));
+  if (checkpoint > since) props.setProperty(provider.lastProp, String(checkpoint));
 
-  matchUberTrips();
+  matchRides(provider);
 }
 
-/** Matches every trip that is still pending. */
-function matchUberTrips() {
+/** Matches every trip of one provider that is still pending. */
+function matchRides(provider) {
   const base = `users/${SETTINGS.uid}`;
   const rides = firebaseGet(`${base}/rides`) || {};
-  const pending = Object.entries(rides).filter(([, r]) => r.status === 'pending');
+  const pending = Object.entries(rides).filter(([, r]) => r.provider === provider.key && r.status === 'pending');
   if (!pending.length) return;
 
   const txs = firebaseGet(`${base}/transactions`, '?orderBy=%22%24key%22&limitToLast=300') || {};
@@ -66,13 +90,13 @@ function matchUberTrips() {
   const now = Date.now();
 
   pending.sort((a, b) => a[1].paidAt - b[1].paidAt).forEach(([id, ride]) => {
-    const result = matchRide(ride, txs, meta, taken);
+    const result = matchRide(ride, txs, meta, taken, provider);
     if (result.txId) {
       taken.add(result.txId);
       if (result.status === 'matched') {
         const tx = txs[result.txId];
         firebasePatch(`${base}/txmeta/${result.txId}`, {
-          vendor: 'Uber', category: 'Commute', note: `Paid to ${nameCase(tx.description)}`, ride: id,
+          vendor: provider.vendor, category: 'Commute', note: `Paid to ${nameCase(tx.description)}`, ride: id,
         });
       }
       firebasePatch(`${base}/rides/${id}`, { status: result.status, txId: result.txId });
@@ -86,7 +110,8 @@ function matchUberTrips() {
  * Pure matching, no Google services, so it can be tested on its own.
  * Returns { status: 'direct' | 'matched', txId } when exactly one payment fits, otherwise {}.
  */
-function matchRide(ride, txs, meta, taken) {
+function matchRide(ride, txs, meta, taken, provider) {
+  provider = provider || UBER_PROVIDER;
   const fits = (tx) => {
     // the saved channel can say "Credit card" because of the alert's footer, so go by the details, as the page does
     if (tx.type !== 'debit' || !/\bUPI\//i.test(tx.excerpt || '') || taken.has(tx.id)) return false;
@@ -95,19 +120,19 @@ function matchRide(ride, txs, meta, taken) {
   };
   const candidates = Object.entries(txs).map(([id, tx]) => ({ ...tx, id })).filter(fits);
 
-  // paid to Uber itself: the same amount as the whole fare, nothing to change
-  const direct = candidates.filter((tx) => /\buber\b/i.test(tx.description || '') && Math.abs(tx.amount - ride.total) <= 1);
+  // paid to the provider itself: the same amount as the whole fare, nothing to change
+  const direct = candidates.filter((tx) => provider.paidTo.test(tx.description || '') && Math.abs(tx.amount - ride.total) <= 1);
   if (direct.length === 1) return { status: 'direct', txId: direct[0].id };
   if (direct.length > 1) return {};
 
-  // already filed under Uber (by hand, or by an earlier run): counted as done, nothing to write
-  const filed = candidates.filter((tx) => meta[tx.id] && meta[tx.id].vendor === 'Uber' && Math.abs(tx.amount - (ride.paid || ride.total)) <= Math.max(UBER.tipMax, UBER.tipPct * ride.total));
+  // already filed under the vendor (by hand, or by an earlier run): counted as done, nothing to write
+  const filed = candidates.filter((tx) => meta[tx.id] && meta[tx.id].vendor === provider.vendor && Math.abs(tx.amount - (ride.paid || ride.total)) <= Math.max(UBER.tipMax, UBER.tipPct * ride.total));
   if (filed.length === 1) return { status: 'direct', txId: filed[0].id };
 
   // paid to the driver: about the amount that was due, possibly rounded up or with a little extra
   const due = ride.paid || ride.total;
   const people = candidates.filter((tx) => {
-    if (/\buber\b/i.test(tx.description || '') || /\bPOTLURI\b/i.test(tx.description || '')) return false;   // Uber itself is handled above; family payments are never rides
+    if (provider.paidTo.test(tx.description || '') || /\bPOTLURI\b/i.test(tx.description || '')) return false;   // the provider itself is handled above; family payments are never rides
     const own = meta[tx.id];
     if (own && (own.vendor || own.category)) return false;   // already sorted by hand
     const extra = tx.amount - due;
@@ -170,11 +195,15 @@ function nameCase(value) {
     : text;
 }
 
-/** Diagnostics: logs what the parser makes of the 5 most recent trip emails, saving nothing. */
+/** Diagnostics: logs what the parser makes of a provider's 5 most recent trip emails, saving nothing. */
 function previewUber() {
-  listMessageIds(`from:${UBER.sender} subject:"trip with Uber" newer_than:30d`).slice(0, 5).forEach((id) => {
+  previewRides(UBER_PROVIDER);
+}
+
+function previewRides(provider) {
+  listMessageIds(`${provider.query} newer_than:30d`).slice(0, 5).forEach((id) => {
     const message = Gmail.Users.Messages.get('me', id, { format: 'full' });
-    console.log(`${header(message, 'Subject')}\nPARSED: ${JSON.stringify(parseUberTrip(messageText(message), Number(message.internalDate)))}`);
+    console.log(`${header(message, 'Subject')}\nPARSED: ${JSON.stringify(provider.parse(messageText(message), Number(message.internalDate)))}`);
     Utilities.sleep(SETTINGS.pauseMs);
   });
 }

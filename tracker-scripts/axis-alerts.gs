@@ -72,6 +72,7 @@ function syncAxisAlerts() {
 
   firebase('patch', `users/${SETTINGS.uid}/meta/finance`, { lastSync: Date.now(), lastFound: saved, caughtUp });
   try { syncUberTrips(); } catch (err) { console.error(`Uber trips: ${err}`); }   // never lets this hold up the alerts above
+  try { syncRapidoTrips(); } catch (err) { console.error(`Rapido trips: ${err}`); }   // optional: skipped quietly if rapido-trips.gs isn't added
   console.log(`Saved ${saved} transaction(s)${caughtUp ? '.' : '; more to bring in on the next run.'}`);
 }
 
