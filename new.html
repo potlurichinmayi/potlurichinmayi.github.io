@@ -27,7 +27,7 @@
   --gutter:clamp(16px,5vw,80px);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{background:var(--charcoal)}
+html{background:var(--charcoal);-webkit-tap-highlight-color:transparent;text-size-adjust:100%;-webkit-text-size-adjust:100%}
 html.lenis,html.lenis body{height:auto}
 .lenis.lenis-smooth{scroll-behavior:auto!important}
 body{
@@ -43,7 +43,7 @@ a{color:inherit}
 ::selection{background:var(--rose);color:var(--charcoal)}
 
 /* ---------- fixed layers ---------- */
-#stage{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;display:block;pointer-events:none}
+#stage{position:fixed;left:0;top:0;width:100vw;height:100vh;height:100lvh;z-index:0;display:block;pointer-events:none}
 .scrim{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:var(--dim,0);
   background:linear-gradient(90deg, rgba(26,5,16,.86) 0%, rgba(26,5,16,.62) 42%, rgba(26,5,16,.42) 75%, rgba(26,5,16,.5) 100%);}
 .vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
@@ -131,10 +131,10 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor inpu
   border:1px solid rgba(253,238,242,.14);box-shadow:0 30px 60px rgba(0,0,0,.35);padding:clamp(22px,3vw,40px)}
 /* ---------- sections ---------- */
 .ch{position:relative}
-.sticky{position:sticky;top:0;height:100vh;overflow:hidden}
+.sticky{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
 
 /* HERO */
-.hero{min-height:100vh;display:flex;align-items:center;padding:110px var(--gutter) 90px}
+.hero{min-height:100vh;min-height:100svh;display:flex;align-items:center;padding:110px var(--gutter) 90px}
 .hero-copy{max-width:min(560px,92vw);position:relative;z-index:2}
 .hero h1{font-size:clamp(3.2rem,8.4vw,7.6rem);margin-bottom:28px;color:var(--cream)}
 .hero-lede{font-family:'Instrument Serif',serif;font-size:clamp(1.25rem,2vw,1.6rem);line-height:1.35;color:rgba(253,238,242,.88);max-width:30ch;margin-bottom:28px}
@@ -407,6 +407,78 @@ footer{position:relative;z-index:2;padding:26px var(--gutter) 70px;display:flex;
   .exp-head{top:70px}
   .styling-wrap,.misc-wrap,.thesis-body,.draw-wrap,.skills-wrap{padding-top:70px}
 }
+/* touch devices: drop the costly compositing (blend modes, live blur over WebGL, fixed backgrounds) */
+@media (hover:none), (max-width:640px){
+  .grain{display:none}
+  body{background-attachment:scroll,scroll,scroll}
+  .glass{backdrop-filter:none;-webkit-backdrop-filter:none;background:linear-gradient(160deg,rgba(45,12,24,.9),rgba(26,5,16,.84))}
+  .sheet,.contact-pill{backdrop-filter:none;-webkit-backdrop-filter:none}
+  .sheet{background:rgba(74,14,28,.88)}
+  .booklet,.deck-card,.render,.ring-item{box-shadow:0 12px 26px rgba(0,0,0,.35)}
+}
+@media (max-width:640px){
+  /* hero: copy sits low, the room floats above it */
+  .hero{align-items:flex-end;padding:96px var(--gutter) 84px}
+  .hero h1{font-size:clamp(2.5rem,12.5vw,3.2rem);margin-bottom:16px}
+  .hero-lede{font-size:1.08rem;margin-bottom:18px}
+  .contact-pill{padding:9px 13px;font-size:.7rem}
+  .kicker{font-size:.58rem;letter-spacing:.18em;margin-bottom:12px}
+  .kicker::before{width:18px}
+  /* build: compact bottom sheet so the room stays visible on top */
+  .build-panel{top:auto;bottom:64px;transform:none;padding:20px 20px 16px;max-height:calc(100svh - 300px);overflow:hidden}
+  .build-panel .kicker{display:none}
+  .build-panel h2{font-size:1.85rem;margin-bottom:12px}
+  .words{font-size:.98rem;line-height:1.4}
+  .words + .words{margin-top:8px}
+  .stages{margin-top:14px}
+  .stage{font-size:.5rem;padding-top:10px}
+  .stage b{font-size:1.1rem}
+  /* skills: only the active discipline is expanded */
+  .skills-wrap{align-content:end;padding:0 var(--gutter) 64px}
+  .skills-col{padding:20px 20px 10px}
+  .skills-head h2{font-size:1.85rem;margin-bottom:10px}
+  .skills-head .kicker{display:none}
+  .skill{padding:8px 0 8px 16px}
+  .skill h3{font-size:1.35rem;margin-bottom:0}
+  .skill p{display:none;margin-top:6px;font-size:.8rem;line-height:1.5}
+  .skill.on p{display:block}
+  .skill.on{transform:none}
+  /* experience: shorter cards */
+  .track-wrap{height:min(380px,50svh);bottom:96px}
+  .track{gap:18px;padding-left:var(--gutter)}
+  .booklet{padding:26px 20px 20px}
+  .booklet .num{font-size:3rem}
+  .exp-role{font-size:1.2rem}
+  .exp-desc{font-size:.8rem}
+  .booklet .thumb{height:70px}
+  .exp-head h2{font-size:2.6rem}
+  .exp-head p{font-size:1.2rem}
+  /* work intro */
+  .work-intro{padding-bottom:70px}
+  .work-intro h2{font-size:4.4rem}
+  .work-intro > p{font-size:1.15rem;margin-bottom:16px}
+  .work-index{gap:12px}
+  .work-index b{font-size:.95rem}
+  /* project panels */
+  .proj-panel{padding:18px 18px 16px}
+  .project-title{font-size:1.65rem}
+  .project-sub{font-size:1rem;margin-bottom:10px}
+  .proj-panel .num-badge{font-size:2.2rem}
+  .btn{padding:10px 16px;font-size:.66rem}
+  .ring-caption{bottom:3%}
+  .deck-card h5{font-size:.82rem}
+  .deck-card p{font-size:.74rem}
+  .thesis-quote blockquote{font-size:1.75rem}
+  .aim{font-size:1.05rem;margin-bottom:10px}
+  .render .cap{display:none}
+  .edu-head h2{font-size:2.6rem}
+  .edu-head p{font-size:1.2rem}
+  .contact-aside .h-display{font-size:2.6rem}
+  .desk > p{font-size:1.3rem}
+  .contact-links{gap:8px;margin-bottom:22px}
+  .contact-link{font-size:.66rem;padding:9px 12px}
+  footer{padding-bottom:80px;letter-spacing:.12em}
+}
 @media (prefers-reduced-motion:reduce){
   .grain{animation:none}
   .split-line > span{transform:none}
@@ -539,7 +611,7 @@ footer{position:relative;z-index:2;padding:26px var(--gutter) 70px;display:flex;
           <article class="booklet"><div class="washi" style="background:rgba(196,140,158,.7)"></div><span class="num">02</span>
             <div class="exp-date">May – Oct 2025</div><div class="exp-role">Interior Stylist</div><div class="exp-company">The Colosseum</div>
             <p class="exp-desc">Handled full-cycle luxury interior styling for a retail client, working independently. Developed bespoke spatial concepts, sourced materials, and managed all on-site installation. All concepts approved without revisions; spaces delivered on time.</p>
-            <div class="thumb"><img src="images/story/scarlet-splendour.jpg" alt="Scarlet Splendour display at The Colosseum" loading="lazy"></div>
+            <div class="thumb"><img src="images/story/scarlet-splendour.jpg" srcset="images/story/m/scarlet-splendour.jpg 800w, images/story/scarlet-splendour.jpg 1600w" sizes="(max-width: 640px) 60vw, 34vw" alt="Scarlet Splendour display at The Colosseum" loading="lazy"></div>
           </article>
           <article class="booklet"><div class="washi" style="background:rgba(185,130,150,.7)"></div><span class="num">03</span>
             <div class="exp-date">Feb – Mar 2025</div><div class="exp-role">3D Visualiser</div><div class="exp-company">Quartzkraaft</div>
@@ -662,12 +734,12 @@ footer{position:relative;z-index:2;padding:26px var(--gutter) 70px;display:flex;
           <a href="docs/misc-projects.pdf" target="_blank" rel="noopener" class="btn">View Projects ↗</a>
         </div>
         <div class="deck">
-          <figure class="deck-card" data-view><div class="washi"></div><div class="im"><img src="images/story/cafe-70s-counter.jpg" alt="Retro 1970s café counter" loading="lazy"></div><h5>retro 1970s café</h5><p>A vibrant throwback, designed for social connection.</p></figure>
-          <figure class="deck-card" data-view><div class="washi" style="background:rgba(230,200,180,.75)"></div><div class="im"><img src="images/story/podcast-set.jpg" alt="Podcast set design render" loading="lazy"></div><h5>podcast set design</h5><p>A stage built around a spilling coffee cup.</p></figure>
-          <figure class="deck-card" data-view><div class="washi"></div><div class="im"><img src="images/story/art-bedroom.jpg" alt="Art bedroom render" loading="lazy"></div><h5>art bedroom</h5><p>Graffiti murals, brick and soft furnishings.</p></figure>
-          <figure class="deck-card" data-view><div class="washi" style="background:rgba(196,140,158,.75)"></div><div class="im"><img src="images/story/twinmotion-interior.jpg" alt="Lighting design render in Twinmotion" loading="lazy"></div><h5>lighting design</h5><p>A timber pod lit in Twinmotion.</p></figure>
-          <figure class="deck-card" data-view><div class="washi"></div><div class="im"><img src="images/story/cairo-restaurant.jpg" alt="Restaurant in Bayt al-Razzaz, Cairo" loading="lazy"></div><h5>bayt al-razzaz, cairo</h5><p>A restaurant inside a Mamluk-era house.</p></figure>
-          <figure class="deck-card" data-view><div class="washi" style="background:rgba(230,200,180,.75)"></div><div class="im"><img src="images/story/daylighting-model.jpg" alt="Daylighting system model" loading="lazy"></div><h5>daylighting systems</h5><p>Laser-cut louvres, skylight and light shelf.</p></figure>
+          <figure class="deck-card" data-view><div class="washi"></div><div class="im"><img src="images/story/cafe-70s-counter.jpg" srcset="images/story/m/cafe-70s-counter.jpg 800w, images/story/cafe-70s-counter.jpg 1600w" sizes="(max-width: 640px) 60vw, 34vw" alt="Retro 1970s café counter" loading="lazy"></div><h5>retro 1970s café</h5><p>A vibrant throwback, designed for social connection.</p></figure>
+          <figure class="deck-card" data-view><div class="washi" style="background:rgba(230,200,180,.75)"></div><div class="im"><img src="images/story/podcast-set.jpg" srcset="images/story/m/podcast-set.jpg 800w, images/story/podcast-set.jpg 1600w" sizes="(max-width: 640px) 60vw, 34vw" alt="Podcast set design render" loading="lazy"></div><h5>podcast set design</h5><p>A stage built around a spilling coffee cup.</p></figure>
+          <figure class="deck-card" data-view><div class="washi"></div><div class="im"><img src="images/story/art-bedroom.jpg" srcset="images/story/m/art-bedroom.jpg 800w, images/story/art-bedroom.jpg 1600w" sizes="(max-width: 640px) 60vw, 34vw" alt="Art bedroom render" loading="lazy"></div><h5>art bedroom</h5><p>Graffiti murals, brick and soft furnishings.</p></figure>
+          <figure class="deck-card" data-view><div class="washi" style="background:rgba(196,140,158,.75)"></div><div class="im"><img src="images/story/twinmotion-interior.jpg" srcset="images/story/m/twinmotion-interior.jpg 800w, images/story/twinmotion-interior.jpg 1600w" sizes="(max-width: 640px) 60vw, 34vw" alt="Lighting design render in Twinmotion" loading="lazy"></div><h5>lighting design</h5><p>A timber pod lit in Twinmotion.</p></figure>
+          <figure class="deck-card" data-view><div class="washi"></div><div class="im"><img src="images/story/cairo-restaurant.jpg" srcset="images/story/m/cairo-restaurant.jpg 800w, images/story/cairo-restaurant.jpg 1600w" sizes="(max-width: 640px) 60vw, 34vw" alt="Restaurant in Bayt al-Razzaz, Cairo" loading="lazy"></div><h5>bayt al-razzaz, cairo</h5><p>A restaurant inside a Mamluk-era house.</p></figure>
+          <figure class="deck-card" data-view><div class="washi" style="background:rgba(230,200,180,.75)"></div><div class="im"><img src="images/story/daylighting-model.jpg" srcset="images/story/m/daylighting-model.jpg 800w, images/story/daylighting-model.jpg 1600w" sizes="(max-width: 640px) 60vw, 34vw" alt="Daylighting system model" loading="lazy"></div><h5>daylighting systems</h5><p>Laser-cut louvres, skylight and light shelf.</p></figure>
         </div>
       </div>
     </div>
@@ -698,11 +770,11 @@ footer{position:relative;z-index:2;padding:26px var(--gutter) 70px;display:flex;
           <a href="docs/thesis.pdf" target="_blank" rel="noopener" class="btn">View Thesis ↗</a>
         </div>
         <div class="render-stack">
-          <div class="render r1" data-depth="1.4"><img src="images/story/catalyst-render-2.jpg" alt="The Catalyst classroom render" loading="lazy"><span class="cap">Learning space</span></div>
-          <div class="render r2" data-depth="0.7"><img src="images/story/catalyst-render-3.jpg" alt="The Catalyst activity room render" loading="lazy"><span class="cap">Activity room</span></div>
-          <div class="render r3" data-depth="1.0"><img src="images/story/catalyst-render-1.jpg" alt="The Catalyst play area render" loading="lazy"><span class="cap">Infant room</span></div>
-          <div class="render r4" data-depth="1.7"><img src="images/story/catalyst-render-4.jpg" alt="The Catalyst reading nook render" loading="lazy"><span class="cap">Reading corner</span></div>
-          <div class="render sk" data-depth="2.2"><img src="images/story/catalyst-sketch-skylight.jpg" alt="Conceptual sketch with central skylight" loading="lazy"></div>
+          <div class="render r1" data-depth="1.4"><img src="images/story/catalyst-render-2.jpg" srcset="images/story/m/catalyst-render-2.jpg 800w, images/story/catalyst-render-2.jpg 1600w" sizes="(max-width: 640px) 60vw, 34vw" alt="The Catalyst classroom render" loading="lazy"><span class="cap">Learning space</span></div>
+          <div class="render r2" data-depth="0.7"><img src="images/story/catalyst-render-3.jpg" srcset="images/story/m/catalyst-render-3.jpg 800w, images/story/catalyst-render-3.jpg 1600w" sizes="(max-width: 640px) 60vw, 34vw" alt="The Catalyst activity room render" loading="lazy"><span class="cap">Activity room</span></div>
+          <div class="render r3" data-depth="1.0"><img src="images/story/catalyst-render-1.jpg" srcset="images/story/m/catalyst-render-1.jpg 800w, images/story/catalyst-render-1.jpg 1600w" sizes="(max-width: 640px) 60vw, 34vw" alt="The Catalyst play area render" loading="lazy"><span class="cap">Infant room</span></div>
+          <div class="render r4" data-depth="1.7"><img src="images/story/catalyst-render-4.jpg" srcset="images/story/m/catalyst-render-4.jpg 800w, images/story/catalyst-render-4.jpg 1600w" sizes="(max-width: 640px) 60vw, 34vw" alt="The Catalyst reading nook render" loading="lazy"><span class="cap">Reading corner</span></div>
+          <div class="render sk" data-depth="2.2"><img src="images/story/catalyst-sketch-skylight.jpg" srcset="images/story/m/catalyst-sketch-skylight.jpg 800w, images/story/catalyst-sketch-skylight.jpg 1600w" sizes="(max-width: 640px) 60vw, 34vw" alt="Conceptual sketch with central skylight" loading="lazy"></div>
         </div>
       </div>
     </div>
@@ -789,6 +861,9 @@ const smooth = t => t * t * (3 - 2 * t);
 const range = (v, a, b) => clamp((v - a) / (b - a));
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isMobile = matchMedia('(max-width: 640px)').matches;
+const isTouch = matchMedia('(hover: none)').matches;
+const lowPower = isMobile || isTouch;
+let portrait = innerWidth / innerHeight < 0.8;
 const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 /* =========================================================
@@ -859,7 +934,7 @@ const armReveals = () => $$('.reveal, .fade, [data-split]').forEach(el => io.obs
 const canvas = $('#stage');
 let renderer;
 try {
-  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: !(lowPower && devicePixelRatio >= 2), alpha: true, powerPreference: 'high-performance' });
 } catch (err) {
   document.documentElement.classList.add('no-webgl');
 }
@@ -886,15 +961,15 @@ function texClone(base, rx, ry) {
 const W = { x0: -4, x1: 4, z0: -3, z1: 3, h: 3.4, t: 0.25 };   // room extents (metres)
 
 /* ---- state: target pose from scroll, live pose smoothed ---- */
-const POSE_KEYS = ['px','py','pz','tx','ty','tz','fov','build','explode','plan','night','lamp','logos','zones','swatches','frame','dim','spin','sway','auto'];
+const POSE_KEYS = ['px','py','pz','tx','ty','tz','fov','md','vy','build','explode','plan','night','lamp','logos','zones','swatches','frame','dim','spin','sway','auto'];
 const live = {}; const target = {};
 
 let scene, camera, room, pieces = [], edgesMats = [], sky, sun, hemi, pendantLight, arcLight, bulbMats = [];
 let gridGroup, dimGroup, zoneGroup, logoGroup, swatchGroup, wallGroup, frameMat, sprites = [];
 
 function buildScene() {
-  renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile ? 1.5 : 1.75));
-  renderer.setSize(innerWidth, innerHeight, false);
+  renderer.setPixelRatio(Math.min(devicePixelRatio, lowPower ? 1.5 : 1.75));
+  renderer.setSize(canvas.clientWidth || innerWidth, canvas.clientHeight || innerHeight, false);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
@@ -906,7 +981,7 @@ function buildScene() {
   scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
   scene.environmentIntensity = 0.35;
 
-  camera = new THREE.PerspectiveCamera(32, innerWidth / innerHeight, 0.1, 200);
+  camera = new THREE.PerspectiveCamera(32, (canvas.clientWidth || innerWidth) / (canvas.clientHeight || innerHeight), 0.1, 200);
 
   /* textures from the site's own assets */
   tex('leather', 'images/story/tex-leather.jpg');
@@ -919,7 +994,7 @@ function buildScene() {
   ['ribbon','heart-charm','deco-contact','logo-autocad','logo-sketchup','logo-enscape','logo-vray','logo-twinmotion','logo-unity','logo-d5']
     .forEach(n => tex(n, `images/story/el-${n}.png`));
   ['akhil-ravi-living','art-bedroom','catalyst-render-2','twinmotion-interior','cafe-70s-counter','bhupesh-living']
-    .forEach(n => tex(n, `images/story/${n}.jpg`));
+    .forEach(n => tex(n, `images/story/${lowPower ? 'm/' : ''}${n}.jpg`));
 
   room = new THREE.Group();
   scene.add(room);
@@ -1346,7 +1421,7 @@ function buildScene() {
 /* =========================================================
    POSES  (camera + room state per chapter)
 ========================================================= */
-const BASE = { px: 0, py: 0, pz: 0, tx: 0, ty: 0, tz: 0, fov: 34, build: 1, explode: 0, plan: 0, night: 0, lamp: 0, logos: 0, zones: 0, swatches: 0, frame: 0, dim: 0, spin: 0, sway: 0, auto: 0 };
+const BASE = { px: 0, py: 0, pz: 0, tx: 0, ty: 0, tz: 0, fov: 34, md: 1, vy: 0, build: 1, explode: 0, plan: 0, night: 0, lamp: 0, logos: 0, zones: 0, swatches: 0, frame: 0, dim: 0, spin: 0, sway: 0, auto: 0 };
 const P = o => ({ ...BASE, ...o });
 const HERO = P({ px: 10.5, py: 8.8, pz: 11.5, tx: -3.0, ty: 0.4, tz: 0.6, fov: 30, build: 0, sway: 1, night: 0.1 });
 const POSES = {
@@ -1373,6 +1448,33 @@ const POSES = {
   edu1:      P({ px: 2.3, py: 1.55, pz: 0.7, tx: 0.8, ty: 1.95, tz: -3.2, fov: 44, night: 0.75, lamp: 1, dim: 0.45, frame: 2 }),
   contact:   P({ px: 12.5, py: 7.2, pz: 12.5, tx: 2.2, ty: 0.9, tz: 0.4, fov: 32, night: 1, lamp: 1, dim: 0.1, frame: 2, auto: 1 }),
 };
+
+/* portrait phones: recentre the room, pull back (md) and lift it above the bottom sheets (vy) */
+const MPOSES = {
+  hero:     { tx: -0.35, ty: 0.6, tz: 0.2, fov: 40, md: 1.9, vy: 0.2 },
+  build0:   { tx: -0.25, ty: 0.6, tz: 0.2, fov: 40, md: 1.65, vy: 0.2 },
+  built:    { tx: 0.2, ty: 0.8, tz: -0.2, fov: 44, md: 1.6, vy: 0.27 },
+  lit:      { tx: 0.2, ty: 0.9, tz: -0.3, fov: 44, md: 1.6, vy: 0.27 },
+  sk0:      { tx: 0.2, ty: 1.1, tz: -0.3, fov: 44, md: 1.55, vy: 0.2 },
+  skZone:   { px: 0.6, tx: 0.2, ty: 0, tz: -0.1, fov: 46, md: 1.25, vy: 0.17 },
+  skViz:    { tx: 0.4, fov: 56, md: 1.15, vy: 0.17 },
+  skMat:    { tx: 0.5, fov: 56, md: 1.2, vy: 0.17 },
+  exp0:     { fov: 44, md: 1.45, vy: 0.1 },
+  exp1:     { fov: 44, md: 1.45, vy: 0.1 },
+  frame:    { fov: 44, vy: 0.08 },
+  frameDim: { fov: 44 },
+  plan:     { px: 0.4, tx: 0.4, fov: 46, vy: -0.08 },
+  planB:    { px: 0.4, tx: 0.4, fov: 46, vy: -0.08 },
+  misc0:    { tx: -0.4, fov: 54, md: 1.15 },
+  misc1:    { tx: -0.4, fov: 54, md: 1.15 },
+  th0:      { fov: 44, md: 1.45 },
+  thX:      { fov: 46, md: 1.4, vy: -0.05 },
+  thX2:     { fov: 46, md: 1.4, vy: -0.05 },
+  edu0:     { fov: 56 },
+  edu1:     { fov: 56 },
+  contact:  { tx: 0.3, ty: 0.9, fov: 44, md: 1.5, vy: 0.22 },
+};
+const poseFor = name => portrait && MPOSES[name] ? { ...POSES[name], ...MPOSES[name] } : POSES[name];
 
 /* keyframes: [selector, f (fraction of sticky range), viewport offset, pose] */
 const KEYS = [
@@ -1404,13 +1506,17 @@ const KEYS = [
   ['#contact', 0, -0.3, 'contact'],
 ];
 let keyPos = [];
+let chapterTops = [], domDirty = true, lastDomY = -1;
 function measure() {
+  portrait = innerWidth / innerHeight < 0.8;
   const vh = innerHeight;
   keyPos = KEYS.map(([sel, f, v, pose]) => {
     const el = $(sel); const top = el.getBoundingClientRect().top + window.scrollY;
-    return { y: top + f * Math.max(0, el.offsetHeight - vh) + v * vh, pose: POSES[pose] };
+    return { y: top + f * Math.max(0, el.offsetHeight - vh) + v * vh, pose: poseFor(pose) };
   }).sort((a, b) => a.y - b.y);
   sections.forEach(s => { s.top = s.el.getBoundingClientRect().top + window.scrollY; s.h = s.el.offsetHeight; });
+  chapterTops = chapters.map(c => ({ top: c.getBoundingClientRect().top + window.scrollY, h: c.offsetHeight }));
+  domDirty = true;
 }
 function poseAt(y) {
   if (y <= keyPos[0].y) return keyPos[0].pose;
@@ -1464,7 +1570,7 @@ RING.forEach(([img, t, place], i) => {
   const f = document.createElement('figure');
   f.className = 'ring-item';
   f.style.transform = `rotateY(${i * 360 / RING.length}deg) translateZ(${ringR}px)`;
-  f.innerHTML = `<img src="images/story/${img}.jpg" alt="${t}, ${place}" loading="lazy"><figcaption>${t}</figcaption>`;
+  f.innerHTML = `<img src="images/story/${img}.jpg" srcset="images/story/m/${img}.jpg 800w, images/story/${img}.jpg 1600w" sizes="${ringW}px" alt="${t}, ${place}" loading="lazy"><figcaption>${t}</figcaption>`;
   f.addEventListener('click', () => window.open('docs/portfolio-styling.pdf', '_blank'));
   ringEl.appendChild(f);
 });
@@ -1556,10 +1662,10 @@ function updateDOM() {
   {
     const p = secProg('work-misc');
     const n = deckCards.length;
-    const cw = Math.min(innerWidth * (isMobile ? 0.4 : 0.2), 270);
+    const cw = Math.min(innerWidth * (isMobile ? 0.36 : 0.2), 270);
     deckCards.forEach((c, i) => {
       const t = smooth(range(p, 0.06 + i * 0.1, 0.24 + i * 0.1));
-      const fan = (i - (n - 1) / 2) * (isMobile ? 6 : 13);
+      const fan = (i - (n - 1) / 2) * (isMobile ? 4.5 : 13);
       const spread = range(p, 0.8, 1) * 0.0;
       const y = lerp(innerHeight * 0.9, 0, t);
       c.style.setProperty('--cw', cw + 'px');
@@ -1602,12 +1708,11 @@ function updateDOM() {
   // hud + nav
   {
     let cur = 0;
-    chapters.forEach((c, i) => { if (c.getBoundingClientRect().top <= vh * 0.45) cur = i; });
-    const c = chapters[cur];
+    chapterTops.forEach((c, i) => { if (c.top - scrollY <= vh * 0.45) cur = i; });
+    const c = chapters[cur], ct = chapterTops[cur] || { top: 0, h: 1 };
     hudNum.textContent = String(cur + 1).padStart(2, '0');
     hudTitle.textContent = c.dataset.ch;
-    const r = c.getBoundingClientRect();
-    hudLine.style.setProperty('--cp', clamp(-r.top / Math.max(1, r.height - vh)));
+    hudLine.style.setProperty('--cp', clamp((scrollY - ct.top) / Math.max(1, ct.h - vh)));
     railDots.forEach((d, i) => d.classList.toggle('is-active', i === cur));
     const active = navMap[c.id];
     navTags.forEach(n => n.classList.toggle('is-active', n.getAttribute('href') === '#' + active));
@@ -1698,7 +1803,7 @@ function frame() {
   const dt = Math.min(clock.getDelta(), 0.05);
   const t = clock.elapsedTime;
   if (lenis) lenis.raf(t * 1000);
-  updateDOM();
+  if (domDirty || Math.abs(scrollY - lastDomY) > 0.5) { updateDOM(); lastDomY = scrollY; domDirty = false; }
 
   if (renderer && keyPos.length) {
     const tp = poseAt(scrollY);
@@ -1710,7 +1815,7 @@ function frame() {
     mouse.sy = lerp(mouse.sy, mouse.y, 1 - Math.pow(0.02, dt));
 
     camTgt.set(live.tx, live.ty, live.tz);
-    camPos.set(live.px, live.py, live.pz).sub(camTgt);
+    camPos.set(live.px, live.py, live.pz).sub(camTgt).multiplyScalar(live.md);
     const spin = live.spin + live.sway * Math.sin(t * 0.12) * 0.12 + live.auto * Math.sin(t * 0.09) * 0.55 + (reduced ? 0 : mouse.sx * 0.08);
     camPos.applyAxisAngle(THREE.Object3D.DEFAULT_UP, spin);
     camPos.add(camTgt);
@@ -1718,13 +1823,30 @@ function frame() {
     camera.position.copy(camPos);
     camera.lookAt(camTgt);
     if (Math.abs(camera.fov - live.fov) > 0.01) { camera.fov = live.fov; camera.updateProjectionMatrix(); }
+    const vy = Math.round(live.vy * viewH);
+    if (vy !== lastVy) { if (vy) camera.setViewOffset(viewW, viewH, 0, vy, viewW, viewH); else camera.clearViewOffset(); lastVy = vy; }
 
     applyRoom(t, dt);
     document.documentElement.style.setProperty('--dim', live.dim.toFixed(3));
     hudState.textContent = live.plan > 0.5 ? 'plan · 1:50' : live.explode > 0.5 ? 'exploded axonometric' : live.build < 0.15 ? 'blueprint' : live.build < 0.9 ? `materials ${Math.round(live.build * 100)}%` : live.night > 0.6 ? 'evening · lamps on' : 'daylight';
     renderer.render(scene, camera);
+    adaptQuality(dt);
   }
   requestAnimationFrame(frame);
+}
+
+/* adaptive quality: if frames run slow for a couple of seconds, step resolution and shadows down */
+let slowTime = 0, qualityStep = 0;
+function adaptQuality(dt) {
+  if (!started || document.hidden) return;
+  slowTime = dt > 1 / 40 ? slowTime + dt : Math.max(0, slowTime - dt * 0.5);
+  if (slowTime > 2 && qualityStep < 3) {
+    qualityStep++; slowTime = 0;
+    if (qualityStep === 1) renderer.setPixelRatio(Math.min(devicePixelRatio, 1.25));
+    if (qualityStep === 2) { renderer.shadowMap.enabled = false; scene.traverse(o => { if (o.material) [].concat(o.material).forEach(m => m.needsUpdate = true); }); }
+    if (qualityStep === 3) renderer.setPixelRatio(1);
+    renderer.setSize(viewW, viewH, false);
+  }
 }
 
 /* hero card tilt */
@@ -1734,14 +1856,20 @@ if (tilt && finePointer && !reduced) addEventListener('mousemove', () => {
 });
 
 /* resize */
+let viewW = canvas.clientWidth || innerWidth, viewH = canvas.clientHeight || innerHeight, lastVy = 0, resizeT;
 function onResize() {
-  if (renderer) {
-    renderer.setSize(innerWidth, innerHeight, false);
-    camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+  const w = canvas.clientWidth || innerWidth, h = canvas.clientHeight || innerHeight;
+  if (renderer && (w !== viewW || h !== viewH)) {
+    viewW = w; viewH = h;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h; camera.updateProjectionMatrix();
+    lastVy = null;
   }
-  measure();
+  clearTimeout(resizeT);
+  resizeT = setTimeout(measure, 150);
 }
 addEventListener('resize', onResize);
+addEventListener('orientationchange', () => setTimeout(onResize, 300));
 
 /* form */
 const form = $('.desk form'), btn = form.querySelector('.submit-btn');
