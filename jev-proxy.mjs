@@ -55,6 +55,7 @@ if (typeof process !== 'undefined' && process.argv?.[1] && import.meta.url.endsW
     }
     const file = path.normalize(decodeURIComponent(url.pathname)).replace(/^\/+/, '') || 'studio2.html', type = MIME[path.extname(file)];
     if (!type || file.startsWith('..') || file.startsWith('.')) { rs.writeHead(404); return rs.end('not found'); }   // only site assets; never .env
-    try { rs.writeHead(200, { 'Content-Type': type }); rs.end(await readFile(file)); } catch { rs.writeHead(404); rs.end('not found'); }
+    let data; try { data = await readFile(file); } catch { rs.writeHead(404); return rs.end('not found'); }
+    rs.writeHead(200, { 'Content-Type': type }); rs.end(data);
   }).listen(8787, '127.0.0.1', () => console.log('1903 studio → http://127.0.0.1:8787/studio2.html' + (env.JEV_API_KEY ? '' : '  (no JEV_API_KEY in .env: local matcher only)')));
 }
